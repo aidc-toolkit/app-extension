@@ -1,6 +1,6 @@
 {
   "name": "@aidc-toolkit/app-extension",
-  "version": "0.9.13-beta",
+  "version": "0.9.14-beta",
   "description": "Application extension framework for AIDC Toolkit",
   "type": "module",
   "main": "dist/index.js",
@@ -29,13 +29,13 @@
     "generate-microsoft": "tsx src/generate.ts microsoft aidc-toolkit ../microsoft-add-in/src/functions ../microsoft-add-in/config"
   },
   "devDependencies": {
-    "@aidc-toolkit/dev": "alpha",
+    "@aidc-toolkit/dev": "^0.9.14-beta",
     "vitest": "^3.0.5"
   },
   "dependencies": {
-    "@aidc-toolkit/core": "alpha",
-    "@aidc-toolkit/gs1": "alpha",
-    "@aidc-toolkit/utility": "alpha",
+    "@aidc-toolkit/core": "^0.9.14-beta",
+    "@aidc-toolkit/gs1": "^0.9.14-beta",
+    "@aidc-toolkit/utility": "^0.9.14-beta",
     "i18next": "^24.2.2"
   }
 }
