@@ -1,0 +1,41 @@
+{
+  "name": "@aidc-toolkit/app-extension",
+  "version": "0.9.13-beta",
+  "description": "Application extension framework for AIDC Toolkit",
+  "type": "module",
+  "main": "dist/index.js",
+  "homepage": "https://github.com/aidc-toolkit",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aidc-toolkit/app-extension.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aidc-toolkit/app-extension/issues"
+  },
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Kevin Dean",
+    "email": "Kevin.Dean@datadevelopment.com",
+    "url": "https://www.linkedin.com/in/kdean"
+  },
+  "scripts": {
+    "update-aidc-toolkit": "npm update @aidc-toolkit/dev @aidc-toolkit/core @aidc-toolkit/utility @aidc-toolkit/gs1",
+    "lint": "eslint",
+    "build:core": "tsup --config node_modules/@aidc-toolkit/dev/tsup.config.ts",
+    "build:dev": "npm run build:core && tsc --project node_modules/@aidc-toolkit/dev/tsconfig-declaration.json",
+    "build:release": "npm run build:core -- --minify",
+    "build:doc": "npm run build:dev",
+    "publish-dev": "publish-dev",
+    "generate-microsoft": "tsx src/generate.ts microsoft aidc-toolkit ../microsoft-add-in/src/functions ../microsoft-add-in/config"
+  },
+  "devDependencies": {
+    "@aidc-toolkit/dev": "alpha",
+    "vitest": "^3.0.5"
+  },
+  "dependencies": {
+    "@aidc-toolkit/core": "alpha",
+    "@aidc-toolkit/gs1": "alpha",
+    "@aidc-toolkit/utility": "alpha",
+    "i18next": "^24.2.2"
+  }
+}

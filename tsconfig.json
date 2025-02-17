@@ -1,0 +1,6 @@
+{
+  "extends": "@aidc-toolkit/dev/tsconfig.json",
+  "compilerOptions": {
+    "experimentalDecorators": true
+  }
+}
