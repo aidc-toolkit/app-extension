@@ -29,13 +29,13 @@
     "generate-microsoft": "tsx src/generate.ts microsoft aidc-toolkit ../microsoft-add-in/src/functions ../microsoft-add-in/config"
   },
   "devDependencies": {
-    "@aidc-toolkit/dev": "^0.9.14-beta",
+    "@aidc-toolkit/dev": "alpha",
     "vitest": "^3.0.5"
   },
   "dependencies": {
-    "@aidc-toolkit/core": "^0.9.14-beta",
-    "@aidc-toolkit/gs1": "^0.9.14-beta",
-    "@aidc-toolkit/utility": "^0.9.14-beta",
+    "@aidc-toolkit/core": "alpha",
+    "@aidc-toolkit/gs1": "alpha",
+    "@aidc-toolkit/utility": "alpha",
     "i18next": "^24.2.2"
   }
 }
