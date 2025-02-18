@@ -1,7 +1,8 @@
 import type { StringValidation, StringValidator } from "@aidc-toolkit/utility";
-import { LibProxy, type ErrorExtends, type Matrix, type MatrixResultError } from "../proxy.js";
+import { LibProxy } from "../lib-proxy.js";
+import type { ErrorExtends, Matrix, MatrixResultError } from "../types.js";
 
-export abstract class StringProxy<TBigInt, ThrowError extends boolean, TError extends ErrorExtends<ThrowError>> extends LibProxy<TBigInt, ThrowError, TError> {
+export abstract class StringProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     protected validateString<TStringValidation extends StringValidation>(validator: StringValidator<TStringValidation>, matrixSs: Matrix<string>, validation?: TStringValidation): Matrix<string> {
         return this.mapMatrixVoid(matrixSs, (s) => {
             validator.validate(s, validation);

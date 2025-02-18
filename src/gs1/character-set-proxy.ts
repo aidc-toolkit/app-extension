@@ -1,6 +1,7 @@
 import { AI39_CREATOR, AI82_CREATOR } from "@aidc-toolkit/gs1";
+import type { AppExtension } from "../app-extension.js";
 import { ProxyClass } from "../descriptor.js";
-import type { AppProxy, ErrorExtends } from "../proxy.js";
+import type { ErrorExtends } from "../types.js";
 import {
     exclusionAllNumericParameterDescriptor,
     exclusionNoneParameterDescriptor
@@ -16,9 +17,9 @@ import { CharacterSetProxy } from "../utility/character-set-proxy.js";
         }
     ]
 })
-export class AI82Proxy<TBigInt, ThrowError extends boolean, TError extends ErrorExtends<ThrowError>> extends CharacterSetProxy<TBigInt, ThrowError, TError> {
-    constructor(appProxy: AppProxy<TBigInt, ThrowError, TError>) {
-        super(appProxy, AI82_CREATOR);
+export class AI82Proxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends CharacterSetProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
+        super(appExtension, AI82_CREATOR);
     }
 }
 
@@ -31,8 +32,8 @@ export class AI82Proxy<TBigInt, ThrowError extends boolean, TError extends Error
         }
     ]
 })
-export class AI39Proxy<TBigInt, ThrowError extends boolean, TError extends ErrorExtends<ThrowError>> extends CharacterSetProxy<TBigInt, ThrowError, TError> {
-    constructor(appProxy: AppProxy<TBigInt, ThrowError, TError>) {
-        super(appProxy, AI39_CREATOR);
+export class AI39Proxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends CharacterSetProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
+        super(appExtension, AI39_CREATOR);
     }
 }

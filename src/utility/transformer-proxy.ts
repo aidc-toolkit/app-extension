@@ -1,6 +1,7 @@
 import { Sequence, Transformer, transformIterable } from "@aidc-toolkit/utility";
 import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Type } from "../descriptor.js";
-import { type ErrorExtends, LibProxy, type Matrix, type MatrixResultError, type ResultError } from "../proxy.js";
+import { LibProxy } from "../lib-proxy.js";
+import type { ErrorExtends, Matrix, MatrixResultError, ResultError } from "../types.js";
 import {
     countParameterDescriptor,
     startValueParameterDescriptor,
@@ -25,7 +26,7 @@ const transformedValueParameterDescriptor: ParameterDescriptor = {
 @ProxyClass({
     methodInfix: "Transform"
 })
-export class TransformerProxy<TBigInt, ThrowError extends boolean, TError extends ErrorExtends<ThrowError>> extends LibProxy<TBigInt, ThrowError, TError> {
+export class TransformerProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     @ProxyMethod({
         type: Type.Number,
         isMatrix: true

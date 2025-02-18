@@ -1,6 +1,6 @@
 import { RegExpValidator } from "@aidc-toolkit/utility";
 import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Type } from "../descriptor.js";
-import type { ErrorExtends, MatrixResultError, Matrix } from "../proxy.js";
+import type { ErrorExtends, Matrix, MatrixResultError } from "../types.js";
 import { validateSParameterDescriptor } from "./string-descriptor.js";
 import { StringProxy } from "./string-proxy.js";
 
@@ -21,7 +21,7 @@ const errorMessageParameterDescriptor: ParameterDescriptor = {
 @ProxyClass({
     methodInfix: "RegExp"
 })
-export class RegExpProxy<TBigInt, ThrowError extends boolean, TError extends ErrorExtends<ThrowError>> extends StringProxy<TBigInt, ThrowError, TError> {
+export class RegExpProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends StringProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     @ProxyMethod({
         type: Type.String,
         isMatrix: true

@@ -7,7 +7,8 @@ import {
     hasValidCheckDigit
 } from "@aidc-toolkit/gs1";
 import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Type } from "../descriptor.js";
-import { LibProxy, type ErrorExtends, type Matrix, type MatrixResultError } from "../proxy.js";
+import { LibProxy } from "../lib-proxy.js";
+import type { ErrorExtends, Matrix, MatrixResultError } from "../types.js";
 
 const numericSParameterDescriptor: ParameterDescriptor = {
     name: "numericS",
@@ -52,7 +53,7 @@ const ai82SWithCheckCharacterPairParameterDescriptor: ParameterDescriptor = {
 };
 
 @ProxyClass()
-export class CheckProxy<TBigInt, ThrowError extends boolean, TError extends ErrorExtends<ThrowError>> extends LibProxy<TBigInt, ThrowError, TError> {
+export class CheckProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     @ProxyMethod({
         type: Type.String,
         isMatrix: true

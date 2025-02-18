@@ -15,7 +15,11 @@
  * limitations under the License.
  */
 export * from "./locale/i18n.js";
-export * from "./proxy.js";
+export type * from "./types.js";
+export * from "./app-extension.js";
+export * from "./lib-proxy.js";
+export * from "./descriptor.js";
+export * from "./app-utility-proxy.js";
 export * from "./utility/transformer-proxy.js";
 export * from "./utility/reg-exp-proxy.js";
 export * from "./utility/character-set-proxy.js";

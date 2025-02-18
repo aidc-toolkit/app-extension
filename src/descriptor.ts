@@ -1,4 +1,6 @@
-import type { AppProxy, LibProxy, ErrorExtends } from "./proxy.js";
+import type { AppExtension } from "./app-extension.js";
+import { LibProxy } from "./lib-proxy.js";
+import type { ErrorExtends, TypedFunction } from "./types.js";
 
 /**
  * Core descriptor.
@@ -62,9 +64,14 @@ export interface ParameterDescriptor extends TypeDescriptor {
  */
 export interface MethodDescriptor extends TypeDescriptor {
     /**
+     * If true, application-specific invocation context is required.
+     */
+    readonly requiresContext?: boolean;
+
+    /**
      * If true, method infix is ignored.
      */
-    readonly noInfix?: boolean;
+    readonly ignoreInfix?: boolean;
 
     /**
      * String before which method infix appears. If undefined, infix is appended to the method name. Ignored if
@@ -102,75 +109,31 @@ export interface ClassDescriptor extends Descriptor {
 }
 
 /**
- * Callback to process proxy decorators.
+ * Proxy base class type.
  */
-export interface ProxyDecoratorCallback {
-    /**
-     * Parameter function.
-     *
-     * @param parameterDescriptor
-     * Parameter descriptor.
-     *
-     * @returns
-     * Function to process parameter descriptor.
-     */
-    readonly parameterFunction: <TBigInt, ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, T extends LibProxy<TBigInt, ThrowError, TError>>(parameterDescriptor: ParameterDescriptor) => ((target: T, propertyKey: string, parameterIndex: number) => void);
-
-    /**
-     * Method function.
-     *
-     * @param methodDescriptor
-     * Method descriptor.
-     *
-     * @returns
-     * Function to process method descriptor.
-     */
-    readonly methodFunction: <TBigInt, ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, T extends LibProxy<TBigInt, ThrowError, TError>>(methodDescriptor: Omit<MethodDescriptor, "name" | "parameterDescriptors">) => ((target: T, propertyKey: string, propertyDescriptor: PropertyDescriptor) => void);
-
-    /**
-     * Class function.
-     *
-     * @param classDescriptor
-     * Class descriptor.
-     *
-     * @returns
-     * Function to process class descriptor.
-     */
-    readonly classFunction: <TBigInt, ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, T extends LibProxy<TBigInt, ThrowError, TError>>(classDescriptor: Omit<ClassDescriptor, "name" | "methodDescriptors">) => ((classType: ProxyClassType<TBigInt, ThrowError, TError, T>) => void);
-}
-
-/**
- * Default operation for decorators.
- *
- * @returns
- * No-op function.
- */
-const noOp = () => () => {};
-
-/**
- * Proxy decorator callback, initialized to no-op functions.
- */
-let proxyDecoratorCallback: ProxyDecoratorCallback = {
-    parameterFunction: noOp,
-    methodFunction: noOp,
-    classFunction: noOp
-};
-
-/**
- * Set the proxy decorator callback.
- *
- * @param callback
- * Proxy decorator callback.
- */
-export function setProxyDecoratorCallback(callback: ProxyDecoratorCallback): void {
-    proxyDecoratorCallback = callback;
-}
+type ProxyBaseClassType<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, T extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt>> =
+    (new(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>, ...args: unknown[]) => T) & { prototype: T };
 
 /**
  * Proxy class type, enforcing inheritance hierarchy and constructor parameters.
  */
-export type ProxyClassType<TBigInt, ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, T extends LibProxy<TBigInt, ThrowError, TError>> =
-    (new(appProxy: AppProxy<TBigInt, ThrowError, TError>) => T) & { prototype: T };
+export type ProxyClassType<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, T extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt>> =
+    (new(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) => T) & { prototype: T };
+
+/**
+ * Pending parameter descriptors, consumed and reset when method is described.
+ */
+let pendingParameterDescriptors: ParameterDescriptor[] = [];
+
+/**
+ * Class method descriptors, keyed on declaration class name and method name.
+ */
+const classMethodsDescriptorsMap = new Map<string, MethodDescriptor[]>();
+
+/**
+ * Class descriptors, keyed on declaration class name.
+ */
+const classDescriptorsMap = new Map<string, ClassDescriptor>();
 
 /**
  * Proxy parameter decorator.
@@ -181,8 +144,10 @@ export type ProxyClassType<TBigInt, ThrowError extends boolean, TError extends E
  * @returns
  * Function defining metadata for the parameter.
  */
-export function ProxyParameter<TBigInt, ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, T extends LibProxy<TBigInt, ThrowError, TError>>(parameterDescriptor: ParameterDescriptor): ((target: T, propertyKey: string, parameterIndex: number) => void) {
-    return proxyDecoratorCallback.parameterFunction(parameterDescriptor);
+export function ProxyParameter<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, T extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt>>(parameterDescriptor: ParameterDescriptor): ((target: T, propertyKey: string, parameterIndex: number) => void) {
+    return (_target: T, _propertyKey: string, parameterIndex: number) => {
+        pendingParameterDescriptors[parameterIndex] = parameterDescriptor;
+    };
 }
 
 /**
@@ -194,8 +159,50 @@ export function ProxyParameter<TBigInt, ThrowError extends boolean, TError exten
  * @returns
  * Function defining metadata for the method.
  */
-export function ProxyMethod<TBigInt, ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, T extends LibProxy<TBigInt, ThrowError, TError>>(methodDescriptor: Omit<MethodDescriptor, "name" | "parameterDescriptors">): ((target: T, propertyKey: string, propertyDescriptor: PropertyDescriptor) => void) {
-    return proxyDecoratorCallback.methodFunction(methodDescriptor);
+export function ProxyMethod<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, T extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt>>(methodDescriptor: Omit<MethodDescriptor, "name" | "parameterDescriptors">): ((target: T, propertyKey: string, propertyDescriptor: PropertyDescriptor) => void) {
+    return (target: T, propertyKey: string, propertyDescriptor: PropertyDescriptor) => {
+        const declarationClassName = target.constructor.name;
+
+        // Validate that method descriptor is applied to a function.
+        if (typeof propertyDescriptor.value !== "function") {
+            throw new Error(`${declarationClassName}.${propertyKey} is not a method`);
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Known to be a method.
+        const parameterCount = (propertyDescriptor.value as TypedFunction<(...args: unknown[]) => unknown>).length - (!(methodDescriptor.requiresContext ?? false) ? 0 : 1);
+
+        let anyOptional = false;
+
+        // Validate that all parameters have descriptors.
+        for (let index = 0; index < parameterCount; index++) {
+            const parameterDescriptor = pendingParameterDescriptors[index];
+
+            if (typeof parameterDescriptor === "undefined") {
+                throw new Error(`Missing parameter descriptor at index ${index} of ${declarationClassName}.${propertyKey}`);
+            }
+
+            if (!parameterDescriptor.isRequired) {
+                anyOptional = true;
+            } else if (anyOptional) {
+                throw new Error(`Parameter descriptor ${parameterDescriptor.name} at index ${index} of ${declarationClassName}.${propertyKey} is required but prior parameter descriptor ${pendingParameterDescriptors[index - 1].name} is optional`);
+            }
+        }
+
+        let methodDescriptors = classMethodsDescriptorsMap.get(declarationClassName);
+        if (methodDescriptors === undefined) {
+            methodDescriptors = [];
+            classMethodsDescriptorsMap.set(declarationClassName, methodDescriptors);
+        }
+
+        // Method descriptors array is constructed in reverse order so that final result is in the correct order.
+        methodDescriptors.push({
+            name: propertyKey,
+            ...methodDescriptor,
+            parameterDescriptors: pendingParameterDescriptors
+        });
+
+        pendingParameterDescriptors = [];
+    };
 }
 
 /**
@@ -207,6 +214,73 @@ export function ProxyMethod<TBigInt, ThrowError extends boolean, TError extends 
  * @returns
  * Function defining metadata for the class.
  */
-export function ProxyClass<TBigInt, ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, T extends LibProxy<TBigInt, ThrowError, TError>>(classDescriptor: Omit<ClassDescriptor, "name" | "methodDescriptors"> = {}): ((classType: ProxyClassType<TBigInt, ThrowError, TError, T>) => void) {
-    return proxyDecoratorCallback.classFunction(classDescriptor);
+export function ProxyClass<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, T extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt>>(classDescriptor: Omit<ClassDescriptor, "name" | "methodDescriptors"> = {}): ((classType: ProxyClassType<ThrowError, TError, TInvocationContext, TBigInt, T>) => void) {
+    return (classType: ProxyClassType<ThrowError, TError, TInvocationContext, TBigInt, T>) => {
+        const methodDescriptorsMap = new Map<string, MethodDescriptor>();
+
+        /**
+         * Build method descriptors map from every class in hierarchy until LibProxy class is reached.
+         *
+         * @param classType
+         * Class type.
+         */
+        function buildMethodDescriptorsMap(classType: ProxyBaseClassType<ThrowError, TError, TInvocationContext, TBigInt, T>): void {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Class hierarchy is known.
+            const baseClassType = Object.getPrototypeOf(classType) as ProxyBaseClassType<ThrowError, TError, TInvocationContext, TBigInt, T>;
+
+            // Start with class furthest up the hierarchy.
+            if (baseClassType !== LibProxy) {
+                buildMethodDescriptorsMap(baseClassType);
+            }
+
+            const classMethodDescriptors = classMethodsDescriptorsMap.get(classType.name);
+
+            if (classMethodDescriptors !== undefined) {
+                for (const classMethodDescriptor of classMethodDescriptors) {
+                    // If any class overrides a base class method, it will appear in the same position as the base class method.
+                    methodDescriptorsMap.set(classMethodDescriptor.name, classMethodDescriptor);
+                }
+            }
+        }
+
+        buildMethodDescriptorsMap(classType);
+
+        let methodDescriptors: MethodDescriptor[];
+
+        if (classDescriptor.replaceParameterDescriptors !== undefined) {
+            const replacementParameterDescriptorsMap = new Map(classDescriptor.replaceParameterDescriptors.map(replaceParameterDescriptor => [replaceParameterDescriptor.name, replaceParameterDescriptor.replacement]));
+
+            // Method descriptors for class have to be built as copies due to mutation of parameter descriptors.
+            methodDescriptors = Array.from(methodDescriptorsMap.values().map((methodDescriptor) => {
+                const parameterDescriptors: ParameterDescriptor[] = [];
+
+                for (const parameterDescriptor of methodDescriptor.parameterDescriptors) {
+                    parameterDescriptors.push(replacementParameterDescriptorsMap.get(parameterDescriptor.name) ?? parameterDescriptor);
+                }
+
+                return {
+                    ...methodDescriptor,
+                    parameterDescriptors
+                };
+            }));
+        } else {
+            methodDescriptors = Array.from(methodDescriptorsMap.values());
+        }
+
+        classDescriptorsMap.set(classType.name, {
+            name: classType.name,
+            ...classDescriptor,
+            methodDescriptors
+        });
+    };
+}
+
+/**
+ * Get class descriptors.
+ *
+ * @returns
+ * Class descriptors.
+ */
+export function getClassDescriptors(): ReadonlyMap<string, ClassDescriptor> {
+    return classDescriptorsMap;
 }

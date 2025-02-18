@@ -5,7 +5,7 @@ export default tseslint.config(
     ...esLintConfigAIDCToolkit,
     {
         files: [
-            "src/**/*-proxy.ts"
+            "src/*/**/*-proxy.ts"
         ],
         rules: {
             // Same rule minus ClassDeclaration, ClassProperty, and MethodDefinition contexts.
