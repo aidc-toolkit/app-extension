@@ -28,8 +28,7 @@
     "publish-dev": "publish-dev"
   },
   "devDependencies": {
-    "@aidc-toolkit/dev": "alpha",
-    "vitest": "^3.0.6"
+    "@aidc-toolkit/dev": "alpha"
   },
   "dependencies": {
     "@aidc-toolkit/core": "alpha",
