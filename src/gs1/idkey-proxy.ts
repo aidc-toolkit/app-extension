@@ -32,7 +32,7 @@ import {
     SSCC_VALIDATOR
 } from "@aidc-toolkit/gs1";
 import { Sequence } from "@aidc-toolkit/utility";
-import type { AppExtension } from "../app-extension.js";
+import { type AppExtension, isNullish } from "../app-extension.js";
 import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Type } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
 import { i18nextAppExtension } from "../locale/i18n.js";
@@ -356,6 +356,27 @@ export class GMNValidatorProxy<ThrowError extends boolean, TError extends ErrorE
     }
 }
 
+const prefixParameterDescriptor: ParameterDescriptor = {
+    name: "prefix",
+    type: Type.String,
+    isMatrix: false,
+    isRequired: true
+};
+
+const prefixTypeParameterDescriptor: ParameterDescriptor = {
+    name: "prefixType",
+    type: Type.Number,
+    isMatrix: false,
+    isRequired: false
+};
+
+const tweakFactorParameterDescriptor: ParameterDescriptor = {
+    name: "tweakFactor",
+    type: Type.Number,
+    isMatrix: false,
+    isRequired: false
+};
+
 const prefixDefinitionParameterDescriptor: Pick<ParameterDescriptor, "type" | "isMatrix" | "isRequired"> = {
     type: Type.Any,
     isMatrix: true,
@@ -372,6 +393,22 @@ const prefixDefinitionAnyParameterDescriptor: ParameterDescriptor = {
     ...prefixDefinitionParameterDescriptor
 };
 
+@ProxyClass()
+export class PrefixManagerProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+    @ProxyMethod({
+        type: Type.Any,
+        isMatrix: true
+    })
+    definePrefix(
+        @ProxyParameter(prefixParameterDescriptor) prefix: string,
+        @ProxyParameter(prefixTypeParameterDescriptor) prefixType?: PrefixType,
+        @ProxyParameter(tweakFactorParameterDescriptor) tweakFactor?: number
+    ): Matrix<unknown> {
+        // Parameters will be validated by IdentificationKeyCreatorProxy.getCreator().
+        return [[prefix, prefixType, tweakFactor]];
+    }
+}
+
 abstract class IdentificationKeyCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, TIdentificationKeyCreator extends IdentificationKeyCreator> extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     private readonly _getCreator: (prefixManager: PrefixManager) => TIdentificationKeyCreator;
 
@@ -382,10 +419,10 @@ abstract class IdentificationKeyCreatorProxy<ThrowError extends boolean, TError 
     }
 
     protected getCreator(prefixDefinition: Matrix<unknown>): TIdentificationKeyCreator {
-        const isHorizontal = prefixDefinition.length === 1;
-        
-        const reducedPrefixDefinition = isHorizontal ?
+        const reducedPrefixDefinition = prefixDefinition.length === 1 ?
+            // Prefix definition is horizontal.
             prefixDefinition[0] :
+            // Prefix definition is vertical.
             prefixDefinition.map((prefixDefinitionRow) => {
                 if (prefixDefinitionRow.length !== 1) {
                     throw new RangeError(i18nextAppExtension.t("IdentificationKeyCreatorProxy.prefixDefinitionMustBeOneDimensional"));
@@ -410,15 +447,15 @@ abstract class IdentificationKeyCreatorProxy<ThrowError extends boolean, TError 
             throw new RangeError(i18nextAppExtension.t("IdentificationKeyCreatorProxy.prefixTypeMustBeNumber"));
         }
 
+        const prefixManager = PrefixManager.get(prefixType, prefix);
+
         const tweakFactor = reducedPrefixDefinition[2];
         
-        if (tweakFactor !== undefined && typeof tweakFactor !== "number") {
-            throw new RangeError(i18nextAppExtension.t("IdentificationKeyCreatorProxy.tweakFactorMustBeNumber"));
-        }
+        if (!isNullish(tweakFactor)) {
+            if (typeof tweakFactor !== "number") {
+                throw new RangeError(i18nextAppExtension.t("IdentificationKeyCreatorProxy.tweakFactorMustBeNumber"));
+            }
 
-        const prefixManager = PrefixManager.get(prefixType, prefix);
-        
-        if (tweakFactor !== undefined) {
             prefixManager.tweakFactor = tweakFactor;
         } else {
             prefixManager.resetTweakFactor();
