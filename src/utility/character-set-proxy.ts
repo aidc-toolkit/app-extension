@@ -9,7 +9,14 @@ import {
     Sequence
 } from "@aidc-toolkit/utility";
 import type { AppExtension } from "../app-extension.js";
-import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Type } from "../descriptor.js";
+import {
+    expandParameterDescriptor,
+    type ParameterDescriptor,
+    ProxyClass,
+    ProxyMethod,
+    ProxyParameter,
+    Type
+} from "../descriptor.js";
 import type { ErrorExtends, Matrix, MatrixResultError, ResultError } from "../types.js";
 import {
     exclusionAnyParameterDescriptor,
@@ -126,7 +133,7 @@ export abstract class CharacterSetProxy<ThrowError extends boolean, TError exten
     methodInfix: "Numeric",
     replaceParameterDescriptors: [
         {
-            name: exclusionNoneParameterDescriptor.name,
+            name: expandParameterDescriptor(exclusionNoneParameterDescriptor).name,
             replacement: exclusionFirstZeroParameterDescriptor
         }
     ]
@@ -141,7 +148,7 @@ export class NumericProxy<ThrowError extends boolean, TError extends ErrorExtend
     methodInfix: "Hexadecimal",
     replaceParameterDescriptors: [
         {
-            name: exclusionNoneParameterDescriptor.name,
+            name: expandParameterDescriptor(exclusionNoneParameterDescriptor).name,
             replacement: exclusionAnyParameterDescriptor
         }
     ]
@@ -165,7 +172,7 @@ export class AlphabeticProxy<ThrowError extends boolean, TError extends ErrorExt
     methodInfix: "Alphanumeric",
     replaceParameterDescriptors: [
         {
-            name: exclusionNoneParameterDescriptor.name,
+            name: expandParameterDescriptor(exclusionNoneParameterDescriptor).name,
             replacement: exclusionAnyParameterDescriptor
         }
     ]

@@ -18,24 +18,18 @@ const numericSParameterDescriptor: ParameterDescriptor = {
 };
 
 const numericSWithCheckDigitParameterDescriptor: ParameterDescriptor = {
-    name: "numericSWithCheckDigit",
-    type: Type.String,
-    isMatrix: true,
-    isRequired: true
+    extendsDescriptor: numericSParameterDescriptor,
+    name: "numericSWithCheckDigit"
 };
 
 const numericSFourDigitsParameterDescriptor: ParameterDescriptor = {
-    name: "numericSFourDigits",
-    type: Type.String,
-    isMatrix: true,
-    isRequired: true
+    extendsDescriptor: numericSParameterDescriptor,
+    name: "numericSFourDigits"
 };
 
 const numericSFiveDigitsParameterDescriptor: ParameterDescriptor = {
-    name: "numericSFiveDigits",
-    type: Type.String,
-    isMatrix: true,
-    isRequired: true
+    extendsDescriptor: numericSParameterDescriptor,
+    name: "numericSFiveDigits"
 };
 
 const ai82SParameterDescriptor: ParameterDescriptor = {
@@ -46,10 +40,8 @@ const ai82SParameterDescriptor: ParameterDescriptor = {
 };
 
 const ai82SWithCheckCharacterPairParameterDescriptor: ParameterDescriptor = {
-    name: "ai82SWithCheckCharacterPair",
-    type: Type.String,
-    isMatrix: true,
-    isRequired: true
+    extendsDescriptor: ai82SParameterDescriptor,
+    name: "ai82SWithCheckCharacterPair"
 };
 
 @ProxyClass()

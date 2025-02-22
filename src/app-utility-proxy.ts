@@ -4,25 +4,28 @@ import { LibProxy } from "./lib-proxy.js";
 import { i18nextAppExtension } from "./locale/i18n.js";
 import type { ErrorExtends, Matrix } from "./types.js";
 
-const valuesParameterDescriptor: ParameterDescriptor = {
-    name: "values",
+const valuesAny: ParameterDescriptor = {
+    name: "valuesAny",
     type: Type.Any,
     isMatrix: true,
     isRequired: true
 };
 
-const maximumWidthParameterDescriptor: ParameterDescriptor = {
-    name: "maximumWidth",
+const maximumParameterDescriptor: ParameterDescriptor = {
+    name: "maximum",
     type: Type.Number,
     isMatrix: false,
     isRequired: false
 };
 
+const maximumWidthParameterDescriptor: ParameterDescriptor = {
+    extendsDescriptor: maximumParameterDescriptor,
+    name: "maximumWidth"
+};
+
 const maximumHeightParameterDescriptor: ParameterDescriptor = {
-    name: "maximumHeight",
-    type: Type.Number,
-    isMatrix: false,
-    isRequired: false
+    extendsDescriptor: maximumParameterDescriptor,
+    name: "maximumHeight"
 };
 
 /**
@@ -106,7 +109,7 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
         isMatrix: true
     })
     async vSpill(
-        @ProxyParameter(valuesParameterDescriptor) hMatrixValues: Matrix<unknown>,
+        @ProxyParameter(valuesAny) hMatrixValues: Matrix<unknown>,
         @ProxyParameter(maximumWidthParameterDescriptor) maximumWidth?: number,
         @ProxyParameter(maximumHeightParameterDescriptor) maximumHeight?: number,
         invocationContext?: TInvocationContext
@@ -182,7 +185,7 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
         isMatrix: true
     })
     async hSpill(
-        @ProxyParameter(valuesParameterDescriptor) vMatrixValues: Matrix<unknown>,
+        @ProxyParameter(valuesAny) vMatrixValues: Matrix<unknown>,
         @ProxyParameter(maximumHeightParameterDescriptor) maximumHeight?: number,
         @ProxyParameter(maximumWidthParameterDescriptor) maximumWidth?: number,
         invocationContext?: TInvocationContext

@@ -1,6 +1,6 @@
 import { AI39_CREATOR, AI82_CREATOR } from "@aidc-toolkit/gs1";
 import type { AppExtension } from "../app-extension.js";
-import { ProxyClass } from "../descriptor.js";
+import { expandParameterDescriptor, ProxyClass } from "../descriptor.js";
 import type { ErrorExtends } from "../types.js";
 import {
     exclusionAllNumericParameterDescriptor,
@@ -12,7 +12,7 @@ import { CharacterSetProxy } from "../utility/character-set-proxy.js";
     methodInfix: "AI82",
     replaceParameterDescriptors: [
         {
-            name: exclusionNoneParameterDescriptor.name,
+            name: expandParameterDescriptor(exclusionNoneParameterDescriptor).name,
             replacement: exclusionAllNumericParameterDescriptor
         }
     ]
@@ -27,7 +27,7 @@ export class AI82Proxy<ThrowError extends boolean, TError extends ErrorExtends<T
     methodInfix: "AI39",
     replaceParameterDescriptors: [
         {
-            name: exclusionNoneParameterDescriptor.name,
+            name: expandParameterDescriptor(exclusionNoneParameterDescriptor).name,
             replacement: exclusionAllNumericParameterDescriptor
         }
     ]

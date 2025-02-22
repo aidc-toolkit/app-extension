@@ -50,13 +50,43 @@ interface TypeDescriptor extends Descriptor {
 }
 
 /**
- * Parameter descriptor.
+ * Base parameter descriptor; all attributes required.
  */
-export interface ParameterDescriptor extends TypeDescriptor {
+export interface BaseParameterDescriptor extends TypeDescriptor {
     /**
      * True if required.
      */
     readonly isRequired: boolean;
+}
+
+/**
+ * Extends parameter descriptor; extends a parameter descriptor and overrides select attributes.
+ */
+export interface ExtendsParameterDescriptor extends Partial<BaseParameterDescriptor> {
+    readonly extendsDescriptor: ParameterDescriptor;
+}
+
+/**
+ * Parameter descriptor, either base or extends.
+ */
+export type ParameterDescriptor = BaseParameterDescriptor | ExtendsParameterDescriptor;
+
+/**
+ * Expand a parameter descriptor to its full form with all required attributes.
+ *
+ * @param parameterDescriptor
+ * Parameter descriptor.
+ *
+ * @returns
+ * Parameter descriptor in its full form.
+ */
+export function expandParameterDescriptor(parameterDescriptor: ParameterDescriptor): BaseParameterDescriptor {
+    return !("extendsDescriptor" in parameterDescriptor) ?
+        parameterDescriptor :
+        {
+            ...expandParameterDescriptor(parameterDescriptor.extendsDescriptor),
+            ...parameterDescriptor
+        };
 }
 
 /**
@@ -175,7 +205,7 @@ export function ProxyMethod<ThrowError extends boolean, TError extends ErrorExte
 
         // Validate that all parameters have descriptors.
         for (let index = 0; index < parameterCount; index++) {
-            const parameterDescriptor = pendingParameterDescriptors[index];
+            const parameterDescriptor = expandParameterDescriptor(pendingParameterDescriptors[index]);
 
             if (typeof parameterDescriptor === "undefined") {
                 throw new Error(`Missing parameter descriptor at index ${index} of ${declarationClassName}.${propertyKey}`);
@@ -250,19 +280,11 @@ export function ProxyClass<ThrowError extends boolean, TError extends ErrorExten
         if (classDescriptor.replaceParameterDescriptors !== undefined) {
             const replacementParameterDescriptorsMap = new Map(classDescriptor.replaceParameterDescriptors.map(replaceParameterDescriptor => [replaceParameterDescriptor.name, replaceParameterDescriptor.replacement]));
 
-            // Method descriptors for class have to be built as copies due to mutation of parameter descriptors.
-            methodDescriptors = Array.from(methodDescriptorsMap.values().map((methodDescriptor) => {
-                const parameterDescriptors: ParameterDescriptor[] = [];
-
-                for (const parameterDescriptor of methodDescriptor.parameterDescriptors) {
-                    parameterDescriptors.push(replacementParameterDescriptorsMap.get(parameterDescriptor.name) ?? parameterDescriptor);
-                }
-
-                return {
-                    ...methodDescriptor,
-                    parameterDescriptors
-                };
-            }));
+            // Method descriptors for class have to be built as copies due to possible mutation of parameter descriptors.
+            methodDescriptors = Array.from(methodDescriptorsMap.values().map(methodDescriptor => ({
+                ...methodDescriptor,
+                parameterDescriptors: methodDescriptor.parameterDescriptors.map(parameterDescriptor => replacementParameterDescriptorsMap.get(expandParameterDescriptor(parameterDescriptor).name) ?? parameterDescriptor)
+            })));
         } else {
             methodDescriptors = Array.from(methodDescriptorsMap.values());
         }

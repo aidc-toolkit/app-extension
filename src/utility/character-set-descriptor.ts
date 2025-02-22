@@ -1,27 +1,28 @@
 import { type ParameterDescriptor, Type } from "../descriptor.js";
 
-const exclusionParameterDescriptor: Pick<ParameterDescriptor, "type" | "isMatrix" | "isRequired"> = {
+const exclusionParameterDescriptor: ParameterDescriptor = {
+    name: "exclusion",
     type: Type.Number,
     isMatrix: false,
     isRequired: false
 };
 
 export const exclusionNoneParameterDescriptor: ParameterDescriptor = {
-    name: "exclusionNone",
-    ...exclusionParameterDescriptor
+    extendsDescriptor: exclusionParameterDescriptor,
+    name: "exclusionNone"
 };
 
 export const exclusionFirstZeroParameterDescriptor: ParameterDescriptor = {
-    name: "exclusionFirstZero",
-    ...exclusionParameterDescriptor
+    extendsDescriptor: exclusionParameterDescriptor,
+    name: "exclusionFirstZero"
 };
 
 export const exclusionAllNumericParameterDescriptor: ParameterDescriptor = {
-    name: "exclusionAllNumeric",
-    ...exclusionParameterDescriptor
+    extendsDescriptor: exclusionParameterDescriptor,
+    name: "exclusionAllNumeric"
 };
 
 export const exclusionAnyParameterDescriptor: ParameterDescriptor = {
-    name: "exclusionAny",
-    ...exclusionParameterDescriptor
+    extendsDescriptor: exclusionParameterDescriptor,
+    name: "exclusionAny"
 };

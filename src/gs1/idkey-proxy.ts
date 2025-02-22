@@ -33,7 +33,14 @@ import {
 } from "@aidc-toolkit/gs1";
 import { Sequence } from "@aidc-toolkit/utility";
 import { type AppExtension, isNullish } from "../app-extension.js";
-import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Type } from "../descriptor.js";
+import {
+    expandParameterDescriptor,
+    type ParameterDescriptor,
+    ProxyClass,
+    ProxyMethod,
+    ProxyParameter,
+    Type
+} from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
 import { i18nextAppExtension } from "../locale/i18n.js";
 import type { ErrorExtends, Matrix, MatrixResultError } from "../types.js";
@@ -45,11 +52,16 @@ import {
     valueParameterDescriptor
 } from "../utility/transformer-descriptor.js";
 
-const validateIdentificationKeyParameterDescriptor: ParameterDescriptor = {
-    name: "validateIdentificationKey",
+const identificationKeyParameterDescriptor: ParameterDescriptor = {
+    name: "identificationKey",
     type: Type.String,
     isMatrix: true,
     isRequired: true
+};
+
+const validateIdentificationKeyParameterDescriptor: ParameterDescriptor = {
+    extendsDescriptor: identificationKeyParameterDescriptor,
+    name: "validateIdentificationKey"
 };
 
 abstract class IdentificationKeyValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, TIdentificationKeyValidation extends IdentificationKeyValidation, TIdentificationKeyValidator extends IdentificationKeyValidator<TIdentificationKeyValidation>> extends StringProxy<ThrowError, TError, TInvocationContext, TBigInt> {
@@ -131,17 +143,13 @@ export class GTIN8ValidatorProxy<ThrowError extends boolean, TError extends Erro
 }
 
 const zeroSuppressGTIN12ParameterDescriptor: ParameterDescriptor = {
-    name: "zeroSuppressGTIN12",
-    type: Type.String,
-    isMatrix: true,
-    isRequired: true
+    extendsDescriptor: identificationKeyParameterDescriptor,
+    name: "zeroSuppressGTIN12"
 };
 
 const zeroExpandGTIN12ParameterDescriptor: ParameterDescriptor = {
-    name: "zeroExpandGTIN12",
-    type: Type.String,
-    isMatrix: true,
-    isRequired: true
+    extendsDescriptor: identificationKeyParameterDescriptor,
+    name: "zeroExpandGTIN12"
 };
 
 const indicatorDigitParameterDescriptor: ParameterDescriptor = {
@@ -152,24 +160,18 @@ const indicatorDigitParameterDescriptor: ParameterDescriptor = {
 };
 
 const convertGTINParameterDescriptor: ParameterDescriptor = {
-    name: "convertGTIN",
-    type: Type.String,
-    isMatrix: true,
-    isRequired: true
+    extendsDescriptor: identificationKeyParameterDescriptor,
+    name: "convertGTIN"
 };
 
 const normalizeGTINParameterDescriptor: ParameterDescriptor = {
-    name: "normalizeGTIN",
-    type: Type.String,
-    isMatrix: true,
-    isRequired: true
+    extendsDescriptor: identificationKeyParameterDescriptor,
+    name: "normalizeGTIN"
 };
 
 const validateAnyGTINParameterDescriptor: ParameterDescriptor = {
-    name: "validateAnyGTIN",
-    type: Type.String,
-    isMatrix: true,
-    isRequired: true
+    extendsDescriptor: identificationKeyParameterDescriptor,
+    name: "validateAnyGTIN"
 };
 
 const gtinLevelParameterDescriptor: ParameterDescriptor = {
@@ -180,10 +182,8 @@ const gtinLevelParameterDescriptor: ParameterDescriptor = {
 };
 
 const validateGTIN14ParameterDescriptor: ParameterDescriptor = {
-    name: "validateGTIN14",
-    type: Type.String,
-    isMatrix: true,
-    isRequired: true
+    extendsDescriptor: identificationKeyParameterDescriptor,
+    name: "validateGTIN14"
 };
 
 @ProxyClass()
@@ -377,20 +377,21 @@ const tweakFactorParameterDescriptor: ParameterDescriptor = {
     isRequired: false
 };
 
-const prefixDefinitionParameterDescriptor: Pick<ParameterDescriptor, "type" | "isMatrix" | "isRequired"> = {
+const prefixDefinitionParameterDescriptor: ParameterDescriptor = {
+    name: "prefixDefinition",
     type: Type.Any,
     isMatrix: true,
     isRequired: true
 };
 
 const prefixDefinitionGS1UPCParameterDescriptor: ParameterDescriptor = {
-    name: "prefixDefinitionGS1UPC",
-    ...prefixDefinitionParameterDescriptor
+    extendsDescriptor: prefixDefinitionParameterDescriptor,
+    name: "prefixDefinitionGS1UPC"
 };
 
 const prefixDefinitionAnyParameterDescriptor: ParameterDescriptor = {
-    name: "prefixDefinitionAny",
-    ...prefixDefinitionParameterDescriptor
+    extendsDescriptor: prefixDefinitionParameterDescriptor,
+    name: "prefixDefinitionAny"
 };
 
 @ProxyClass()
@@ -518,7 +519,7 @@ abstract class NonGTINNumericIdentificationKeyCreatorProxy<ThrowError extends bo
 }
 
 const singleValueParameterDescriptor: ParameterDescriptor = {
-    ...valueParameterDescriptor,
+    extendsDescriptor: valueParameterDescriptor,
     isMatrix: false
 };
 
@@ -594,7 +595,7 @@ abstract class NonNumericIdentificationKeyCreatorProxy<ThrowError extends boolea
     methodInfix: "GTIN",
     replaceParameterDescriptors: [
         {
-            name: prefixDefinitionGS1UPCParameterDescriptor.name,
+            name: expandParameterDescriptor(prefixDefinitionGS1UPCParameterDescriptor).name,
             replacement: prefixDefinitionAnyParameterDescriptor
         }
     ]

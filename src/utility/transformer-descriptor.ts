@@ -8,17 +8,15 @@ export const valueParameterDescriptor: ParameterDescriptor = {
 };
 
 export const startValueParameterDescriptor: ParameterDescriptor = {
+    extendsDescriptor: valueParameterDescriptor,
     name: "startValue",
-    type: Type.Number,
-    isMatrix: false,
-    isRequired: true
+    isMatrix: false
 };
 
 export const countParameterDescriptor: ParameterDescriptor = {
+    extendsDescriptor: valueParameterDescriptor,
     name: "count",
-    type: Type.Number,
-    isMatrix: false,
-    isRequired: true
+    isMatrix: false
 };
 
 export const tweakParameterDescriptor: ParameterDescriptor = {
