@@ -10,7 +10,19 @@ export const localeStrings = {
         prefixTypeMustBeNumber: "Le type de préfixe doit être un nombre",
         tweakFactorMustBeNumber: "Le facteur de réglage doit être un nombre"
     },
-    Parameter: {
+    Parameters: {
+        valuesAny: {
+            name: "values",
+            description: ""
+        },
+        maximumWidth: {
+            name: "maximumWidth",
+            description: ""
+        },
+        maximumHeight: {
+            name: "maximumHeight",
+            description: ""
+        },
         domain: {
             name: "domaine",
             description: ""
@@ -19,16 +31,16 @@ export const localeStrings = {
             name: "valeur",
             description: ""
         },
-        tweak: {
-            name: "réglage",
-            description: ""
-        },
         startValue: {
             name: "valeurInitiale",
             description: ""
         },
         count: {
             name: "nombre",
+            description: ""
+        },
+        tweak: {
+            name: "réglage",
             description: ""
         },
         transformedValue: {
@@ -47,8 +59,20 @@ export const localeStrings = {
             name: "errorMessage",
             description: ""
         },
+        exclusionFirstZero: {
+            name: "exclusion",
+            description: ""
+        },
+        exclusionAny: {
+            name: "exclusion",
+            description: ""
+        },
         exclusionNone: {
-            name: "exclusionNone",
+            name: "exclusion",
+            description: ""
+        },
+        exclusionAllNumeric: {
+            name: "exclusion",
             description: ""
         },
         length: {
@@ -95,10 +119,6 @@ export const localeStrings = {
             name: "zeroExpandGTIN12",
             description: ""
         },
-        indicatorDigit: {
-            name: "indicatorDigit",
-            description: ""
-        },
         convertGTIN: {
             name: "convertGTIN",
             description: ""
@@ -111,36 +131,40 @@ export const localeStrings = {
             name: "validateAnyGTIN",
             description: ""
         },
-        gtinLevel: {
-            name: "gtinLevel",
-            description: ""
-        },
         validateGTIN14: {
             name: "validateGTIN14",
             description: ""
         },
-        exclusionAllNumeric: {
-            name: "exclusionAllNumeric",
+        indicatorDigit: {
+            name: "indicatorDigit",
             description: ""
         },
-        prefixTypeGS1UPC: {
-            name: "prefixTypeGS1UPC",
+        gtinLevel: {
+            name: "gtinLevel",
             description: ""
         },
-        prefixGS1UPC: {
-            name: "prefixGS1UPC",
+        prefix: {
+            name: "prefix",
+            description: ""
+        },
+        prefixType: {
+            name: "prefixType",
+            description: ""
+        },
+        tweakFactor: {
+            name: "tweakFactor",
+            description: ""
+        },
+        prefixDefinitionAny: {
+            name: "prefixDefinitionAny",
+            description: ""
+        },
+        prefixDefinitionGS1UPC: {
+            name: "prefixDefinitionGS1UPC",
             description: ""
         },
         sparse: {
             name: "sparse",
-            description: ""
-        },
-        prefixTypeAny: {
-            name: "prefixTypeAny",
-            description: ""
-        },
-        prefixAny: {
-            name: "prefixAny",
             description: ""
         },
         serialComponent: {
@@ -156,7 +180,19 @@ export const localeStrings = {
             description: ""
         }
     },
-    Function: {
+    Functions: {
+        version: {
+            name: "version",
+            description: ""
+        },
+        vSpill: {
+            name: "vSpill",
+            description: ""
+        },
+        hSpill: {
+            name: "hSpill",
+            description: ""
+        },
         forwardTransform: {
             name: "forwardTransform",
             description: ""
@@ -401,20 +437,32 @@ export const localeStrings = {
             name: "validateGMN",
             description: ""
         },
+        definePrefix: {
+            name: "definePrefix",
+            description: ""
+        },
         createGTIN: {
             name: "createGTIN",
+            description: ""
+        },
+        createGTINSequence: {
+            name: "createGTINSequence",
             description: ""
         },
         createAllGTIN: {
             name: "createAllGTIN",
             description: ""
         },
-        createGTIN14GTIN: {
-            name: "createGTIN14GTIN",
+        createGTIN14: {
+            name: "createGTIN14",
             description: ""
         },
         createGLN: {
             name: "createGLN",
+            description: ""
+        },
+        createGLNSequence: {
+            name: "createGLNSequence",
             description: ""
         },
         createAllGLN: {
@@ -425,12 +473,20 @@ export const localeStrings = {
             name: "createSSCC",
             description: ""
         },
+        createSSCCSequence: {
+            name: "createSSCCSequence",
+            description: ""
+        },
         createAllSSCC: {
             name: "createAllSSCC",
             description: ""
         },
         createGRAI: {
             name: "createGRAI",
+            description: ""
+        },
+        createGRAISequence: {
+            name: "createGRAISequence",
             description: ""
         },
         createAllGRAI: {
@@ -453,12 +509,20 @@ export const localeStrings = {
             name: "createGSRN",
             description: ""
         },
+        createGSRNSequence: {
+            name: "createGSRNSequence",
+            description: ""
+        },
         createAllGSRN: {
             name: "createAllGSRN",
             description: ""
         },
         createGDTI: {
             name: "createGDTI",
+            description: ""
+        },
+        createGDTISequence: {
+            name: "createGDTISequence",
             description: ""
         },
         createAllGDTI: {
@@ -481,12 +545,20 @@ export const localeStrings = {
             name: "createGSIN",
             description: ""
         },
+        createGSINSequence: {
+            name: "createGSINSequence",
+            description: ""
+        },
         createAllGSIN: {
             name: "createAllGSIN",
             description: ""
         },
         createGCN: {
             name: "createGCN",
+            description: ""
+        },
+        createGCNSequence: {
+            name: "createGCNSequence",
             description: ""
         },
         createAllGCN: {
