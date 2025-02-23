@@ -59,19 +59,19 @@ export const localeStrings = {
             name: "errorMessage",
             description: ""
         },
-        exclusionFirstZero: {
-            name: "exclusion",
-            description: ""
-        },
-        exclusionAny: {
-            name: "exclusion",
-            description: ""
-        },
         exclusionNone: {
             name: "exclusion",
             description: ""
         },
+        exclusionFirstZero: {
+            name: "exclusion",
+            description: ""
+        },
         exclusionAllNumeric: {
+            name: "exclusion",
+            description: ""
+        },
+        exclusionAny: {
             name: "exclusion",
             description: ""
         },

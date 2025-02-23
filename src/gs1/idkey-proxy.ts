@@ -61,6 +61,7 @@ const identificationKeyParameterDescriptor: ParameterDescriptor = {
 
 const validateIdentificationKeyParameterDescriptor: ParameterDescriptor = {
     extendsDescriptor: identificationKeyParameterDescriptor,
+    sortOrder: 0,
     name: "validateIdentificationKey"
 };
 

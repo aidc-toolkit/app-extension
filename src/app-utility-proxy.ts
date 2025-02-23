@@ -20,11 +20,13 @@ const maximumParameterDescriptor: ParameterDescriptor = {
 
 const maximumWidthParameterDescriptor: ParameterDescriptor = {
     extendsDescriptor: maximumParameterDescriptor,
+    sortOrder: 0,
     name: "maximumWidth"
 };
 
 const maximumHeightParameterDescriptor: ParameterDescriptor = {
     extendsDescriptor: maximumParameterDescriptor,
+    sortOrder: 1,
     name: "maximumHeight"
 };
 

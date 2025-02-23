@@ -63,7 +63,15 @@ export interface BaseParameterDescriptor extends TypeDescriptor {
  * Extends parameter descriptor; extends a parameter descriptor and overrides select attributes.
  */
 export interface ExtendsParameterDescriptor extends Partial<BaseParameterDescriptor> {
+    /**
+     * Base parameter descriptor that this one extends.
+     */
     readonly extendsDescriptor: ParameterDescriptor;
+
+    /**
+     * Sort order within base parameter descriptor if applicable.
+     */
+    readonly sortOrder?: number;
 }
 
 /**

@@ -19,16 +19,19 @@ const numericSParameterDescriptor: ParameterDescriptor = {
 
 const numericSWithCheckDigitParameterDescriptor: ParameterDescriptor = {
     extendsDescriptor: numericSParameterDescriptor,
+    sortOrder: 0,
     name: "numericSWithCheckDigit"
 };
 
 const numericSFourDigitsParameterDescriptor: ParameterDescriptor = {
     extendsDescriptor: numericSParameterDescriptor,
+    sortOrder: 1,
     name: "numericSFourDigits"
 };
 
 const numericSFiveDigitsParameterDescriptor: ParameterDescriptor = {
     extendsDescriptor: numericSParameterDescriptor,
+    sortOrder: 2,
     name: "numericSFiveDigits"
 };
 
