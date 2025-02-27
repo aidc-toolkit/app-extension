@@ -289,10 +289,10 @@ export function ProxyClass<ThrowError extends boolean, TError extends ErrorExten
             const replacementParameterDescriptorsMap = new Map(classDescriptor.replaceParameterDescriptors.map(replaceParameterDescriptor => [replaceParameterDescriptor.name, replaceParameterDescriptor.replacement]));
 
             // Method descriptors for class have to be built as copies due to possible mutation of parameter descriptors.
-            methodDescriptors = Array.from(methodDescriptorsMap.values().map(methodDescriptor => ({
+            methodDescriptors = Array.from(methodDescriptorsMap.values()).map(methodDescriptor => ({
                 ...methodDescriptor,
                 parameterDescriptors: methodDescriptor.parameterDescriptors.map(parameterDescriptor => replacementParameterDescriptorsMap.get(expandParameterDescriptor(parameterDescriptor).name) ?? parameterDescriptor)
-            })));
+            }));
         } else {
             methodDescriptors = Array.from(methodDescriptorsMap.values());
         }
