@@ -1,8 +1,7 @@
-import { isNullish } from "./app-extension.js";
 import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Type } from "./descriptor.js";
 import { LibProxy } from "./lib-proxy.js";
 import { i18nextAppExtension } from "./locale/i18n.js";
-import type { ErrorExtends, Matrix } from "./types.js";
+import { type ErrorExtends, isNullish, type Matrix, type NonNullishable, type Nullishable } from "./types.js";
 
 const valuesAny: ParameterDescriptor = {
     name: "valuesAny",
@@ -31,6 +30,21 @@ const maximumHeightParameterDescriptor: ParameterDescriptor = {
 };
 
 /**
+ * Maximum dimensions.
+ */
+interface MaximumDimensions {
+    /**
+     * Optional maximum width.
+     */
+    width: Nullishable<number>;
+
+    /**
+     * Optional maximum height.
+     */
+    height: Nullishable<number>;
+}
+
+/**
  * Application utilities.
  */
 @ProxyClass()
@@ -52,11 +66,8 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
     /**
      * Provide default values for maximum width and height if required.
      *
-     * @param maximumWidth
-     * Maximum width provided to function.
-     *
-     * @param maximumHeight
-     * Maximum height provided to function.
+     * @param maximumDimensions
+     * Maximum dimensions provided to function.
      *
      * @param invocationContext
      * Invocation context.
@@ -64,11 +75,14 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
      * @returns
      * Array of maximum width and maximum height.
      */
-    private async defaultMaximums(maximumWidth: number | undefined, maximumHeight: number | undefined, invocationContext: TInvocationContext | null | undefined): Promise<number[]> {
+    private async defaultMaximums(maximumDimensions: MaximumDimensions, invocationContext: Nullishable<TInvocationContext>): Promise<NonNullishable<MaximumDimensions>> {
         if (isNullish(invocationContext)) {
             // Application error; no localization necessary.
             throw new Error("Invocation context not provided by application");
         }
+
+        const maximumWidth = maximumDimensions.width;
+        const maximumHeight = maximumDimensions.height;
 
         let definedMaximumWidth: number;
         let definedMaximumHeight: number;
@@ -84,7 +98,10 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
             definedMaximumHeight = maximumHeight;
         }
 
-        return [definedMaximumWidth, definedMaximumHeight];
+        return {
+            width: definedMaximumWidth,
+            height: definedMaximumHeight
+        };
     }
 
     /**
@@ -112,9 +129,9 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
     })
     async vSpill(
         @ProxyParameter(valuesAny) hMatrixValues: Matrix<unknown>,
-        @ProxyParameter(maximumWidthParameterDescriptor) maximumWidth?: number,
-        @ProxyParameter(maximumHeightParameterDescriptor) maximumHeight?: number,
-        invocationContext?: TInvocationContext
+        @ProxyParameter(maximumWidthParameterDescriptor) maximumWidth: Nullishable<number>,
+        @ProxyParameter(maximumHeightParameterDescriptor) maximumHeight: Nullishable<number>,
+        invocationContext: Nullishable<TInvocationContext>
     ): Promise<Matrix<unknown>> {
         let result: Matrix<unknown>;
 
@@ -122,16 +139,19 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
             throw new RangeError(i18nextAppExtension.t("Proxy.vSpillMustBeHorizontalArray"));
         }
 
-        const [definedMaximumWidth, definedMaximumHeight] = await this.defaultMaximums(maximumWidth, maximumHeight, invocationContext);
+        const maximumDimensions = await this.defaultMaximums({
+            width: maximumWidth,
+            height: maximumHeight
+        }, invocationContext);
 
         const hArrayValues = hMatrixValues[0];
         const hLength = hArrayValues.length;
-        const maximumArea = definedMaximumWidth * definedMaximumHeight;
+        const maximumArea = maximumDimensions.width * maximumDimensions.height;
 
         // Lengths 0 and 1 are valid and require no special processing.
         if (hLength > 1 && hLength <= maximumArea) {
             // Make spill as square as possible.
-            let spillWidth = Math.min(Math.ceil(Math.sqrt(maximumArea)), definedMaximumWidth);
+            let spillWidth = Math.min(Math.ceil(Math.sqrt(maximumArea)), maximumDimensions.width);
 
             // Array that has a length of a power of 10 is treated specially.
             if (Number.isInteger(Math.log10(hLength))) {
@@ -139,7 +159,7 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
                 const spillWidth10 = Math.pow(10, Math.floor(Math.log10(spillWidth)));
 
                 // Keep default if not enough space for power of 10 matrix.
-                if (hLength / spillWidth10 <= definedMaximumHeight) {
+                if (hLength / spillWidth10 <= maximumDimensions.height) {
                     spillWidth = spillWidth10;
                 }
             }
@@ -188,9 +208,9 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
     })
     async hSpill(
         @ProxyParameter(valuesAny) vMatrixValues: Matrix<unknown>,
-        @ProxyParameter(maximumHeightParameterDescriptor) maximumHeight?: number,
-        @ProxyParameter(maximumWidthParameterDescriptor) maximumWidth?: number,
-        invocationContext?: TInvocationContext
+        @ProxyParameter(maximumHeightParameterDescriptor) maximumHeight: Nullishable<number>,
+        @ProxyParameter(maximumWidthParameterDescriptor) maximumWidth: Nullishable<number>,
+        invocationContext: Nullishable<TInvocationContext>
     ): Promise<Matrix<unknown>> {
         let result: Matrix<unknown>;
 
@@ -201,15 +221,18 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
             }
         }
 
-        const [definedMaximumWidth, definedMaximumHeight] = await this.defaultMaximums(maximumWidth, maximumHeight, invocationContext);
+        const maximumDimensions = await this.defaultMaximums({
+            width: maximumWidth,
+            height: maximumHeight
+        }, invocationContext);
 
         const vLength = vMatrixValues.length;
-        const maximumArea = definedMaximumWidth * definedMaximumHeight;
+        const maximumArea = maximumDimensions.width * maximumDimensions.height;
 
         // Lengths 0 and 1 are valid and require no special processing.
         if (vLength > 1 && vLength <= maximumArea) {
             // Make spill as square as possible.
-            let spillHeight = Math.min(Math.ceil(Math.sqrt(maximumArea)), definedMaximumHeight);
+            let spillHeight = Math.min(Math.ceil(Math.sqrt(maximumArea)), maximumDimensions.height);
 
             // Array that has a length of a power of 10 is treated specially.
             if (Number.isInteger(Math.log10(vLength))) {
@@ -217,7 +240,7 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
                 const spillHeight10 = Math.pow(10, Math.floor(Math.log10(spillHeight)));
 
                 // Keep default if not enough space for power of 10 matrix.
-                if (vLength / spillHeight10 <= definedMaximumWidth) {
+                if (vLength / spillHeight10 <= maximumDimensions.width) {
                     spillHeight = spillHeight10;
                 }
             }

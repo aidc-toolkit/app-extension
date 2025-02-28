@@ -9,19 +9,6 @@ import type {
 } from "./types.js";
 
 /**
- * Determine if argument is nullish. Application extension may not pass `undefined` to missing parameters.
- *
- * @param argument
- * Argument.
- *
- * @returns
- * True if argument is undefined or null.
- */
-export function isNullish<T>(argument: T | null | undefined): argument is null | undefined {
-    return argument === null || argument === undefined;
-}
-
-/**
  * Application extension.
  *
  * @template TBigInt

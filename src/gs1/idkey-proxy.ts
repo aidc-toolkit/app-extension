@@ -32,7 +32,7 @@ import {
     SSCC_VALIDATOR
 } from "@aidc-toolkit/gs1";
 import { Sequence } from "@aidc-toolkit/utility";
-import { type AppExtension, isNullish } from "../app-extension.js";
+import type { AppExtension } from "../app-extension.js";
 import {
     expandParameterDescriptor,
     type ParameterDescriptor,
@@ -43,7 +43,7 @@ import {
 } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
 import { i18nextAppExtension } from "../locale/i18n.js";
-import type { ErrorExtends, Matrix, MatrixResultError } from "../types.js";
+import { type ErrorExtends, isNullish, type Matrix, type MatrixResultError, type Nullishable } from "../types.js";
 import { exclusionAllNumericParameterDescriptor } from "../utility/character-set-descriptor.js";
 import { StringProxy } from "../utility/string-proxy.js";
 import {
@@ -236,7 +236,7 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
     })
     validateAnyGTIN(
         @ProxyParameter(validateAnyGTINParameterDescriptor) matrixGTINs: Matrix<string>,
-        @ProxyParameter(gtinLevelParameterDescriptor) gtinLevel?: GTINLevel
+        @ProxyParameter(gtinLevelParameterDescriptor) gtinLevel: Nullishable<GTINLevel>
     ): Matrix<string> {
         const gtinLevelOrUndefined = gtinLevel ?? undefined;
 
@@ -403,8 +403,8 @@ export class PrefixManagerProxy<ThrowError extends boolean, TError extends Error
     })
     definePrefix(
         @ProxyParameter(prefixParameterDescriptor) prefix: string,
-        @ProxyParameter(prefixTypeParameterDescriptor) prefixType?: PrefixType,
-        @ProxyParameter(tweakFactorParameterDescriptor) tweakFactor?: number
+        @ProxyParameter(prefixTypeParameterDescriptor) prefixType: Nullishable<PrefixType>,
+        @ProxyParameter(tweakFactorParameterDescriptor) tweakFactor: Nullishable<number>
     ): Matrix<unknown> {
         // Parameters will be validated by IdentificationKeyCreatorProxy.getCreator().
         return [[prefix, prefixType, tweakFactor]];
@@ -482,7 +482,7 @@ abstract class NumericIdentificationKeyCreatorProxy<ThrowError extends boolean, 
     create(
         @ProxyParameter(prefixDefinitionGS1UPCParameterDescriptor) prefixDefinition: Matrix<unknown>,
         @ProxyParameter(valueParameterDescriptor) matrixValues: Matrix<number | bigint>,
-        @ProxyParameter(sparseParameterDescriptor) sparse?: boolean
+        @ProxyParameter(sparseParameterDescriptor) sparse: Nullishable<boolean>
     ): MatrixResultError<string, ThrowError, TError> {
         const creator = this.getCreator(prefixDefinition);
 
@@ -500,7 +500,7 @@ abstract class NumericIdentificationKeyCreatorProxy<ThrowError extends boolean, 
         @ProxyParameter(prefixDefinitionGS1UPCParameterDescriptor) prefixDefinition: Matrix<unknown>,
         @ProxyParameter(startValueParameterDescriptor) startValue: number,
         @ProxyParameter(countParameterDescriptor) count: number,
-        @ProxyParameter(sparseParameterDescriptor) sparse?: boolean
+        @ProxyParameter(sparseParameterDescriptor) sparse: Nullishable<boolean>
     ): Matrix<string> {
         return this.mapIterable(() => this.getCreator(prefixDefinition).create(new Sequence(startValue, count), sparse ?? undefined));
     }
@@ -547,7 +547,7 @@ abstract class SerializableNumericIdentificationKeyCreatorProxy<ThrowError exten
         @ProxyParameter(prefixDefinitionGS1UPCParameterDescriptor) prefixDefinition: Matrix<unknown>,
         @ProxyParameter(singleValueParameterDescriptor) value: number,
         @ProxyParameter(serialComponentParameterDescriptor) matrixSerialComponents: Matrix<string>,
-        @ProxyParameter(sparseParameterDescriptor) sparse?: boolean
+        @ProxyParameter(sparseParameterDescriptor) sparse: Nullishable<boolean>
     ): MatrixResultError<string, ThrowError, TError> {
         const creator = this.getCreator(prefixDefinition);
 
@@ -615,7 +615,7 @@ export class GTINCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
         @ProxyParameter(indicatorDigitParameterDescriptor) indicatorDigit: string,
         @ProxyParameter(prefixDefinitionAnyParameterDescriptor) prefixDefinition: Matrix<unknown>,
         @ProxyParameter(valueParameterDescriptor) matrixValues: Matrix<number | bigint>,
-        @ProxyParameter(sparseParameterDescriptor) sparse?: boolean
+        @ProxyParameter(sparseParameterDescriptor) sparse: Nullishable<boolean>
     ): MatrixResultError<string, ThrowError, TError> {
         const creator = this.getCreator(prefixDefinition);
 

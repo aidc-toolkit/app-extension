@@ -17,7 +17,7 @@ import {
     ProxyParameter,
     Type
 } from "../descriptor.js";
-import type { ErrorExtends, Matrix, MatrixResultError, ResultError } from "../types.js";
+import type { ErrorExtends, Matrix, MatrixResultError, Nullishable, ResultError } from "../types.js";
 import {
     exclusionAnyParameterDescriptor,
     exclusionFirstZeroParameterDescriptor,
@@ -61,7 +61,7 @@ export abstract class CharacterSetProxy<ThrowError extends boolean, TError exten
     })
     validate(
         @ProxyParameter(validateSParameterDescriptor) matrixSs: Matrix<string>,
-        @ProxyParameter(exclusionNoneParameterDescriptor) exclusion?: Exclusion
+        @ProxyParameter(exclusionNoneParameterDescriptor) exclusion: Nullishable<Exclusion>
     ): MatrixResultError<string, ThrowError, TError> {
         return this.validateString(this._characterSetCreator, matrixSs, {
             exclusion: exclusion ?? undefined
@@ -74,7 +74,7 @@ export abstract class CharacterSetProxy<ThrowError extends boolean, TError exten
     })
     isValid(
         @ProxyParameter(validateSParameterDescriptor) matrixSs: Matrix<string>,
-        @ProxyParameter(exclusionNoneParameterDescriptor) exclusion?: Exclusion
+        @ProxyParameter(exclusionNoneParameterDescriptor) exclusion: Nullishable<Exclusion>
     ): MatrixResultError<boolean, ThrowError, TError> {
         return this.isValidString(this.validate(matrixSs, exclusion));
     }
@@ -86,7 +86,7 @@ export abstract class CharacterSetProxy<ThrowError extends boolean, TError exten
     create(
         @ProxyParameter(lengthParameterDescriptor) length: number,
         @ProxyParameter(valueParameterDescriptor) matrixValues: Matrix<number | bigint>,
-        @ProxyParameter(exclusionNoneParameterDescriptor) exclusion?: Exclusion,
+        @ProxyParameter(exclusionNoneParameterDescriptor) exclusion: Nullishable<Exclusion>,
         @ProxyParameter(tweakParameterDescriptor) tweak?: number | bigint
     ): MatrixResultError<string, ThrowError, TError> {
         const exclusionOrUndefined = exclusion ?? undefined;
@@ -104,7 +104,7 @@ export abstract class CharacterSetProxy<ThrowError extends boolean, TError exten
         @ProxyParameter(lengthParameterDescriptor) length: number,
         @ProxyParameter(startValueParameterDescriptor) startValue: number,
         @ProxyParameter(countParameterDescriptor) count: number,
-        @ProxyParameter(exclusionNoneParameterDescriptor) exclusion?: Exclusion,
+        @ProxyParameter(exclusionNoneParameterDescriptor) exclusion: Nullishable<Exclusion>,
         @ProxyParameter(tweakParameterDescriptor) tweak?: number | bigint
     ): Matrix<string> {
         const exclusionOrUndefined = exclusion ?? undefined;
@@ -119,7 +119,7 @@ export abstract class CharacterSetProxy<ThrowError extends boolean, TError exten
     })
     valueFor(
         @ProxyParameter(valueForSParameterDescriptor) matrixSs: Matrix<string>,
-        @ProxyParameter(exclusionNoneParameterDescriptor) exclusion?: Exclusion,
+        @ProxyParameter(exclusionNoneParameterDescriptor) exclusion: Nullishable<Exclusion>,
         @ProxyParameter(tweakParameterDescriptor) tweak?: number | bigint
     ): MatrixResultError<ResultError<TBigInt, ThrowError, TError>, ThrowError, TError> {
         const exclusionOrUndefined = exclusion ?? undefined;

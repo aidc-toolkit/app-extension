@@ -125,3 +125,29 @@ type PromisedType<T> =
  */
 export type TypedAsyncFunction<TMethod extends (...args: Parameters<TMethod>) => PromiseLike<PromisedType<ReturnType<TMethod>>>> =
     (...args: Parameters<TMethod>) => Promise<PromisedType<ReturnType<TMethod>>>;
+
+/**
+ * Nullishable type. Application extension may pass `null` or `undefined` to missing parameters.
+ */
+export type Nullishable<T> =
+    T | null | undefined;
+
+/**
+ * Non-nullishable type. If T is an object type, it is spread and attributes within it are made non-nullishable.
+ */
+export type NonNullishable<T> = T extends object ? {
+    [P in keyof T]-?: NonNullishable<T[P]>
+} : NonNullable<T>;
+
+/**
+ * Determine if argument is nullish. Application extension may pass `null` or `undefined` to missing parameters.
+ *
+ * @param argument
+ * Argument.
+ *
+ * @returns
+ * True if argument is undefined or null.
+ */
+export function isNullish<T>(argument: T | null | undefined): argument is null | undefined {
+    return argument === null || argument === undefined;
+}
