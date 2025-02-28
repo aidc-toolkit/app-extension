@@ -113,7 +113,7 @@ export interface MethodDescriptor extends TypeDescriptor {
 
     /**
      * String before which method infix appears. If undefined, infix is appended to the method name. Ignored if
-     * `noInfix` is true.
+     * `ignoreInfix` is true.
      */
     readonly infixBefore?: string;
 
