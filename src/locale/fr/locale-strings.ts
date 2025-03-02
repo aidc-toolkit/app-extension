@@ -156,11 +156,11 @@ export const localeStrings = {
             description: ""
         },
         prefixDefinitionAny: {
-            name: "prefixDefinitionAny",
+            name: "prefixDefinition",
             description: ""
         },
         prefixDefinitionGS1UPC: {
-            name: "prefixDefinitionGS1UPC",
+            name: "prefixDefinition",
             description: ""
         },
         sparse: {
