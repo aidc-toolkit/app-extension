@@ -26,12 +26,12 @@
     "build:doc": "npm run build:dev"
   },
   "devDependencies": {
-    "@aidc-toolkit/dev": "^0.9.17-beta"
+    "@aidc-toolkit/dev": "alpha"
   },
   "dependencies": {
-    "@aidc-toolkit/core": "^0.9.17-beta",
-    "@aidc-toolkit/gs1": "^0.9.17-beta",
-    "@aidc-toolkit/utility": "^0.9.17-beta",
+    "@aidc-toolkit/core": "alpha",
+    "@aidc-toolkit/gs1": "alpha",
+    "@aidc-toolkit/utility": "alpha",
     "i18next": "^24.2.2"
   }
 }
