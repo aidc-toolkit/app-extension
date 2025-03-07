@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 export * from "./locale/i18n.js";
-export type * from "./types.js";
+export * from "./types.js";
 export * from "./app-extension.js";
 export * from "./lib-proxy.js";
 export * from "./descriptor.js";
