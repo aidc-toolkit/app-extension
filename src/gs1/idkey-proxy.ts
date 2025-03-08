@@ -143,14 +143,14 @@ export class GTIN8ValidatorProxy<ThrowError extends boolean, TError extends Erro
     }
 }
 
-const zeroSuppressGTIN12ParameterDescriptor: ParameterDescriptor = {
+const zeroSuppressibleGTIN12ParameterDescriptor: ParameterDescriptor = {
     extendsDescriptor: identificationKeyParameterDescriptor,
-    name: "zeroSuppressGTIN12"
+    name: "zeroSuppressibleGTIN12"
 };
 
-const zeroExpandGTIN12ParameterDescriptor: ParameterDescriptor = {
+const zeroSuppressedGTIN12ParameterDescriptor: ParameterDescriptor = {
     extendsDescriptor: identificationKeyParameterDescriptor,
-    name: "zeroExpandGTIN12"
+    name: "zeroSuppressedGTIN12"
 };
 
 const indicatorDigitParameterDescriptor: ParameterDescriptor = {
@@ -170,9 +170,9 @@ const normalizeGTINParameterDescriptor: ParameterDescriptor = {
     name: "normalizeGTIN"
 };
 
-const validateAnyGTINParameterDescriptor: ParameterDescriptor = {
+const validateGTINParameterDescriptor: ParameterDescriptor = {
     extendsDescriptor: identificationKeyParameterDescriptor,
-    name: "validateAnyGTIN"
+    name: "validateGTIN"
 };
 
 const gtinLevelParameterDescriptor: ParameterDescriptor = {
@@ -194,7 +194,7 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
         isMatrix: true
     })
     zeroSuppressGTIN12(
-        @ProxyParameter(zeroSuppressGTIN12ParameterDescriptor) matrixGTIN12s: Matrix<string>
+        @ProxyParameter(zeroSuppressibleGTIN12ParameterDescriptor) matrixGTIN12s: Matrix<string>
     ): MatrixResultError<string, ThrowError, TError> {
         return this.mapMatrix(matrixGTIN12s, gtin12 => GTINValidator.zeroSuppress(gtin12));
     }
@@ -204,7 +204,7 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
         isMatrix: true
     })
     zeroExpandGTIN12(
-        @ProxyParameter(zeroExpandGTIN12ParameterDescriptor) matrixZeroSuppressedGTIN12s: Matrix<string>
+        @ProxyParameter(zeroSuppressedGTIN12ParameterDescriptor) matrixZeroSuppressedGTIN12s: Matrix<string>
     ): MatrixResultError<string, ThrowError, TError> {
         return this.mapMatrix(matrixZeroSuppressedGTIN12s, zeroSuppressedGTIN12 => GTINValidator.zeroExpand(zeroSuppressedGTIN12));
     }
@@ -234,8 +234,8 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
         type: Type.String,
         isMatrix: true
     })
-    validateAnyGTIN(
-        @ProxyParameter(validateAnyGTINParameterDescriptor) matrixGTINs: Matrix<string>,
+    validateGTIN(
+        @ProxyParameter(validateGTINParameterDescriptor) matrixGTINs: Matrix<string>,
         @ProxyParameter(gtinLevelParameterDescriptor) gtinLevel: Nullishable<GTINLevel>
     ): Matrix<string> {
         const gtinLevelOrUndefined = gtinLevel ?? undefined;

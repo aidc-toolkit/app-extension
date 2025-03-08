@@ -3,30 +3,30 @@ import { LibProxy } from "./lib-proxy.js";
 import { i18nextAppExtension } from "./locale/i18n.js";
 import { type ErrorExtends, isNullish, type Matrix, type NonNullishable, type Nullishable } from "./types.js";
 
-const valuesAny: ParameterDescriptor = {
-    name: "valuesAny",
+const spillMatrix: ParameterDescriptor = {
+    name: "spillMatrix",
     type: Type.Any,
     isMatrix: true,
     isRequired: true
 };
 
-const maximumParameterDescriptor: ParameterDescriptor = {
-    name: "maximum",
+const spillMaximumParameterDescriptor: ParameterDescriptor = {
+    name: "spillMaximum",
     type: Type.Number,
     isMatrix: false,
     isRequired: false
 };
 
-const maximumWidthParameterDescriptor: ParameterDescriptor = {
-    extendsDescriptor: maximumParameterDescriptor,
+const spillMaximumWidthParameterDescriptor: ParameterDescriptor = {
+    extendsDescriptor: spillMaximumParameterDescriptor,
     sortOrder: 0,
-    name: "maximumWidth"
+    name: "spillMaximumWidth"
 };
 
-const maximumHeightParameterDescriptor: ParameterDescriptor = {
-    extendsDescriptor: maximumParameterDescriptor,
+const spillMaximumHeightParameterDescriptor: ParameterDescriptor = {
+    extendsDescriptor: spillMaximumParameterDescriptor,
     sortOrder: 1,
-    name: "maximumHeight"
+    name: "spillMaximumHeight"
 };
 
 /**
@@ -128,9 +128,9 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
         isMatrix: true
     })
     async vSpill(
-        @ProxyParameter(valuesAny) hMatrixValues: Matrix<unknown>,
-        @ProxyParameter(maximumWidthParameterDescriptor) maximumWidth: Nullishable<number>,
-        @ProxyParameter(maximumHeightParameterDescriptor) maximumHeight: Nullishable<number>,
+        @ProxyParameter(spillMatrix) hMatrixValues: Matrix<unknown>,
+        @ProxyParameter(spillMaximumWidthParameterDescriptor) maximumWidth: Nullishable<number>,
+        @ProxyParameter(spillMaximumHeightParameterDescriptor) maximumHeight: Nullishable<number>,
         invocationContext: Nullishable<TInvocationContext>
     ): Promise<Matrix<unknown>> {
         let result: Matrix<unknown>;
@@ -207,9 +207,9 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
         isMatrix: true
     })
     async hSpill(
-        @ProxyParameter(valuesAny) vMatrixValues: Matrix<unknown>,
-        @ProxyParameter(maximumHeightParameterDescriptor) maximumHeight: Nullishable<number>,
-        @ProxyParameter(maximumWidthParameterDescriptor) maximumWidth: Nullishable<number>,
+        @ProxyParameter(spillMatrix) vMatrixValues: Matrix<unknown>,
+        @ProxyParameter(spillMaximumHeightParameterDescriptor) maximumHeight: Nullishable<number>,
+        @ProxyParameter(spillMaximumWidthParameterDescriptor) maximumWidth: Nullishable<number>,
         invocationContext: Nullishable<TInvocationContext>
     ): Promise<Matrix<unknown>> {
         let result: Matrix<unknown>;

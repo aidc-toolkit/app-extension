@@ -11,575 +11,575 @@ export const localeStrings = {
         tweakFactorMustBeNumber: "Tweak factor must be a number"
     },
     Parameters: {
-        valuesAny: {
-            name: "values",
-            description: ""
+        spillMatrix: {
+            name: "matrix",
+            description: "One-dimensional matrix to spill."
         },
-        maximumWidth: {
+        spillMaximumWidth: {
             name: "maximumWidth",
-            description: ""
+            description: "Maximum width into which to spill the matrix. If not provided, the remaining width is used."
         },
-        maximumHeight: {
+        spillMaximumHeight: {
             name: "maximumHeight",
-            description: ""
+            description: "Maximum height into which to spill the matrix. If not provided, the remaining height is used."
         },
         domain: {
             name: "domain",
-            description: ""
+            description: "Transformation domain. Valid input values are from zero to domain-1."
         },
         value: {
             name: "value",
-            description: ""
+            description: "Value to transform."
         },
         startValue: {
             name: "startValue",
-            description: ""
+            description: "Start value of a domain of values to transform."
         },
         count: {
             name: "count",
-            description: ""
+            description: "Count of values to transform. If positive, values transformed are startValue to startValue+count-1. If negative, values transformed are startValue down to startValue+count+1."
         },
         tweak: {
             name: "tweak",
-            description: ""
+            description: "Value by which to tweak the transformation. If not provided or zero, the output is sequential. Otherwise, the output is encrypted in such a way as to appear random, masking the values used as inputs to the sequence."
         },
         transformedValue: {
             name: "transformedValue",
-            description: ""
+            description: "Previous output value of a transformation."
         },
         regExp: {
             name: "regExp",
-            description: ""
+            description: "Regular expression against which to validate a string."
         },
         validateS: {
-            name: "validateS",
-            description: ""
+            name: "s",
+            description: "String to validate."
         },
         errorMessage: {
             name: "errorMessage",
-            description: ""
+            description: "Custom error message to use if validation fails. If not provided, an internal error message is used."
         },
         exclusionNone: {
             name: "exclusion",
-            description: ""
+            description: "String values to exclude. The only valid value is 0 (no exclusions)."
         },
         exclusionFirstZero: {
             name: "exclusion",
-            description: ""
+            description: "String values to exclude. Valid values are 0 (no exclusions) and 1 (strings starting with 0 excluded)."
         },
         exclusionAllNumeric: {
             name: "exclusion",
-            description: ""
+            description: "String values to exclude. Valid values are 0 (no exclusions) and 2 (strings that are all numeric excluded)."
         },
         exclusionAny: {
             name: "exclusion",
-            description: ""
+            description: "String values to exclude. Valid values are 0 (no exclusions), 1 (strings starting with 0 excluded), and 2 (strings that are all numeric excluded)."
         },
         length: {
             name: "length",
-            description: ""
+            description: "Length of string to create."
         },
         valueForS: {
-            name: "valueForS",
-            description: ""
+            name: "s",
+            description: "String for which to determine the value."
         },
         numericS: {
-            name: "numericS",
-            description: ""
+            name: "s",
+            description: "Numeric string."
         },
         numericSWithCheckDigit: {
-            name: "numericSWithCheckDigit",
-            description: ""
+            name: "s",
+            description: "Numeric string with check digit."
         },
         numericSFourDigits: {
-            name: "numericSFourDigits",
-            description: ""
+            name: "s",
+            description: "Four-digit numeric string."
         },
         numericSFiveDigits: {
-            name: "numericSFiveDigits",
-            description: ""
+            name: "s",
+            description: "Five-digit numeric string."
         },
         ai82S: {
-            name: "ai82S",
-            description: ""
+            name: "s",
+            description: "GS1 AI encodable character set 82 string."
         },
         ai82SWithCheckCharacterPair: {
-            name: "ai82SWithCheckCharacterPair",
-            description: ""
+            name: "s",
+            description: "GS1 AI encodable character set 82 string with check character pair."
         },
         validateIdentificationKey: {
-            name: "validateIdentificationKey",
-            description: ""
+            name: "identificationKey",
+            description: "Identification key to validate."
         },
-        zeroSuppressGTIN12: {
-            name: "zeroSuppressGTIN12",
-            description: ""
+        zeroSuppressibleGTIN12: {
+            name: "gtin12",
+            description: "GTIN-12 for which to suppress zeros."
         },
-        zeroExpandGTIN12: {
-            name: "zeroExpandGTIN12",
-            description: ""
+        zeroSuppressedGTIN12: {
+            name: "zeroSuppressedGTIN12",
+            description: "Zero-suppressed GTIN-12 to expand."
         },
         convertGTIN: {
-            name: "convertGTIN",
-            description: ""
+            name: "gtin",
+            description: "GTIN to convert to GTIN-14."
         },
         normalizeGTIN: {
-            name: "normalizeGTIN",
-            description: ""
+            name: "gtin",
+            description: "GTIN to normalize."
         },
-        validateAnyGTIN: {
-            name: "validateAnyGTIN",
-            description: ""
+        validateGTIN: {
+            name: "gtin",
+            description: "GTIN to validate."
         },
         validateGTIN14: {
-            name: "validateGTIN14",
-            description: ""
+            name: "gtin14",
+            description: "GTIN-14 to validate."
         },
         indicatorDigit: {
             name: "indicatorDigit",
-            description: ""
+            description: "Indicator digit."
         },
         gtinLevel: {
-            name: "gtinLevel",
-            description: ""
+            name: "level",
+            description: "Level at which to validate the GTIN. Valid values are 0 (any), 1 (retail consumer trade item), and 2 (other than retail consumer trade item level)."
         },
         prefix: {
             name: "prefix",
-            description: ""
+            description: "Prefix."
         },
         prefixType: {
             name: "prefixType",
-            description: ""
+            description: "Prefix type. Valid values are 0 (GS1 Company Prefix), 1 (U.P.C. Company Prefix), and 2 (GS1 Prefix)."
         },
         tweakFactor: {
             name: "tweakFactor",
-            description: ""
+            description: "Tweak factor, used to support the creation of sparse identification keys. The default tweak factor is based on the GS1 Company Prefix, and is usually sufficient for obfuscation. This allows more control over the encryption when higher security is required."
         },
         prefixDefinitionAny: {
             name: "prefixDefinition",
-            description: ""
+            description: "Prefix definition, either a simple GS1 Company Prefix (as a string) or the result of a call to definePrefix. Any prefix type is supported."
         },
         prefixDefinitionGS1UPC: {
             name: "prefixDefinition",
-            description: ""
+            description: "Prefix definition, either a simple GS1 Company Prefix (as a string) or the result of a call to definePrefix. Only prefix types 0 (GS1 Company Prefix) and 1 (U.P.C. Company Prefix) are supported."
         },
         sparse: {
             name: "sparse",
-            description: ""
+            description: "If true, value is mapped to a sparse sequence resistant to discovery. Default is false."
         },
         serialComponent: {
             name: "serialComponent",
-            description: ""
+            description: "Serial component."
         },
         baseIdentificationKey: {
             name: "baseIdentificationKey",
-            description: ""
+            description: "Base identification key."
         },
         reference: {
             name: "reference",
-            description: ""
+            description: "Reference portion of identification key."
         }
     },
     Functions: {
         version: {
             name: "version",
-            description: ""
+            description: "Get the version of the AIDC Toolkit."
         },
         vSpill: {
             name: "vSpill",
-            description: ""
+            description: "Spill a horizontal array vertically to fit within a given maximum width and height."
         },
         hSpill: {
             name: "hSpill",
-            description: ""
+            description: "Spill a vertical array horizontally to fit within a given maximum height and width."
         },
         forwardTransform: {
             name: "forwardTransform",
-            description: ""
+            description: "Transform a value forward."
         },
         forwardTransformSequence: {
             name: "forwardTransformSequence",
-            description: ""
+            description: "Transform a sequence of values forward."
         },
         reverseTransform: {
             name: "reverseTransform",
-            description: ""
+            description: "Transform a value in reverse."
         },
         validateRegExp: {
             name: "validateRegExp",
-            description: ""
+            description: "Validate a string against a regular expression."
         },
         isValidRegExp: {
             name: "isValidRegExp",
-            description: ""
+            description: "Determine if a string is valid against a regular expression."
         },
         validateNumeric: {
             name: "validateNumeric",
-            description: ""
+            description: "Validate a numeric string."
         },
         isValidNumeric: {
             name: "isValidNumeric",
-            description: ""
+            description: "Determine if a string is numeric."
         },
         createNumeric: {
             name: "createNumeric",
-            description: ""
+            description: "Create a numeric string."
         },
         createNumericSequence: {
             name: "createNumericSequence",
-            description: ""
+            description: "Create a sequence of numeric strings."
         },
         valueForNumeric: {
             name: "valueForNumeric",
-            description: ""
+            description: "Get the value for a numeric string."
         },
         validateHexadecimal: {
             name: "validateHexadecimal",
-            description: ""
+            description: "Validate a hexadecimal string."
         },
         isValidHexadecimal: {
             name: "isValidHexadecimal",
-            description: ""
+            description: "Determine if a string is hexadecimal."
         },
         createHexadecimal: {
             name: "createHexadecimal",
-            description: ""
+            description: "Create a hexadecimal string."
         },
         createHexadecimalSequence: {
             name: "createHexadecimalSequence",
-            description: ""
+            description: "Create a sequence of hexadecimal strings."
         },
         valueForHexadecimal: {
             name: "valueForHexadecimal",
-            description: ""
+            description: "Get the value for a hexadecimal string."
         },
         validateAlphabetic: {
             name: "validateAlphabetic",
-            description: ""
+            description: "Validate an alphabetic string."
         },
         isValidAlphabetic: {
             name: "isValidAlphabetic",
-            description: ""
+            description: "Determine if a string is alphabetic."
         },
         createAlphabetic: {
             name: "createAlphabetic",
-            description: ""
+            description: "Create an alphabetic string."
         },
         createAlphabeticSequence: {
             name: "createAlphabeticSequence",
-            description: ""
+            description: "Create a sequence of alphabetic strings."
         },
         valueForAlphabetic: {
             name: "valueForAlphabetic",
-            description: ""
+            description: "Get the value for an alphabetic string."
         },
         validateAlphanumeric: {
             name: "validateAlphanumeric",
-            description: ""
+            description: "Validate an alphanumeric string."
         },
         isValidAlphanumeric: {
             name: "isValidAlphanumeric",
-            description: ""
+            description: "Determine if a string is alphanumeric."
         },
         createAlphanumeric: {
             name: "createAlphanumeric",
-            description: ""
+            description: "Create an alphanumeric string."
         },
         createAlphanumericSequence: {
             name: "createAlphanumericSequence",
-            description: ""
+            description: "Create a sequence of alphanumeric strings."
         },
         valueForAlphanumeric: {
             name: "valueForAlphanumeric",
-            description: ""
+            description: "Get the value for an alphanumeric string."
         },
         validateAI82: {
             name: "validateAI82",
-            description: ""
+            description: "Validate a GS1 AI 82 encodable character set string."
         },
         isValidAI82: {
             name: "isValidAI82",
-            description: ""
+            description: "Determine if a string is GS1 AI 82 encodable character set."
         },
         createAI82: {
             name: "createAI82",
-            description: ""
+            description: "Create a GS1 AI 82 encodable character set string."
         },
         createAI82Sequence: {
             name: "createAI82Sequence",
-            description: ""
+            description: "Create a sequence of GS1 AI 82 encodable character set strings."
         },
         valueForAI82: {
             name: "valueForAI82",
-            description: ""
+            description: "Get the value for a GS1 AI 82 encodable character set string."
         },
         validateAI39: {
             name: "validateAI39",
-            description: ""
+            description: "Validate a GS1 AI 39 encodable character set string."
         },
         isValidAI39: {
             name: "isValidAI39",
-            description: ""
+            description: "Determine if a string is GS1 AI 39 encodable character set."
         },
         createAI39: {
             name: "createAI39",
-            description: ""
+            description: "Create a GS1 AI 39 encodable character set string."
         },
         createAI39Sequence: {
             name: "createAI39Sequence",
-            description: ""
+            description: "Create a sequence of GS1 AI 39 encodable character set strings."
         },
         valueForAI39: {
             name: "valueForAI39",
-            description: ""
+            description: "Get the value for a GS1 AI 39 encodable character set string."
         },
         checkDigit: {
             name: "checkDigit",
-            description: ""
+            description: "Calculate the check digit for a numeric string."
         },
         hasValidCheckDigit: {
             name: "hasValidCheckDigit",
-            description: ""
+            description: "Determine if a string has a valid check digit."
         },
         fourDigitPriceWeightCheckDigit: {
             name: "fourDigitPriceWeightCheckDigit",
-            description: ""
+            description: "Calculate the check digit for a four-digit price or weight."
         },
         fiveDigitPriceWeightCheckDigit: {
             name: "fiveDigitPriceWeightCheckDigit",
-            description: ""
+            description: "Calculate the check digit for a five-digit price or weight."
         },
         checkCharacterPair: {
             name: "checkCharacterPair",
-            description: ""
+            description: "Calculate the check character pair for a GS1 AI 82 encodable character set string."
         },
         hasValidCheckCharacterPair: {
             name: "hasValidCheckCharacterPair",
-            description: ""
+            description: "Determine if a GS1 AI 82 encodable character set string has a valid check character pair."
         },
         validateGTIN13: {
             name: "validateGTIN13",
-            description: ""
+            description: "Validate a GTIN-13."
         },
         validateGTIN12: {
             name: "validateGTIN12",
-            description: ""
+            description: "Validate a GTIN-12."
         },
         validateGTIN8: {
             name: "validateGTIN8",
-            description: ""
+            description: "Validate a GTIN-8."
         },
         zeroSuppressGTIN12: {
             name: "zeroSuppressGTIN12",
-            description: ""
+            description: "Zero-suppress a GTIN-12."
         },
         zeroExpandGTIN12: {
             name: "zeroExpandGTIN12",
-            description: ""
+            description: "Expand a zero-suppressed GTIN-12."
         },
         convertToGTIN14: {
             name: "convertToGTIN14",
-            description: ""
+            description: "Convert a GTIN to GTIN-14."
         },
         normalizeGTIN: {
             name: "normalizeGTIN",
-            description: ""
+            description: "Normalize a GTIN."
         },
-        validateAnyGTIN: {
-            name: "validateAnyGTIN",
-            description: ""
+        validateGTIN: {
+            name: "validateGTIN",
+            description: "Validate any GTIN."
         },
         validateGTIN14: {
             name: "validateGTIN14",
-            description: ""
+            description: "Validate a GTIN-14."
         },
         validateGLN: {
             name: "validateGLN",
-            description: ""
+            description: "Validate a GLN."
         },
         validateSSCC: {
             name: "validateSSCC",
-            description: ""
+            description: "Validate an SSCC."
         },
         validateGRAI: {
             name: "validateGRAI",
-            description: ""
+            description: "Validate a GRAI."
         },
         validateGIAI: {
             name: "validateGIAI",
-            description: ""
+            description: "Validate a GIAI."
         },
         validateGSRN: {
             name: "validateGSRN",
-            description: ""
+            description: "Validate a GSRN."
         },
         validateGDTI: {
             name: "validateGDTI",
-            description: ""
+            description: "Validate a GDTI."
         },
         validateGINC: {
             name: "validateGINC",
-            description: ""
+            description: "Validate a GINC."
         },
         validateGSIN: {
             name: "validateGSIN",
-            description: ""
+            description: "Validate a GSIN."
         },
         validateGCN: {
             name: "validateGCN",
-            description: ""
+            description: "Validate a GCN."
         },
         validateCPID: {
             name: "validateCPID",
-            description: ""
+            description: "Validate a CPID."
         },
         validateGMN: {
             name: "validateGMN",
-            description: ""
+            description: "Validate a GMN."
         },
         definePrefix: {
             name: "definePrefix",
-            description: ""
+            description: "Define a prefix for use in GS1 identification key creation functions."
         },
         createGTIN: {
             name: "createGTIN",
-            description: ""
+            description: "Create a GTIN."
         },
         createGTINSequence: {
             name: "createGTINSequence",
-            description: ""
+            description: "Create a sequence of GTINs."
         },
         createAllGTIN: {
             name: "createAllGTIN",
-            description: ""
+            description: "Create all GTINs for a prefix."
         },
         createGTIN14: {
             name: "createGTIN14",
-            description: ""
+            description: "Create a GTIN-14."
         },
         createGLN: {
             name: "createGLN",
-            description: ""
+            description: "Create a GLN."
         },
         createGLNSequence: {
             name: "createGLNSequence",
-            description: ""
+            description: "Create a sequence of GLNs."
         },
         createAllGLN: {
             name: "createAllGLN",
-            description: ""
+            description: "Create all GLNs for a prefix."
         },
         createSSCC: {
             name: "createSSCC",
-            description: ""
+            description: "Create an SSCC."
         },
         createSSCCSequence: {
             name: "createSSCCSequence",
-            description: ""
+            description: "Create a sequence of SSCCs."
         },
         createAllSSCC: {
             name: "createAllSSCC",
-            description: ""
+            description: "Create all SSCCs for a prefix."
         },
         createGRAI: {
             name: "createGRAI",
-            description: ""
+            description: "Create a GRAI."
         },
         createGRAISequence: {
             name: "createGRAISequence",
-            description: ""
+            description: "Create a sequence of GRAIs."
         },
         createAllGRAI: {
             name: "createAllGRAI",
-            description: ""
+            description: "Create all GRAIs for a prefix."
         },
         createSerializedGRAI: {
             name: "createSerializedGRAI",
-            description: ""
+            description: "Create a serialized GRAI."
         },
         concatenateGRAI: {
             name: "concatenateGRAI",
-            description: ""
+            description: "Concatenate a base GRAI with a serial component."
         },
         createGIAI: {
             name: "createGIAI",
-            description: ""
+            description: "Create a GIAI."
         },
         createGSRN: {
             name: "createGSRN",
-            description: ""
+            description: "Create a GSRN."
         },
         createGSRNSequence: {
             name: "createGSRNSequence",
-            description: ""
+            description: "Create a sequence of GSRNs."
         },
         createAllGSRN: {
             name: "createAllGSRN",
-            description: ""
+            description: "Create all GSRNs for a prefix."
         },
         createGDTI: {
             name: "createGDTI",
-            description: ""
+            description: "Create a GDTI."
         },
         createGDTISequence: {
             name: "createGDTISequence",
-            description: ""
+            description: "Create a sequence of GDTIs."
         },
         createAllGDTI: {
             name: "createAllGDTI",
-            description: ""
+            description: "Create all GDTIs for a prefix."
         },
         createSerializedGDTI: {
             name: "createSerializedGDTI",
-            description: ""
+            description: "Create a serialized GDTI."
         },
         concatenateGDTI: {
             name: "concatenateGDTI",
-            description: ""
+            description: "Concatenate a base GDTI with a serial component."
         },
         createGINC: {
             name: "createGINC",
-            description: ""
+            description: "Create a GINC."
         },
         createGSIN: {
             name: "createGSIN",
-            description: ""
+            description: "Create a GSIN."
         },
         createGSINSequence: {
             name: "createGSINSequence",
-            description: ""
+            description: "Create a sequence of GSINs."
         },
         createAllGSIN: {
             name: "createAllGSIN",
-            description: ""
+            description: "Create all GSINs for a prefix."
         },
         createGCN: {
             name: "createGCN",
-            description: ""
+            description: "Create a GCN."
         },
         createGCNSequence: {
             name: "createGCNSequence",
-            description: ""
+            description: "Create a sequence of GCNs."
         },
         createAllGCN: {
             name: "createAllGCN",
-            description: ""
+            description: "Create all GCNs for a prefix."
         },
         createSerializedGCN: {
             name: "createSerializedGCN",
-            description: ""
+            description: "Create a serialized GCN."
         },
         concatenateGCN: {
             name: "concatenateGCN",
-            description: ""
+            description: "Concatenate a base GCN with a serial component."
         },
         createCPID: {
             name: "createCPID",
-            description: ""
+            description: "Create a CPID."
         },
         createGMN: {
             name: "createGMN",
-            description: ""
+            description: "Create a GMN."
         }
     }
 };
