@@ -77,7 +77,9 @@ abstract class IdentificationKeyValidatorProxy<ThrowError extends boolean, TErro
     protected get validator(): TIdentificationKeyValidator {
         return this._validator;
     }
+}
 
+abstract class NumericIdentificationKeyValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, TNumericIdentificationKeyValidator extends NumericIdentificationKeyValidator> extends IdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, IdentificationKeyValidation, TNumericIdentificationKeyValidator> {
     @ProxyMethod({
         type: Type.String,
         isMatrix: true
@@ -89,16 +91,13 @@ abstract class IdentificationKeyValidatorProxy<ThrowError extends boolean, TErro
     }
 }
 
-abstract class NumericIdentificationKeyValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, TNumericIdentificationKeyValidator extends NumericIdentificationKeyValidator> extends IdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, IdentificationKeyValidation, TNumericIdentificationKeyValidator> {
-}
-
 abstract class GTINValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NumericIdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, GTINValidator> {
 }
 
 abstract class NonGTINNumericIdentificationKeyValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, TNonGTINNumericIdentificationKeyValidator extends NonGTINNumericIdentificationKeyValidator> extends NumericIdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, TNonGTINNumericIdentificationKeyValidator> {
 }
 
-abstract class SerializableNumericIdentificationKeyValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NumericIdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, SerializableNumericIdentificationKeyValidator> {
+abstract class SerializableNumericIdentificationKeyValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, SerializableNumericIdentificationKeyValidator> {
 }
 
 abstract class NonNumericIdentificationKeyValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends IdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonNumericIdentificationKeyValidation, NonNumericIdentificationKeyValidator> {
@@ -106,9 +105,9 @@ abstract class NonNumericIdentificationKeyValidatorProxy<ThrowError extends bool
         type: Type.String,
         isMatrix: true
     })
-    override validate(
+    validate(
         @ProxyParameter(validateIdentificationKeyParameterDescriptor) matrixIdentificationKeys: Matrix<string>,
-        @ProxyParameter(exclusionAllNumericParameterDescriptor) exclusion?: NonNumericIdentificationKeyValidation["exclusion"]
+        @ProxyParameter(exclusionAllNumericParameterDescriptor) exclusion: Nullishable<NonNumericIdentificationKeyValidation["exclusion"]>
     ): MatrixResultError<string, ThrowError, TError> {
         return this.validateString(this.validator, matrixIdentificationKeys, {
             exclusion: exclusion ?? undefined
@@ -179,7 +178,7 @@ const gtinLevelParameterDescriptor: ParameterDescriptor = {
     name: "gtinLevel",
     type: Type.Number,
     isMatrix: false,
-    isRequired: true
+    isRequired: false
 };
 
 const validateGTIN14ParameterDescriptor: ParameterDescriptor = {
@@ -525,10 +524,9 @@ const singleValueParameterDescriptor: ParameterDescriptor = {
 };
 
 const baseIdentificationKeyParameterDescriptor: ParameterDescriptor = {
+    extendsDescriptor: identificationKeyParameterDescriptor,
     name: "baseIdentificationKey",
-    type: Type.String,
-    isMatrix: false,
-    isRequired: true
+    isMatrix: false
 };
 
 const serialComponentParameterDescriptor: ParameterDescriptor = {

@@ -39,13 +39,13 @@ export const localeStrings = {
             name: "count",
             description: "Count of values to transform. If positive, values transformed are startValue to startValue+count-1. If negative, values transformed are startValue down to startValue+count+1."
         },
-        tweak: {
-            name: "tweak",
-            description: "Value by which to tweak the transformation. If not provided or zero, the output is sequential. Otherwise, the output is encrypted in such a way as to appear random, masking the values used as inputs to the sequence."
-        },
         transformedValue: {
             name: "transformedValue",
             description: "Previous output value of a transformation."
+        },
+        tweak: {
+            name: "tweak",
+            description: "Value by which to tweak the transformation. If not provided or zero, the output is sequential. Otherwise, the output is encrypted in such a way as to appear random, masking the values used as inputs to the sequence."
         },
         regExp: {
             name: "regExp",
@@ -54,6 +54,10 @@ export const localeStrings = {
         validateS: {
             name: "s",
             description: "String to validate."
+        },
+        valueForS: {
+            name: "s",
+            description: "String for which to determine the value."
         },
         errorMessage: {
             name: "errorMessage",
@@ -78,10 +82,6 @@ export const localeStrings = {
         length: {
             name: "length",
             description: "Length of string to create."
-        },
-        valueForS: {
-            name: "s",
-            description: "String for which to determine the value."
         },
         numericS: {
             name: "s",
@@ -135,6 +135,10 @@ export const localeStrings = {
             name: "gtin14",
             description: "GTIN-14 to validate."
         },
+        baseIdentificationKey: {
+            name: "baseIdentificationKey",
+            description: "Base identification key."
+        },
         indicatorDigit: {
             name: "indicatorDigit",
             description: "Indicator digit."
@@ -170,10 +174,6 @@ export const localeStrings = {
         serialComponent: {
             name: "serialComponent",
             description: "Serial component."
-        },
-        baseIdentificationKey: {
-            name: "baseIdentificationKey",
-            description: "Base identification key."
         },
         reference: {
             name: "reference",

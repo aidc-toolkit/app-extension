@@ -10,11 +10,16 @@ import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Type
 import { LibProxy } from "../lib-proxy.js";
 import type { ErrorExtends, Matrix, MatrixResultError } from "../types.js";
 
-const numericSParameterDescriptor: ParameterDescriptor = {
-    name: "numericS",
+const checkSParameterDescriptor: ParameterDescriptor = {
+    name: "checkS",
     type: Type.String,
     isMatrix: true,
     isRequired: true
+};
+
+const numericSParameterDescriptor: ParameterDescriptor = {
+    extendsDescriptor: checkSParameterDescriptor,
+    name: "numericS"
 };
 
 const numericSWithCheckDigitParameterDescriptor: ParameterDescriptor = {
@@ -36,10 +41,8 @@ const numericSFiveDigitsParameterDescriptor: ParameterDescriptor = {
 };
 
 const ai82SParameterDescriptor: ParameterDescriptor = {
-    name: "ai82S",
-    type: Type.String,
-    isMatrix: true,
-    isRequired: true
+    extendsDescriptor: checkSParameterDescriptor,
+    name: "ai82S"
 };
 
 const ai82SWithCheckCharacterPairParameterDescriptor: ParameterDescriptor = {

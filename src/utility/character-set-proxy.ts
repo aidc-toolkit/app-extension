@@ -23,7 +23,7 @@ import {
     exclusionFirstZeroParameterDescriptor,
     exclusionNoneParameterDescriptor
 } from "./character-set-descriptor.js";
-import { validateSParameterDescriptor } from "./string-descriptor.js";
+import { sParameterDescriptor, validateSParameterDescriptor } from "./string-descriptor.js";
 import { StringProxy } from "./string-proxy.js";
 import {
     countParameterDescriptor,
@@ -40,10 +40,8 @@ const lengthParameterDescriptor: ParameterDescriptor = {
 };
 
 const valueForSParameterDescriptor: ParameterDescriptor = {
-    name: "valueForS",
-    type: Type.String,
-    isMatrix: true,
-    isRequired: true
+    extendsDescriptor: sParameterDescriptor,
+    name: "valueForS"
 };
 
 export abstract class CharacterSetProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends StringProxy<ThrowError, TError, TInvocationContext, TBigInt> {
@@ -87,7 +85,7 @@ export abstract class CharacterSetProxy<ThrowError extends boolean, TError exten
         @ProxyParameter(lengthParameterDescriptor) length: number,
         @ProxyParameter(valueParameterDescriptor) matrixValues: Matrix<number | bigint>,
         @ProxyParameter(exclusionNoneParameterDescriptor) exclusion: Nullishable<Exclusion>,
-        @ProxyParameter(tweakParameterDescriptor) tweak?: number | bigint
+        @ProxyParameter(tweakParameterDescriptor) tweak: Nullishable<number | bigint>
     ): MatrixResultError<string, ThrowError, TError> {
         const exclusionOrUndefined = exclusion ?? undefined;
         const tweakOrUndefined = tweak ?? undefined;
@@ -105,7 +103,7 @@ export abstract class CharacterSetProxy<ThrowError extends boolean, TError exten
         @ProxyParameter(startValueParameterDescriptor) startValue: number,
         @ProxyParameter(countParameterDescriptor) count: number,
         @ProxyParameter(exclusionNoneParameterDescriptor) exclusion: Nullishable<Exclusion>,
-        @ProxyParameter(tweakParameterDescriptor) tweak?: number | bigint
+        @ProxyParameter(tweakParameterDescriptor) tweak: Nullishable<number | bigint>
     ): Matrix<string> {
         const exclusionOrUndefined = exclusion ?? undefined;
         const tweakOrUndefined = tweak ?? undefined;
@@ -120,7 +118,7 @@ export abstract class CharacterSetProxy<ThrowError extends boolean, TError exten
     valueFor(
         @ProxyParameter(valueForSParameterDescriptor) matrixSs: Matrix<string>,
         @ProxyParameter(exclusionNoneParameterDescriptor) exclusion: Nullishable<Exclusion>,
-        @ProxyParameter(tweakParameterDescriptor) tweak?: number | bigint
+        @ProxyParameter(tweakParameterDescriptor) tweak: Nullishable<number | bigint>
     ): MatrixResultError<ResultError<TBigInt, ThrowError, TError>, ThrowError, TError> {
         const exclusionOrUndefined = exclusion ?? undefined;
         const tweakOrUndefined = tweak ?? undefined;

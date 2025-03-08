@@ -1,7 +1,7 @@
 import { Sequence, Transformer, transformIterable } from "@aidc-toolkit/utility";
 import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Type } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
-import type { ErrorExtends, Matrix, MatrixResultError, ResultError } from "../types.js";
+import type { ErrorExtends, Matrix, MatrixResultError, Nullishable, ResultError } from "../types.js";
 import {
     countParameterDescriptor,
     startValueParameterDescriptor,
@@ -17,10 +17,8 @@ const domainParameterDescriptor: ParameterDescriptor = {
 };
 
 const transformedValueParameterDescriptor: ParameterDescriptor = {
-    name: "transformedValue",
-    type: Type.Number,
-    isMatrix: true,
-    isRequired: true
+    extendsDescriptor: valueParameterDescriptor,
+    name: "transformedValue"
 };
 
 @ProxyClass({
@@ -34,7 +32,7 @@ export class TransformerProxy<ThrowError extends boolean, TError extends ErrorEx
     forward(
         @ProxyParameter(domainParameterDescriptor) domain: number | bigint,
         @ProxyParameter(valueParameterDescriptor) matrixValues: Matrix<number | bigint>,
-        @ProxyParameter(tweakParameterDescriptor) tweak?: number | bigint
+        @ProxyParameter(tweakParameterDescriptor) tweak: Nullishable<number | bigint>
     ): MatrixResultError<ResultError<TBigInt, ThrowError, TError>, ThrowError, TError> {
         const transformer = Transformer.get(domain, tweak ?? undefined);
 
@@ -50,7 +48,7 @@ export class TransformerProxy<ThrowError extends boolean, TError extends ErrorEx
         @ProxyParameter(domainParameterDescriptor) domain: number | bigint,
         @ProxyParameter(startValueParameterDescriptor) startValue: number,
         @ProxyParameter(countParameterDescriptor) count: number,
-        @ProxyParameter(tweakParameterDescriptor) tweak?: number | bigint
+        @ProxyParameter(tweakParameterDescriptor) tweak: Nullishable<number | bigint>
     ): Matrix<ResultError<TBigInt, ThrowError, TError>> {
         return this.mapIterable(() => transformIterable(Transformer.get(domain, tweak ?? undefined).forward(new Sequence(startValue, count)), value => this.mapBigInt(value)));
     }
@@ -62,7 +60,7 @@ export class TransformerProxy<ThrowError extends boolean, TError extends ErrorEx
     reverse(
         @ProxyParameter(domainParameterDescriptor) domain: number | bigint,
         @ProxyParameter(transformedValueParameterDescriptor) matrixTransformedValues: Matrix<number | bigint>,
-        @ProxyParameter(tweakParameterDescriptor) tweak?: number | bigint
+        @ProxyParameter(tweakParameterDescriptor) tweak: Nullishable<number | bigint>
     ): MatrixResultError<ResultError<TBigInt, ThrowError, TError>, ThrowError, TError> {
         const transformer = Transformer.get(domain, tweak ?? undefined);
 
