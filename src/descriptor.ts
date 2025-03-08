@@ -147,16 +147,30 @@ export interface ClassDescriptor extends Descriptor {
 }
 
 /**
- * Proxy base class type.
+ * Proxy base class constructor.
  */
-type ProxyBaseClassType<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, T extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt>> =
-    (new(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>, ...args: unknown[]) => T) & { prototype: T };
+type ProxyBaseClassConstructor<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, T extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt>> =
+    abstract new(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>, ...args: unknown[]) => T;
 
 /**
- * Proxy class type, enforcing inheritance hierarchy and constructor parameters.
+ * Proxy base class type.
  */
-export type ProxyClassType<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, T extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt>> =
-    (new(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) => T) & { prototype: T };
+interface ProxyBaseClassType<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, T extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt>> extends ProxyBaseClassConstructor<ThrowError, TError, TInvocationContext, TBigInt, T> {
+    prototype: T;
+}
+
+/**
+ * Proxy class constructor.
+ */
+type ProxyClassConstructor<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, T extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt>> =
+    new(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) => T;
+
+/**
+ * Proxy class type.
+ */
+interface ProxyClassType<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, T extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt>> extends ProxyClassConstructor<ThrowError, TError, TInvocationContext, TBigInt, T> {
+    prototype: T;
+}
 
 /**
  * Pending parameter descriptors, consumed and reset when method is described.
