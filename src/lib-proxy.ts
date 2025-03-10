@@ -1,3 +1,4 @@
+import { mapIterable } from "@aidc-toolkit/utility";
 import type { AppExtension } from "./app-extension.js";
 import type { ErrorExtends, Matrix, MatrixResultError, ResultError } from "./types.js";
 
@@ -134,7 +135,10 @@ export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorE
     }
 
     /**
-     * Map an iterable result of a callback.
+     * Map an iterable result of a callback to a matrix result. Although the natural approach would be to map to a
+     * single-element array containing an array of *N* results (i.e., [[r0, r1, r2, ..., r*N*]]), this is rendered visually
+     * as a single row. The more readable approach is as a single column, so the mapping is to an *N*-element array of
+     * single-element result arrays (i.e., [[r0], [r1], [r2], ..., [r*N*]]).
      *
      * @param callback
      * Callback.
@@ -142,7 +146,7 @@ export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorE
      * @returns
      * Matrix of callback results.
      */
-    protected mapIterable<TResult>(callback: () => Iterable<TResult>): Matrix<TResult> {
-        return [Array.from(callback())];
+    protected matrixResult<TResult>(callback: () => Iterable<TResult>): Matrix<TResult> {
+        return Array.from(mapIterable(callback(), result => [result]));
     }
 }

@@ -501,7 +501,9 @@ abstract class NumericIdentificationKeyCreatorProxy<ThrowError extends boolean, 
         @ProxyParameter(countParameterDescriptor) count: number,
         @ProxyParameter(sparseParameterDescriptor) sparse: Nullishable<boolean>
     ): Matrix<string> {
-        return this.mapIterable(() => this.getCreator(prefixDefinition).create(new Sequence(startValue, count), sparse ?? undefined));
+        this.appExtension.validateSequenceCount(count);
+
+        return this.matrixResult(() => this.getCreator(prefixDefinition).create(new Sequence(startValue, count), sparse ?? undefined));
     }
 
     @ProxyMethod({
@@ -511,7 +513,11 @@ abstract class NumericIdentificationKeyCreatorProxy<ThrowError extends boolean, 
     createAll(
         @ProxyParameter(prefixDefinitionGS1UPCParameterDescriptor) prefixDefinition: Matrix<unknown>
     ): Matrix<string> {
-        return this.mapIterable(() => this.getCreator(prefixDefinition).createAll());
+        const creator = this.getCreator(prefixDefinition);
+
+        this.appExtension.validateSequenceCount(creator.capacity);
+
+        return this.matrixResult(() => creator.createAll());
     }
 }
 

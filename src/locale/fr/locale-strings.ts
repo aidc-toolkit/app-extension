@@ -1,4 +1,7 @@
 export const localeStrings = {
+    AppExtension: {
+        sequenceCountMustBeLessThanOrEqualTo: "Le nombre de séquences {{sequenceCount}} doit être inférieur ou égal à {{maximumSequenceCount}}"
+    },
     Proxy: {
         vSpillMustBeHorizontalArray: "L'entrée doit être un tableau horizontal",
         hSpillNotAVerticalArray: "L'entrée doit être un tableau vertical"

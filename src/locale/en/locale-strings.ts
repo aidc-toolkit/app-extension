@@ -1,4 +1,7 @@
 export const localeStrings = {
+    AppExtension: {
+        sequenceCountMustBeLessThanOrEqualTo: "Sequence count {{sequenceCount}} must be less than or equal to {{maximumSequenceCount}}"
+    },
     Proxy: {
         vSpillMustBeHorizontalArray: "Input must be a horizontal array",
         hSpillNotAVerticalArray: "Input must be a vertical array"

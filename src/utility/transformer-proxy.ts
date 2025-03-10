@@ -1,4 +1,4 @@
-import { Sequence, Transformer, transformIterable } from "@aidc-toolkit/utility";
+import { Sequence, Transformer, mapIterable } from "@aidc-toolkit/utility";
 import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Type } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
 import type { ErrorExtends, Matrix, MatrixResultError, Nullishable, ResultError } from "../types.js";
@@ -50,7 +50,9 @@ export class TransformerProxy<ThrowError extends boolean, TError extends ErrorEx
         @ProxyParameter(countParameterDescriptor) count: number,
         @ProxyParameter(tweakParameterDescriptor) tweak: Nullishable<number | bigint>
     ): Matrix<ResultError<TBigInt, ThrowError, TError>> {
-        return this.mapIterable(() => transformIterable(Transformer.get(domain, tweak ?? undefined).forward(new Sequence(startValue, count)), value => this.mapBigInt(value)));
+        this.appExtension.validateSequenceCount(count);
+
+        return this.matrixResult(() => mapIterable(Transformer.get(domain, tweak ?? undefined).forward(new Sequence(startValue, count)), value => this.mapBigInt(value)));
     }
 
     @ProxyMethod({

@@ -105,10 +105,12 @@ export abstract class CharacterSetProxy<ThrowError extends boolean, TError exten
         @ProxyParameter(exclusionNoneParameterDescriptor) exclusion: Nullishable<Exclusion>,
         @ProxyParameter(tweakParameterDescriptor) tweak: Nullishable<number | bigint>
     ): Matrix<string> {
+        this.appExtension.validateSequenceCount(count);
+
         const exclusionOrUndefined = exclusion ?? undefined;
         const tweakOrUndefined = tweak ?? undefined;
 
-        return this.mapIterable(() => this._characterSetCreator.create(length, new Sequence(startValue, count), exclusionOrUndefined, tweakOrUndefined));
+        return this.matrixResult(() => this._characterSetCreator.create(length, new Sequence(startValue, count), exclusionOrUndefined, tweakOrUndefined));
     }
 
     @ProxyMethod({
