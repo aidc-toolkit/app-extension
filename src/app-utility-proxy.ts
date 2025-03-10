@@ -60,7 +60,7 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
         isMatrix: false
     })
     version(): string {
-        return this.appExtension.version();
+        return this.appExtension.version;
     }
 
     /**

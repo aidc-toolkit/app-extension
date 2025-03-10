@@ -1,3 +1,4 @@
+import { i18nextAppExtension } from "./locale/i18n.js";
 import type {
     ErrorExtends,
     ResultError,
@@ -22,14 +23,19 @@ import type {
  */
 export abstract class AppExtension<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> {
     /**
+     * Application version.
+     */
+    private readonly _version: string;
+
+    /**
+     * Maximum sequence count supported by application.
+     */
+    private readonly _maximumSequenceCount: number;
+
+    /**
      * If true, errors are reported through the throw/catch mechanism.
      */
     private readonly _throwError: ThrowError;
-
-    /**
-     * Application version.
-     */
-    private _version?: string;
 
     /**
      * Maximum width supported by application.
@@ -44,11 +50,29 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
     /**
      * Constructor.
      *
+     * @param version
+     * Application version.
+     *
+     * @param maximumSequenceCount
+     * Maximum sequence count supported by application.
+     *
      * @param throwError
      * If true, errors are reported through the throw/catch mechanism.
      */
-    protected constructor(throwError: ThrowError) {
+    protected constructor(version: string, maximumSequenceCount: number, throwError: ThrowError) {
+        this._version = version;
+        this._maximumSequenceCount = maximumSequenceCount;
         this._throwError = throwError;
+    }
+
+    /**
+     * Get the version.
+     *
+     * @returns
+     * Version.
+     */
+    get version(): string {
+        return this._version;
     }
 
     /**
@@ -57,28 +81,6 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
     get throwError(): ThrowError {
         return this._throwError;
     }
-
-    /**
-     * Get the version.
-     *
-     * @returns
-     * Version.
-     */
-    version(): string {
-        if (this._version === undefined) {
-            this._version = this.getVersion();
-        }
-
-        return this._version;
-    }
-
-    /**
-     * Get the version.
-     *
-     * @returns
-     * Version.
-     */
-    protected abstract getVersion(): string;
 
     /**
      * Get the maximum width supported by the application.
@@ -148,6 +150,23 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * Sheet range or null if parameter is not a range.
      */
     abstract getParameterSheetRange(invocationContext: TInvocationContext, parameterNumber: number): Promise<SheetRange | null>;
+
+    /**
+     * Validate a sequence count against the maximum supported by application.
+     *
+     * @param sequenceCount
+     * Sequence count.
+     */
+    validateSequenceCount(sequenceCount: number): void {
+        const absoluteSequenceCount = Math.abs(sequenceCount);
+
+        if (absoluteSequenceCount > this._maximumSequenceCount) {
+            throw new RangeError(i18nextAppExtension.t("AppExtension.sequenceCountMustBeLessThanOrEqualTo", {
+                sequenceCount: absoluteSequenceCount,
+                maximumSequenceCount: this._maximumSequenceCount
+            }));
+        }
+    }
 
     /**
      * Map big integer to another type if necessary.
