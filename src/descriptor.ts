@@ -147,30 +147,10 @@ export interface ClassDescriptor extends Descriptor {
 }
 
 /**
- * Proxy base class constructor.
+ * Proxy class type with fixed constructor.
  */
-type ProxyBaseClassConstructor<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, T extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt>> =
-    abstract new(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>, ...args: unknown[]) => T;
-
-/**
- * Proxy base class type.
- */
-interface ProxyBaseClassType<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, T extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt>> extends ProxyBaseClassConstructor<ThrowError, TError, TInvocationContext, TBigInt, T> {
-    prototype: T;
-}
-
-/**
- * Proxy class constructor.
- */
-type ProxyClassConstructor<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, T extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt>> =
-    new(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) => T;
-
-/**
- * Proxy class type.
- */
-interface ProxyClassType<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, T extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt>> extends ProxyClassConstructor<ThrowError, TError, TInvocationContext, TBigInt, T> {
-    prototype: T;
-}
+type ProxyClassType<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, T extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt>> =
+    (new(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) => T) & typeof LibProxy;
 
 /**
  * Pending parameter descriptors, consumed and reset when method is described.
@@ -276,9 +256,9 @@ export function ProxyClass<ThrowError extends boolean, TError extends ErrorExten
          * @param classType
          * Class type.
          */
-        function buildMethodDescriptorsMap(classType: ProxyBaseClassType<ThrowError, TError, TInvocationContext, TBigInt, T>): void {
+        function buildMethodDescriptorsMap(classType: typeof LibProxy): void {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Class hierarchy is known.
-            const baseClassType = Object.getPrototypeOf(classType) as ProxyBaseClassType<ThrowError, TError, TInvocationContext, TBigInt, T>;
+            const baseClassType = Object.getPrototypeOf(classType) as typeof LibProxy;
 
             // Start with class furthest up the hierarchy.
             if (baseClassType !== LibProxy) {
