@@ -17,6 +17,7 @@ import {
     ProxyParameter,
     Type
 } from "../descriptor.js";
+import { LibProxy } from "../lib-proxy";
 import type { ErrorExtends, Matrix, MatrixResultError, Nullishable, ResultError } from "../types.js";
 import {
     exclusionAnyParameterDescriptor,
@@ -110,7 +111,7 @@ export abstract class CharacterSetProxy<ThrowError extends boolean, TError exten
         const exclusionOrUndefined = exclusion ?? undefined;
         const tweakOrUndefined = tweak ?? undefined;
 
-        return this.matrixResult(() => this._characterSetCreator.create(length, new Sequence(startValue, count), exclusionOrUndefined, tweakOrUndefined));
+        return LibProxy.matrixResult(this._characterSetCreator.create(length, new Sequence(startValue, count), exclusionOrUndefined, tweakOrUndefined));
     }
 
     @ProxyMethod({

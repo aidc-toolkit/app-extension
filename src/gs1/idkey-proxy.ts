@@ -239,7 +239,7 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
     ): Matrix<string> {
         const gtinLevelOrUndefined = gtinLevel ?? undefined;
 
-        return this.mapMatrixVoid(matrixGTINs, (gtin) => {
+        return LibProxy.mapMatrixRangeError(matrixGTINs, (gtin) => {
             GTINValidator.validateAny(gtin, gtinLevelOrUndefined);
         });
     }
@@ -251,7 +251,7 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
     validateGTIN14(
         @ProxyParameter(validateGTIN14ParameterDescriptor) matrixGTIN14s: Matrix<string>
     ): Matrix<string> {
-        return this.mapMatrixVoid(matrixGTIN14s, (gtin14) => {
+        return LibProxy.mapMatrixRangeError(matrixGTIN14s, (gtin14) => {
             GTINValidator.validateGTIN14(gtin14);
         });
     }
@@ -503,7 +503,7 @@ abstract class NumericIdentificationKeyCreatorProxy<ThrowError extends boolean, 
     ): Matrix<string> {
         this.appExtension.validateSequenceCount(count);
 
-        return this.matrixResult(() => this.getCreator(prefixDefinition).create(new Sequence(startValue, count), sparse ?? undefined));
+        return LibProxy.matrixResult(this.getCreator(prefixDefinition).create(new Sequence(startValue, count), sparse ?? undefined));
     }
 
     @ProxyMethod({
@@ -517,7 +517,7 @@ abstract class NumericIdentificationKeyCreatorProxy<ThrowError extends boolean, 
 
         this.appExtension.validateSequenceCount(creator.capacity);
 
-        return this.matrixResult(() => creator.createAll());
+        return LibProxy.matrixResult(creator.createAll());
     }
 }
 

@@ -52,7 +52,7 @@ export class TransformerProxy<ThrowError extends boolean, TError extends ErrorEx
     ): Matrix<ResultError<TBigInt, ThrowError, TError>> {
         this.appExtension.validateSequenceCount(count);
 
-        return this.matrixResult(() => mapIterable(Transformer.get(domain, tweak ?? undefined).forward(new Sequence(startValue, count)), value => this.mapBigInt(value)));
+        return LibProxy.matrixResult(mapIterable(Transformer.get(domain, tweak ?? undefined).forward(new Sequence(startValue, count)), value => this.mapBigInt(value)));
     }
 
     @ProxyMethod({

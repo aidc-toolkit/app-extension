@@ -4,7 +4,7 @@ import type { ErrorExtends, Matrix, MatrixResultError } from "../types.js";
 
 export abstract class StringProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     protected validateString<TStringValidation extends StringValidation>(validator: StringValidator<TStringValidation>, matrixSs: Matrix<string>, validation?: TStringValidation): Matrix<string> {
-        return this.mapMatrixVoid(matrixSs, (s) => {
+        return LibProxy.mapMatrixRangeError(matrixSs, (s) => {
             validator.validate(s, validation);
         });
     }
