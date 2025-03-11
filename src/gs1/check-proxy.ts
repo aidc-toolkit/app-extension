@@ -50,7 +50,9 @@ const ai82SWithCheckCharacterPairParameterDescriptor: ParameterDescriptor = {
     name: "ai82SWithCheckCharacterPair"
 };
 
-@ProxyClass()
+@ProxyClass({
+    namespace: "GS1"
+})
 export class CheckProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     @ProxyMethod({
         type: Type.String,

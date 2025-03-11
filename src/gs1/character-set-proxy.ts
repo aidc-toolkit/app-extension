@@ -9,6 +9,7 @@ import {
 import { CharacterSetProxy } from "../utility/character-set-proxy.js";
 
 @ProxyClass({
+    namespace: "GS1",
     methodInfix: "AI82",
     replaceParameterDescriptors: [
         {
@@ -24,6 +25,7 @@ export class AI82Proxy<ThrowError extends boolean, TError extends ErrorExtends<T
 }
 
 @ProxyClass({
+    namespace: "GS1",
     methodInfix: "AI39",
     replaceParameterDescriptors: [
         {

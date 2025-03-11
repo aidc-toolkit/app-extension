@@ -116,6 +116,7 @@ abstract class NonNumericIdentificationKeyValidatorProxy<ThrowError extends bool
 }
 
 @ProxyClass({
+    namespace: "GS1",
     methodInfix: "GTIN13"
 })
 export class GTIN13ValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends GTINValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
@@ -125,6 +126,7 @@ export class GTIN13ValidatorProxy<ThrowError extends boolean, TError extends Err
 }
 
 @ProxyClass({
+    namespace: "GS1",
     methodInfix: "GTIN12"
 })
 export class GTIN12ValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends GTINValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
@@ -134,6 +136,7 @@ export class GTIN12ValidatorProxy<ThrowError extends boolean, TError extends Err
 }
 
 @ProxyClass({
+    namespace: "GS1",
     methodInfix: "GTIN8"
 })
 export class GTIN8ValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends GTINValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
@@ -186,7 +189,9 @@ const validateGTIN14ParameterDescriptor: ParameterDescriptor = {
     name: "validateGTIN14"
 };
 
-@ProxyClass()
+@ProxyClass({
+    namespace: "GS1"
+})
 export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     @ProxyMethod({
         type: Type.String,
@@ -258,6 +263,7 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
 }
 
 @ProxyClass({
+    namespace: "GS1",
     methodInfix: "GLN"
 })
 export class GLNValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonGTINNumericIdentificationKeyValidator> {
@@ -267,6 +273,7 @@ export class GLNValidatorProxy<ThrowError extends boolean, TError extends ErrorE
 }
 
 @ProxyClass({
+    namespace: "GS1",
     methodInfix: "SSCC"
 })
 export class SSCCValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonGTINNumericIdentificationKeyValidator> {
@@ -276,6 +283,7 @@ export class SSCCValidatorProxy<ThrowError extends boolean, TError extends Error
 }
 
 @ProxyClass({
+    namespace: "GS1",
     methodInfix: "GRAI"
 })
 export class GRAIValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends SerializableNumericIdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
@@ -285,6 +293,7 @@ export class GRAIValidatorProxy<ThrowError extends boolean, TError extends Error
 }
 
 @ProxyClass({
+    namespace: "GS1",
     methodInfix: "GIAI"
 })
 export class GIAIValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonNumericIdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
@@ -294,6 +303,7 @@ export class GIAIValidatorProxy<ThrowError extends boolean, TError extends Error
 }
 
 @ProxyClass({
+    namespace: "GS1",
     methodInfix: "GSRN"
 })
 export class GSRNValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonGTINNumericIdentificationKeyValidator> {
@@ -303,6 +313,7 @@ export class GSRNValidatorProxy<ThrowError extends boolean, TError extends Error
 }
 
 @ProxyClass({
+    namespace: "GS1",
     methodInfix: "GDTI"
 })
 export class GDTIValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends SerializableNumericIdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
@@ -312,6 +323,7 @@ export class GDTIValidatorProxy<ThrowError extends boolean, TError extends Error
 }
 
 @ProxyClass({
+    namespace: "GS1",
     methodInfix: "GINC"
 })
 export class GINCValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonNumericIdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
@@ -321,6 +333,7 @@ export class GINCValidatorProxy<ThrowError extends boolean, TError extends Error
 }
 
 @ProxyClass({
+    namespace: "GS1",
     methodInfix: "GSIN"
 })
 export class GSINValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonGTINNumericIdentificationKeyValidator> {
@@ -330,6 +343,7 @@ export class GSINValidatorProxy<ThrowError extends boolean, TError extends Error
 }
 
 @ProxyClass({
+    namespace: "GS1",
     methodInfix: "GCN"
 })
 export class GCNValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends SerializableNumericIdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
@@ -339,6 +353,7 @@ export class GCNValidatorProxy<ThrowError extends boolean, TError extends ErrorE
 }
 
 @ProxyClass({
+    namespace: "GS1",
     methodInfix: "CPID"
 })
 export class CPIDValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonNumericIdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
@@ -348,6 +363,7 @@ export class CPIDValidatorProxy<ThrowError extends boolean, TError extends Error
 }
 
 @ProxyClass({
+    namespace: "GS1",
     methodInfix: "GMN"
 })
 export class GMNValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonNumericIdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
@@ -394,7 +410,9 @@ const prefixDefinitionAnyParameterDescriptor: ParameterDescriptor = {
     name: "prefixDefinitionAny"
 };
 
-@ProxyClass()
+@ProxyClass({
+    namespace: "GS1"
+})
 export class PrefixManagerProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     @ProxyMethod({
         type: Type.Any,
@@ -597,6 +615,7 @@ abstract class NonNumericIdentificationKeyCreatorProxy<ThrowError extends boolea
 }
 
 @ProxyClass({
+    namespace: "GS1",
     methodInfix: "GTIN",
     replaceParameterDescriptors: [
         {
@@ -630,6 +649,7 @@ export class GTINCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
 }
 
 @ProxyClass({
+    namespace: "GS1",
     methodInfix: "GLN"
 })
 export class GLNCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentificationKeyCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonGTINNumericIdentificationKeyCreator> {
@@ -639,6 +659,7 @@ export class GLNCreatorProxy<ThrowError extends boolean, TError extends ErrorExt
 }
 
 @ProxyClass({
+    namespace: "GS1",
     methodInfix: "SSCC"
 })
 export class SSCCCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentificationKeyCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonGTINNumericIdentificationKeyCreator> {
@@ -648,6 +669,7 @@ export class SSCCCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
 }
 
 @ProxyClass({
+    namespace: "GS1",
     methodInfix: "GRAI"
 })
 export class GRAICreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends SerializableNumericIdentificationKeyCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
@@ -657,6 +679,7 @@ export class GRAICreatorProxy<ThrowError extends boolean, TError extends ErrorEx
 }
 
 @ProxyClass({
+    namespace: "GS1",
     methodInfix: "GIAI"
 })
 export class GIAICreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonNumericIdentificationKeyCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
@@ -666,6 +689,7 @@ export class GIAICreatorProxy<ThrowError extends boolean, TError extends ErrorEx
 }
 
 @ProxyClass({
+    namespace: "GS1",
     methodInfix: "GSRN"
 })
 export class GSRNCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentificationKeyCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonGTINNumericIdentificationKeyCreator> {
@@ -675,6 +699,7 @@ export class GSRNCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
 }
 
 @ProxyClass({
+    namespace: "GS1",
     methodInfix: "GDTI"
 })
 export class GDTICreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends SerializableNumericIdentificationKeyCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
@@ -684,6 +709,7 @@ export class GDTICreatorProxy<ThrowError extends boolean, TError extends ErrorEx
 }
 
 @ProxyClass({
+    namespace: "GS1",
     methodInfix: "GINC"
 })
 export class GINCCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonNumericIdentificationKeyCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
@@ -693,6 +719,7 @@ export class GINCCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
 }
 
 @ProxyClass({
+    namespace: "GS1",
     methodInfix: "GSIN"
 })
 export class GSINCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentificationKeyCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonGTINNumericIdentificationKeyCreator> {
@@ -702,6 +729,7 @@ export class GSINCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
 }
 
 @ProxyClass({
+    namespace: "GS1",
     methodInfix: "GCN"
 })
 export class GCNCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends SerializableNumericIdentificationKeyCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
@@ -711,6 +739,7 @@ export class GCNCreatorProxy<ThrowError extends boolean, TError extends ErrorExt
 }
 
 @ProxyClass({
+    namespace: "GS1",
     methodInfix: "CPID"
 })
 export class CPIDCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonNumericIdentificationKeyCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
@@ -720,6 +749,7 @@ export class CPIDCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
 }
 
 @ProxyClass({
+    namespace: "GS1",
     methodInfix: "GMN"
 })
 export class GMNCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonNumericIdentificationKeyCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {

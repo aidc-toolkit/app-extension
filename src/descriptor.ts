@@ -128,6 +128,11 @@ export interface MethodDescriptor extends TypeDescriptor {
  */
 export interface ClassDescriptor extends Descriptor {
     /**
+     * Class namespace. If not provided, class is at the top level.
+     */
+    readonly namespace?: string;
+
+    /**
      * Method infix. If undefined, method name is generated verbatim.
      */
     readonly methodInfix?: string;
