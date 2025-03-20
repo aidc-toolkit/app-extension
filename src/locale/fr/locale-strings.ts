@@ -296,293 +296,295 @@ export const localeStrings = {
             name: "valeurDeAlphanumerique",
             description: "Obtenir la valeur d'une chaîne alphanumérique."
         },
-        validateAI82: {
-            name: "validerAI82",
-            description: "Valider une chaîne de caractères GS1 AI 82."
-        },
-        isValidAI82: {
-            name: "estValideAI82",
-            description: "Déterminer si une chaîne est un jeu de caractères GS1 AI 82."
-        },
-        createAI82: {
-            name: "creerAI82",
-            description: "Créer une chaîne de caractères GS1 AI 82."
-        },
-        createAI82Sequence: {
-            name: "creerSequenceAI82",
-            description: "Créer une séquence de chaînes de caractères GS1 AI 82."
-        },
-        valueForAI82: {
-            name: "valeurDeAI82",
-            description: "Obtenez la valeur d'une chaîne de caractères GS1 AI 82."
-        },
-        validateAI39: {
-            name: "validerAI39",
-            description: "Valider une chaîne de caractères GS1 AI 39."
-        },
-        isValidAI39: {
-            name: "estValideAI39",
-            description: "Déterminer si une chaîne est un jeu de caractères GS1 AI 39."
-        },
-        createAI39: {
-            name: "creerAI39",
-            description: "Créer une chaîne de caractères GS1 AI 39."
-        },
-        createAI39Sequence: {
-            name: "creerSequenceAI39",
-            description: "Créer une séquence de chaînes de caractères GS1 AI 39."
-        },
-        valueForAI39: {
-            name: "valeurDeAI39",
-            description: "Obtenez la valeur d'une chaîne de caractères GS1 AI 39."
-        },
-        checkDigit: {
-            name: "chiffreDeControle",
-            description: "Calculer le chiffre de contrôle pour une chaîne numérique."
-        },
-        hasValidCheckDigit: {
-            name: "aChiffreDeControleValide",
-            description: "Déterminer si une chaîne a un chiffre de contrôle valide."
-        },
-        fourDigitPriceWeightCheckDigit: {
-            name: "prixPoidsAQuatreChiffresChiffreDeControle",
-            description: "Calculer le chiffre de contrôle pour un prix ou un poids à quatre chiffres."
-        },
-        fiveDigitPriceWeightCheckDigit: {
-            name: "prixPoidsACinqChiffresChiffreDeControle",
-            description: "Calculer le chiffre de contrôle pour un prix ou un poids à cinq chiffres."
-        },
-        checkCharacterPair: {
-            name: "paireDeCaracteresDeControle",
-            description: "Calculer la paire de caractères de contrôle pour une chaîne de caractères."
-        },
-        hasValidCheckCharacterPair: {
-            name: "aPaireDeCaracteresDeControleValide",
-            description: "Déterminez si une chaîne de caractères GS1 AI 82 a une paire de caractères de contrôle valide."
-        },
-        validateGTIN13: {
-            name: "validerGTIN13",
-            description: "Valider un GTIN-13."
-        },
-        validateGTIN12: {
-            name: "validerGTIN12",
-            description: "Valider un GTIN-12."
-        },
-        validateGTIN8: {
-            name: "validerGTIN8",
-            description: "Valider un GTIN-8."
-        },
-        zeroSuppressGTIN12: {
-            name: "supprimerZeroGTIN12",
-            description: "Supprimer les zéros d'un GTIN-12."
-        },
-        zeroExpandGTIN12: {
-            name: "etendrerZeroGTIN12",
-            description: "Étendrer un GTIN-12 supprimé à zéro."
-        },
-        convertToGTIN14: {
-            name: "convertirEnGTIN14",
-            description: "Convertir un GTIN en GTIN-14."
-        },
-        normalizeGTIN: {
-            name: "normalizeGTIN",
-            description: "Normaliser un GTIN."
-        },
-        validateGTIN: {
-            name: "validerGTIN",
-            description: "Validez n'importe quel GTIN."
-        },
-        validateGTIN14: {
-            name: "validerGTIN14",
-            description: "Valider un GTIN-14."
-        },
-        validateGLN: {
-            name: "validerGLN",
-            description: "Valider un GLN."
-        },
-        validateSSCC: {
-            name: "validerSSCC",
-            description: "Valider un SSCC."
-        },
-        validateGRAI: {
-            name: "validerGRAI",
-            description: "Valider un GRAI."
-        },
-        validateGIAI: {
-            name: "validerGIAI",
-            description: "Valider un GIAI."
-        },
-        validateGSRN: {
-            name: "validerGSRN",
-            description: "Valider un GSRN."
-        },
-        validateGDTI: {
-            name: "validerGDTI",
-            description: "Valider un GDTI."
-        },
-        validateGINC: {
-            name: "validerGINC",
-            description: "Valider un GINC."
-        },
-        validateGSIN: {
-            name: "validerGSIN",
-            description: "Valider un GSIN."
-        },
-        validateGCN: {
-            name: "validerGCN",
-            description: "Valider un GCN."
-        },
-        validateCPID: {
-            name: "validerCPID",
-            description: "Valider un CPID."
-        },
-        validateGMN: {
-            name: "validerGMN",
-            description: "Valider un GMN."
-        },
-        definePrefix: {
-            name: "definisserPrefixe",
-            description: "Définisser un préfixe à utiliser dans les fonctions de création de clé d'identification GS1."
-        },
-        createGTIN: {
-            name: "creerGTIN",
-            description: "Créer un GTIN."
-        },
-        createGTINSequence: {
-            name: "creerSequenceGTIN",
-            description: "Créer un séquence de GTIN."
-        },
-        createAllGTIN: {
-            name: "creerTousGTIN",
-            description: "Créez tous les GTIN pour un préfixe."
-        },
-        createGTIN14: {
-            name: "creerGTIN14",
-            description: "Créer un GTIN-14."
-        },
-        createGLN: {
-            name: "creerGLN",
-            description: "Créer un GLN."
-        },
-        createGLNSequence: {
-            name: "creerSequenceGLN",
-            description: "Créer un séquence de GLN."
-        },
-        createAllGLN: {
-            name: "creerTousGLN",
-            description: "Créez tous les GLN pour un préfixe."
-        },
-        createSSCC: {
-            name: "creerSSCC",
-            description: "Créer un SSCC."
-        },
-        createSSCCSequence: {
-            name: "creerSequenceSSCC",
-            description: "Créer un séquence de SSCC."
-        },
-        createAllSSCC: {
-            name: "creerTousSSCC",
-            description: "Créez tous les SSCC pour un préfixe."
-        },
-        createGRAI: {
-            name: "creerGRAI",
-            description: "Créer un GRAI."
-        },
-        createGRAISequence: {
-            name: "creerSequenceGRAI",
-            description: "Créer un séquence de GRAI."
-        },
-        createAllGRAI: {
-            name: "creerTousGRAI",
-            description: "Créez tous les GRAI pour un préfixe."
-        },
-        createSerializedGRAI: {
-            name: "creerGRAISerialise",
-            description: "Créer un GRAI sérialisé."
-        },
-        concatenateGRAI: {
-            name: "concatenerGRAI",
-            description: "Concaténer une base GRAI avec un composant série."
-        },
-        createGIAI: {
-            name: "creerGIAI",
-            description: "Créer un GIAI."
-        },
-        createGSRN: {
-            name: "creerGSRN",
-            description: "Créer un GSRN."
-        },
-        createGSRNSequence: {
-            name: "creerSequenceGSRN",
-            description: "Créer un séquence de GSRN."
-        },
-        createAllGSRN: {
-            name: "creerTousGSRN",
-            description: "Créez tous les GSRN pour un préfixe."
-        },
-        createGDTI: {
-            name: "creerGDTI",
-            description: "Créer un GDTI."
-        },
-        createGDTISequence: {
-            name: "creerSequenceGDTI",
-            description: "Créer un séquence de GDTI."
-        },
-        createAllGDTI: {
-            name: "creerTousGDTI",
-            description: "Créez tous les GDTI pour un préfixe."
-        },
-        createSerializedGDTI: {
-            name: "creerGDTISerialise",
-            description: "Créer un GDTI sérialisé."
-        },
-        concatenateGDTI: {
-            name: "concatenerGDTI",
-            description: "Concaténer une base GDTI avec un composant série."
-        },
-        createGINC: {
-            name: "creerGINC",
-            description: "Créer un GINC."
-        },
-        createGSIN: {
-            name: "creerGSIN",
-            description: "Créer un GSIN."
-        },
-        createGSINSequence: {
-            name: "creerSequenceGSIN",
-            description: "Créer un séquence de GSIN."
-        },
-        createAllGSIN: {
-            name: "creerTousGSIN",
-            description: "Créez tous les GSIN pour un préfixe."
-        },
-        createGCN: {
-            name: "creerGCN",
-            description: "Créer un GCN."
-        },
-        createGCNSequence: {
-            name: "creerSequenceGCN",
-            description: "Créer un séquence de GCN."
-        },
-        createAllGCN: {
-            name: "creerTousGCN",
-            description: "Créez tous les GCN pour un préfixe."
-        },
-        createSerializedGCN: {
-            name: "creerGCNSerialise",
-            description: "Créer un GCN sérialisé."
-        },
-        concatenateGCN: {
-            name: "concatenerGCN",
-            description: "Concaténer une base GCN avec un composant série."
-        },
-        createCPID: {
-            name: "creerCPID",
-            description: "Créer un CPID."
-        },
-        createGMN: {
-            name: "creerGMN",
-            description: "Créer un GMN."
+        GS1: {
+            validateAI82: {
+                name: "validerAI82",
+                description: "Valider une chaîne de caractères GS1 AI 82."
+            },
+            isValidAI82: {
+                name: "estValideAI82",
+                description: "Déterminer si une chaîne est un jeu de caractères GS1 AI 82."
+            },
+            createAI82: {
+                name: "creerAI82",
+                description: "Créer une chaîne de caractères GS1 AI 82."
+            },
+            createAI82Sequence: {
+                name: "creerSequenceAI82",
+                description: "Créer une séquence de chaînes de caractères GS1 AI 82."
+            },
+            valueForAI82: {
+                name: "valeurDeAI82",
+                description: "Obtenez la valeur d'une chaîne de caractères GS1 AI 82."
+            },
+            validateAI39: {
+                name: "validerAI39",
+                description: "Valider une chaîne de caractères GS1 AI 39."
+            },
+            isValidAI39: {
+                name: "estValideAI39",
+                description: "Déterminer si une chaîne est un jeu de caractères GS1 AI 39."
+            },
+            createAI39: {
+                name: "creerAI39",
+                description: "Créer une chaîne de caractères GS1 AI 39."
+            },
+            createAI39Sequence: {
+                name: "creerSequenceAI39",
+                description: "Créer une séquence de chaînes de caractères GS1 AI 39."
+            },
+            valueForAI39: {
+                name: "valeurDeAI39",
+                description: "Obtenez la valeur d'une chaîne de caractères GS1 AI 39."
+            },
+            checkDigit: {
+                name: "chiffreDeControle",
+                description: "Calculer le chiffre de contrôle pour une chaîne numérique."
+            },
+            hasValidCheckDigit: {
+                name: "aChiffreDeControleValide",
+                description: "Déterminer si une chaîne a un chiffre de contrôle valide."
+            },
+            fourDigitPriceWeightCheckDigit: {
+                name: "prixPoidsAQuatreChiffresChiffreDeControle",
+                description: "Calculer le chiffre de contrôle pour un prix ou un poids à quatre chiffres."
+            },
+            fiveDigitPriceWeightCheckDigit: {
+                name: "prixPoidsACinqChiffresChiffreDeControle",
+                description: "Calculer le chiffre de contrôle pour un prix ou un poids à cinq chiffres."
+            },
+            checkCharacterPair: {
+                name: "paireDeCaracteresDeControle",
+                description: "Calculer la paire de caractères de contrôle pour une chaîne de caractères."
+            },
+            hasValidCheckCharacterPair: {
+                name: "aPaireDeCaracteresDeControleValide",
+                description: "Déterminez si une chaîne de caractères GS1 AI 82 a une paire de caractères de contrôle valide."
+            },
+            validateGTIN13: {
+                name: "validerGTIN13",
+                description: "Valider un GTIN-13."
+            },
+            validateGTIN12: {
+                name: "validerGTIN12",
+                description: "Valider un GTIN-12."
+            },
+            validateGTIN8: {
+                name: "validerGTIN8",
+                description: "Valider un GTIN-8."
+            },
+            zeroSuppressGTIN12: {
+                name: "supprimerZeroGTIN12",
+                description: "Supprimer les zéros d'un GTIN-12."
+            },
+            zeroExpandGTIN12: {
+                name: "etendrerZeroGTIN12",
+                description: "Étendrer un GTIN-12 supprimé à zéro."
+            },
+            convertToGTIN14: {
+                name: "convertirEnGTIN14",
+                description: "Convertir un GTIN en GTIN-14."
+            },
+            normalizeGTIN: {
+                name: "normalizeGTIN",
+                description: "Normaliser un GTIN."
+            },
+            validateGTIN: {
+                name: "validerGTIN",
+                description: "Validez n'importe quel GTIN."
+            },
+            validateGTIN14: {
+                name: "validerGTIN14",
+                description: "Valider un GTIN-14."
+            },
+            validateGLN: {
+                name: "validerGLN",
+                description: "Valider un GLN."
+            },
+            validateSSCC: {
+                name: "validerSSCC",
+                description: "Valider un SSCC."
+            },
+            validateGRAI: {
+                name: "validerGRAI",
+                description: "Valider un GRAI."
+            },
+            validateGIAI: {
+                name: "validerGIAI",
+                description: "Valider un GIAI."
+            },
+            validateGSRN: {
+                name: "validerGSRN",
+                description: "Valider un GSRN."
+            },
+            validateGDTI: {
+                name: "validerGDTI",
+                description: "Valider un GDTI."
+            },
+            validateGINC: {
+                name: "validerGINC",
+                description: "Valider un GINC."
+            },
+            validateGSIN: {
+                name: "validerGSIN",
+                description: "Valider un GSIN."
+            },
+            validateGCN: {
+                name: "validerGCN",
+                description: "Valider un GCN."
+            },
+            validateCPID: {
+                name: "validerCPID",
+                description: "Valider un CPID."
+            },
+            validateGMN: {
+                name: "validerGMN",
+                description: "Valider un GMN."
+            },
+            definePrefix: {
+                name: "definisserPrefixe",
+                description: "Définisser un préfixe à utiliser dans les fonctions de création de clé d'identification GS1."
+            },
+            createGTIN: {
+                name: "creerGTIN",
+                description: "Créer un GTIN."
+            },
+            createGTINSequence: {
+                name: "creerSequenceGTIN",
+                description: "Créer un séquence de GTIN."
+            },
+            createAllGTIN: {
+                name: "creerTousGTIN",
+                description: "Créez tous les GTIN pour un préfixe."
+            },
+            createGTIN14: {
+                name: "creerGTIN14",
+                description: "Créer un GTIN-14."
+            },
+            createGLN: {
+                name: "creerGLN",
+                description: "Créer un GLN."
+            },
+            createGLNSequence: {
+                name: "creerSequenceGLN",
+                description: "Créer un séquence de GLN."
+            },
+            createAllGLN: {
+                name: "creerTousGLN",
+                description: "Créez tous les GLN pour un préfixe."
+            },
+            createSSCC: {
+                name: "creerSSCC",
+                description: "Créer un SSCC."
+            },
+            createSSCCSequence: {
+                name: "creerSequenceSSCC",
+                description: "Créer un séquence de SSCC."
+            },
+            createAllSSCC: {
+                name: "creerTousSSCC",
+                description: "Créez tous les SSCC pour un préfixe."
+            },
+            createGRAI: {
+                name: "creerGRAI",
+                description: "Créer un GRAI."
+            },
+            createGRAISequence: {
+                name: "creerSequenceGRAI",
+                description: "Créer un séquence de GRAI."
+            },
+            createAllGRAI: {
+                name: "creerTousGRAI",
+                description: "Créez tous les GRAI pour un préfixe."
+            },
+            createSerializedGRAI: {
+                name: "creerGRAISerialise",
+                description: "Créer un GRAI sérialisé."
+            },
+            concatenateGRAI: {
+                name: "concatenerGRAI",
+                description: "Concaténer une base GRAI avec un composant série."
+            },
+            createGIAI: {
+                name: "creerGIAI",
+                description: "Créer un GIAI."
+            },
+            createGSRN: {
+                name: "creerGSRN",
+                description: "Créer un GSRN."
+            },
+            createGSRNSequence: {
+                name: "creerSequenceGSRN",
+                description: "Créer un séquence de GSRN."
+            },
+            createAllGSRN: {
+                name: "creerTousGSRN",
+                description: "Créez tous les GSRN pour un préfixe."
+            },
+            createGDTI: {
+                name: "creerGDTI",
+                description: "Créer un GDTI."
+            },
+            createGDTISequence: {
+                name: "creerSequenceGDTI",
+                description: "Créer un séquence de GDTI."
+            },
+            createAllGDTI: {
+                name: "creerTousGDTI",
+                description: "Créez tous les GDTI pour un préfixe."
+            },
+            createSerializedGDTI: {
+                name: "creerGDTISerialise",
+                description: "Créer un GDTI sérialisé."
+            },
+            concatenateGDTI: {
+                name: "concatenerGDTI",
+                description: "Concaténer une base GDTI avec un composant série."
+            },
+            createGINC: {
+                name: "creerGINC",
+                description: "Créer un GINC."
+            },
+            createGSIN: {
+                name: "creerGSIN",
+                description: "Créer un GSIN."
+            },
+            createGSINSequence: {
+                name: "creerSequenceGSIN",
+                description: "Créer un séquence de GSIN."
+            },
+            createAllGSIN: {
+                name: "creerTousGSIN",
+                description: "Créez tous les GSIN pour un préfixe."
+            },
+            createGCN: {
+                name: "creerGCN",
+                description: "Créer un GCN."
+            },
+            createGCNSequence: {
+                name: "creerSequenceGCN",
+                description: "Créer un séquence de GCN."
+            },
+            createAllGCN: {
+                name: "creerTousGCN",
+                description: "Créez tous les GCN pour un préfixe."
+            },
+            createSerializedGCN: {
+                name: "creerGCNSerialise",
+                description: "Créer un GCN sérialisé."
+            },
+            concatenateGCN: {
+                name: "concatenerGCN",
+                description: "Concaténer une base GCN avec un composant série."
+            },
+            createCPID: {
+                name: "creerCPID",
+                description: "Créer un CPID."
+            },
+            createGMN: {
+                name: "creerGMN",
+                description: "Créer un GMN."
+            }
         }
     }
 };
