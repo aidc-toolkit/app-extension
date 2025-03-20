@@ -17,7 +17,7 @@ import {
     ProxyParameter,
     Type
 } from "../descriptor.js";
-import { LibProxy } from "../lib-proxy";
+import { LibProxy } from "../lib-proxy.js";
 import type { ErrorExtends, Matrix, MatrixResultError, Nullishable, ResultError } from "../types.js";
 import {
     exclusionAnyParameterDescriptor,
