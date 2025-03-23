@@ -115,7 +115,7 @@ export type TypedSyncFunction<TMethod extends TypedFunction<TMethod>> =
     [ReturnType<TMethod>] extends [PromiseLike<unknown>] ? never : TypedFunction<TMethod>;
 
 /**
- * Determine the fundamental promised type. This is stricter than `Awaited<Type>` in that it requires a Promise.
+ * Determine the fundamental promised type. This is stricter than `Awaited\<Type\>` in that it requires a Promise.
  */
 type PromisedType<T> =
     [T] extends [PromiseLike<infer TPromised>] ? TPromised : never;
