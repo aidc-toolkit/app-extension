@@ -89,9 +89,7 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * Maximum width supported by the application.
      */
     async maximumWidth(): Promise<number> {
-        if (this._maximumWidth === undefined) {
-            this._maximumWidth = await this.getMaximumWidth();
-        }
+        this._maximumWidth ??= await this.getMaximumWidth();
 
         return this._maximumWidth;
     }
@@ -111,9 +109,7 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * Maximum height supported by the application.
      */
     async maximumHeight(): Promise<number> {
-        if (this._maximumHeight === undefined) {
-            this._maximumHeight = await this.getMaximumHeight();
-        }
+        this._maximumHeight ??= await this.getMaximumHeight();
 
         return this._maximumHeight;
     }
