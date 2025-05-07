@@ -154,8 +154,7 @@ export interface ClassDescriptor extends Descriptor {
 /**
  * Proxy class type with fixed constructor.
  */
-type ProxyClassType<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, T extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt>> =
-    (new(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) => T) & typeof LibProxy;
+type ProxyClassType<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, T extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt>> = (new(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) => T) & typeof LibProxy;
 
 /**
  * Pending parameter descriptors, consumed and reset when method is described.
