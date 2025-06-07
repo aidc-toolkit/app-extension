@@ -90,17 +90,13 @@ export const localeStrings = {
             name: "s",
             description: "Numeric string."
         },
+        numericSFourOrFiveDigits: {
+            name: "s",
+            description: "Four- or five-digit numeric string."
+        },
         numericSWithCheckDigit: {
             name: "s",
             description: "Numeric string with check digit."
-        },
-        numericSFourDigits: {
-            name: "s",
-            description: "Four-digit numeric string."
-        },
-        numericSFiveDigits: {
-            name: "s",
-            description: "Five-digit numeric string."
         },
         ai82S: {
             name: "s",

@@ -90,17 +90,13 @@ export const localeStrings = {
             name: "c",
             description: "Chaîne numérique."
         },
+        numericSFourOrFiveDigits: {
+            name: "c",
+            description: "Chaîne numérique à quatre ou cinq chiffres."
+        },
         numericSWithCheckDigit: {
             name: "c",
             description: "Chaîne numérique avec chiffre de contrôle."
-        },
-        numericSFourDigits: {
-            name: "c",
-            description: "Chaîne numérique à quatre chiffres."
-        },
-        numericSFiveDigits: {
-            name: "c",
-            description: "Chaîne numérique à cinq chiffres."
         },
         ai82S: {
             name: "c",
