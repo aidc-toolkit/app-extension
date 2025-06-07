@@ -81,7 +81,6 @@ export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorE
                     result = error as ResultError<TResult, ThrowError, TError>;
                 } else {
                     // Unknown error; pass up the stack.
-                    // eslint-disable-next-line @typescript-eslint/only-throw-error -- Type will be interpreted and mapped by caller.
                     throw e;
                 }
             }
