@@ -32,6 +32,6 @@
     "@aidc-toolkit/core": "alpha",
     "@aidc-toolkit/gs1": "alpha",
     "@aidc-toolkit/utility": "alpha",
-    "i18next": "^25.0.1"
+    "i18next": "^25.2.1"
   }
 }
