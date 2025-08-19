@@ -98,6 +98,10 @@ export const localeStrings = {
             name: "c",
             description: "Chaîne numérique avec chiffre de contrôle."
         },
+        checkDigit: {
+            name: "chiffreDeControle",
+            description: "Chiffre de contrôle."
+        },
         ai82S: {
             name: "c",
             description: "Chaîne de caractères GS1 AI 82."

@@ -98,6 +98,10 @@ export const localeStrings = {
             name: "s",
             description: "Numeric string with check digit."
         },
+        checkDigit: {
+            name: "checkDigit",
+            description: "Check digit."
+        },
         ai82S: {
             name: "s",
             description: "GS1 AI encodable character set 82 string."

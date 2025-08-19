@@ -2,12 +2,13 @@ import {
     checkCharacterPair,
     checkDigit,
     hasValidCheckCharacterPair,
-    hasValidCheckDigit, hasValidPriceWeightCheckDigit,
-    priceWeightCheckDigit
+    hasValidCheckDigit,
+    isValidPriceOrWeightCheckDigit,
+    priceOrWeightCheckDigit
 } from "@aidc-toolkit/gs1";
 import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Type } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
-import type { ErrorExtends, Matrix, MatrixResultError } from "../types.js";
+import type { ErrorExtends, Matrix, MatrixResultError, ResultError } from "../types.js";
 
 const checkSParameterDescriptor: ParameterDescriptor = {
     name: "checkS",
@@ -31,6 +32,13 @@ const numericSWithCheckDigitParameterDescriptor: ParameterDescriptor = {
     extendsDescriptor: numericSParameterDescriptor,
     sortOrder: 1,
     name: "numericSWithCheckDigit"
+};
+
+const checkDigitParameterDescriptor: ParameterDescriptor = {
+    extendsDescriptor: numericSParameterDescriptor,
+    sortOrder: 2,
+    name: "checkDigit",
+    isMatrix: false
 };
 
 const ai82SParameterDescriptor: ParameterDescriptor = {
@@ -71,20 +79,24 @@ export class CheckProxy<ThrowError extends boolean, TError extends ErrorExtends<
         type: Type.String,
         isMatrix: true
     })
-    priceWeightCheckDigit(
+    priceOrWeightCheckDigit(
         @ProxyParameter(numericSFourOrFiveDigitsParameterDescriptor) matrixSs: Matrix<string>
     ): MatrixResultError<string, ThrowError, TError> {
-        return this.mapMatrix(matrixSs, s => priceWeightCheckDigit(s));
+        return this.mapMatrix(matrixSs, s => priceOrWeightCheckDigit(s));
     }
 
     @ProxyMethod({
         type: Type.String,
-        isMatrix: true
+        isMatrix: false
     })
-    hasValidPriceWeightCheckDigit(
-        @ProxyParameter(numericSWithCheckDigitParameterDescriptor) matrixSs: Matrix<string>
-    ): MatrixResultError<boolean, ThrowError, TError> {
-        return this.mapMatrix(matrixSs, s => hasValidPriceWeightCheckDigit(s));
+    isValidPriceOrWeightCheckDigit(
+        @ProxyParameter({
+            ...numericSFourOrFiveDigitsParameterDescriptor,
+            isMatrix: false
+        }) s: string,
+        @ProxyParameter(checkDigitParameterDescriptor) checkDigit: string
+    ): ResultError<boolean, ThrowError, TError> {
+        return isValidPriceOrWeightCheckDigit(s, checkDigit);
     }
 
     @ProxyMethod({
