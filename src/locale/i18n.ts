@@ -1,4 +1,4 @@
-import { i18nAssertValidResources, i18nCoreInit, type I18NEnvironment } from "@aidc-toolkit/core";
+import { i18nAssertValidResources, i18nCoreInit, type I18nEnvironment } from "@aidc-toolkit/core";
 import { gs1Resources, i18nGS1Init } from "@aidc-toolkit/gs1";
 import { i18nUtilityInit, utilityResources } from "@aidc-toolkit/utility";
 import i18next, { type i18n } from "i18next";
@@ -41,7 +41,7 @@ export const i18nextAppExtension: i18n = i18next.createInstance();
  * @returns
  * Void promise.
  */
-export async function i18nAppExtensionInit(environment: I18NEnvironment, debug = false): Promise<void> {
+export async function i18nAppExtensionInit(environment: I18nEnvironment, debug = false): Promise<void> {
     await i18nUtilityInit(environment, debug);
     await i18nGS1Init(environment, debug);
     await i18nCoreInit(i18nextAppExtension, environment, debug, appExtensionNS, utilityResources, gs1Resources, appExtensionResources);
