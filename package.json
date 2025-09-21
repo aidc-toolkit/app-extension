@@ -1,6 +1,6 @@
 {
   "name": "@aidc-toolkit/app-extension",
-  "version": "0.9.18-beta",
+  "version": "0.9.18",
   "description": "Application extension framework for AIDC Toolkit",
   "type": "module",
   "main": "dist/index.js",
