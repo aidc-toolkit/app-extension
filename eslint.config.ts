@@ -1,7 +1,7 @@
 import { esLintConfigAIDCToolkit } from "@aidc-toolkit/dev";
-import tseslint from "typescript-eslint";
+import { defineConfig } from "eslint/config";
 
-export default tseslint.config(
+export default defineConfig([
     ...esLintConfigAIDCToolkit,
     {
         files: [
@@ -18,4 +18,4 @@ export default tseslint.config(
             }]
         }
     }
-);
+]);
