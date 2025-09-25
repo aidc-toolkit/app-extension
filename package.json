@@ -1,6 +1,6 @@
 {
   "name": "@aidc-toolkit/app-extension",
-  "version": "0.9.18",
+  "version": "0.9.19-alpha",
   "description": "Application extension framework for AIDC Toolkit",
   "type": "module",
   "main": "dist/index.js",
@@ -32,6 +32,6 @@
     "@aidc-toolkit/core": "alpha",
     "@aidc-toolkit/gs1": "alpha",
     "@aidc-toolkit/utility": "alpha",
-    "i18next": "^25.2.1"
+    "i18next": "^25.5.2"
   }
 }
