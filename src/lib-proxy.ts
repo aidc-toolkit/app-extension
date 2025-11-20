@@ -1,5 +1,6 @@
 import { mapIterable } from "@aidc-toolkit/utility";
 import type { AppExtension } from "./app-extension.js";
+import { i18nextAppExtension } from "./locale/i18n.js";
 import type { ErrorExtends, Matrix, MatrixResultError, ResultError } from "./types.js";
 
 /**
@@ -51,6 +52,61 @@ export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorE
     }
 
     /**
+     * Handle an error thrown by a function call.
+     *
+     * @param e
+     * Error.
+     *
+     * @returns
+     * Error if errors are not thrown.
+     */
+    private handleError<TResult>(e: unknown): ResultError<TResult, ThrowError, TError> {
+        let result: ResultError<TResult, ThrowError, TError>;
+
+        if (e instanceof RangeError) {
+            const error = this._appExtension.mapRangeError(e);
+
+            if (this._appExtension.throwError) {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type is determined by application mapping.
+                throw error as Error;
+            }
+
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type determination is handled above.
+            result = error as ResultError<TResult, ThrowError, TError>;
+        } else {
+            // Unknown error; pass up the stack.
+            // eslint-disable-next-line @typescript-eslint/only-throw-error -- Error is being passed on from elsewhere.
+            throw e;
+        }
+
+        return result;
+    }
+
+    /**
+     * Do the callback for a simple return.
+     *
+     * @param value
+     * Value.
+     *
+     * @param callback
+     * Callback.
+     *
+     * @returns
+     * Callback result or error if errors are not thrown.
+     */
+    private doCallback<TValue, TResult>(value: TValue, callback: (value: TValue) => TResult): ResultError<TResult, ThrowError, TError> {
+        let result: ResultError<TResult, ThrowError, TError>;
+
+        try {
+            result = callback(value);
+        } catch (e: unknown) {
+            result = this.handleError(e);
+        }
+
+        return result;
+    }
+
+    /**
      * Map a matrix of values using a callback.
      *
      * @param matrixValues
@@ -63,30 +119,79 @@ export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorE
      * Matrix of callback results and errors if errors are not thrown.
      */
     protected mapMatrix<TValue, TResult>(matrixValues: Matrix<TValue>, callback: (value: TValue) => TResult): MatrixResultError<TResult, ThrowError, TError> {
-        return matrixValues.map(rowValues => rowValues.map((value) => {
-            let result: ResultError<TResult, ThrowError, TError>;
+        return matrixValues.map(rowValues => rowValues.map(value => this.doCallback(value, callback)));
+    }
 
-            try {
-                result = callback(value);
-            } catch (e: unknown) {
-                if (e instanceof RangeError) {
-                    const error = this._appExtension.mapRangeError(e);
+    /**
+     * Do the callback for an array return.
+     *
+     * @param value
+     * Value.
+     *
+     * @param callback
+     * Callback.
+     *
+     * @returns
+     * Callback result or error as array if errors are not thrown.
+     */
+    private doArrayCallback<TValue, TResult>(value: TValue, callback: (value: TValue) => TResult[]): Array<ResultError<TResult, ThrowError, TError>> {
+        const result = this.doCallback(value, callback);
 
-                    if (this._appExtension.throwError) {
-                        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type is known to extend Error.
-                        throw error as Error;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type determination is handled.
+        return result instanceof Array ? result : [result as ResultError<TResult, ThrowError, TError>];
+    }
+
+    /**
+     * Map a one-dimensional matrix of values using a callback.
+     *
+     * @param matrixValues
+     * Matrix of values.
+     *
+     * @param callback
+     * Callback.
+     *
+     * @returns
+     * Matrix of callback results and errors if errors are not thrown.
+     */
+    protected mapArray<TValue, TResult>(matrixValues: Matrix<TValue>, callback: (value: TValue) => TResult[]): MatrixResultError<TResult, ThrowError, TError> {
+        let matrixResultError: MatrixResultError<TResult, ThrowError, TError>;
+
+        if (matrixValues.length === 0) {
+            // Special case; unlikely to occur.
+            matrixResultError = [[]];
+        } else if (matrixValues.length === 1) {
+            matrixResultError = [];
+
+            matrixValues[0].forEach((value, columnIndex) => {
+                const arrayResultError = this.doArrayCallback(value, callback);
+
+                arrayResultError.forEach((resultError, rowIndex) => {
+                    if (matrixResultError.length <= rowIndex) {
+                        matrixResultError.push([]);
                     }
 
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type determination is handled above.
-                    result = error as ResultError<TResult, ThrowError, TError>;
-                } else {
-                    // Unknown error; pass up the stack.
-                    throw e;
-                }
-            }
+                    // Assignment will automatically expand array.
+                    matrixResultError[rowIndex][columnIndex] = resultError;
+                });
+            });
+        } else {
+            matrixResultError = matrixValues.map((rowValue) => {
+                let arrayResultError: Array<ResultError<TResult, ThrowError, TError>>;
 
-            return result;
-        }));
+                if (rowValue.length === 0) {
+                    // Special case; unlikely to occur.
+                    arrayResultError = [];
+                } else if (rowValue.length === 1) {
+                    arrayResultError = this.doArrayCallback(rowValue[0], callback);
+                } else {
+                    arrayResultError = [this.handleError(new RangeError(i18nextAppExtension.t("Proxy.matrixMustBeArray")))];
+                }
+
+                return arrayResultError;
+            });
+        }
+
+        return matrixResultError;
     }
 
     /**

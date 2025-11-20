@@ -217,7 +217,7 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
         for (const hArrayValues of vMatrixValues) {
             // This test should be necessary only once but account for zero-size matrix and misuse of method.
             if (hArrayValues.length !== 1) {
-                throw new RangeError(i18nextAppExtension.t("Proxy.hSpillNotAVerticalArray"));
+                throw new RangeError(i18nextAppExtension.t("Proxy.hSpillMustBeVerticalArray"));
             }
         }
 

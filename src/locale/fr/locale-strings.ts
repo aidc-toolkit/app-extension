@@ -4,7 +4,8 @@ export const localeStrings = {
     },
     Proxy: {
         vSpillMustBeHorizontalArray: "L'entrée doit être un tableau horizontal",
-        hSpillNotAVerticalArray: "L'entrée doit être un tableau vertical"
+        hSpillMustBeVerticalArray: "L'entrée doit être un tableau vertical",
+        matrixMustBeArray: "L'entrée doit être un tableau unidimensionnel"
     },
     IdentificationKeyCreatorProxy: {
         prefixDefinitionMustBeOneDimensional: "La définition du préfixe doit être une matrice unidimensionnelle",
@@ -137,6 +138,22 @@ export const localeStrings = {
         validateGTIN14: {
             name: "gtin14",
             description: "GTIN-14 à valider."
+        },
+        rcnFormat: {
+            name: "format",
+            description: "Format de numéro de diffusion restreinte."
+        },
+        rcn: {
+            name: "rcn",
+            description: "Numéro de diffusion restreint à analyser."
+        },
+        rcnItemReference: {
+            name: "itemReference",
+            description: "Référence de l'article."
+        },
+        rcnPriceOrWeight: {
+            name: "priceOrWeight",
+            description: "Prix ou poids (nombre entier uniquement)."
         },
         baseIdentificationKey: {
             name: "cleDIdentificationDeBase",
@@ -396,6 +413,10 @@ export const localeStrings = {
             validateGTIN14: {
                 name: "validerGTIN14",
                 description: "Valider un GTIN-14."
+            },
+            parseVariableMeasureRCN: {
+                name: "parseVariableMeasureRCN",
+                description: "Analyser un numéro de diffusion restreinte (RCN) à l'aide d'un format d'article commercial à mesure variable."
             },
             validateGLN: {
                 name: "validerGLN",

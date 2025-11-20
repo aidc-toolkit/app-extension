@@ -12,7 +12,7 @@ import {
     GTIN12_VALIDATOR,
     GTIN13_VALIDATOR,
     GTIN8_VALIDATOR,
-    type GTINCreator,
+    GTINCreator,
     type GTINLevel,
     GTINValidator,
     type IdentificationKeyCreator,
@@ -189,6 +189,34 @@ const validateGTIN14ParameterDescriptor: ParameterDescriptor = {
     name: "validateGTIN14"
 };
 
+const rcnFormatParameterDescriptor: ParameterDescriptor = {
+    name: "rcnFormat",
+    type: Type.String,
+    isMatrix: false,
+    isRequired: true
+};
+
+const rcnParameterDescriptor: ParameterDescriptor = {
+    name: "rcn",
+    type: Type.String,
+    isMatrix: true,
+    isRequired: true
+};
+
+const rcnItemReferenceParameterDescriptor: ParameterDescriptor = {
+    name: "rcnItemReference",
+    type: Type.Number,
+    isMatrix: false,
+    isRequired: true
+};
+
+const rcnPriceOrWeightParameterDescriptor: ParameterDescriptor = {
+    name: "rcnPriceOrWeight",
+    type: Type.Number,
+    isMatrix: true,
+    isRequired: true
+};
+
 @ProxyClass({
     namespace: "GS1"
 })
@@ -258,6 +286,21 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
     ): Matrix<string> {
         return LibProxy.mapMatrixRangeError(matrixGTIN14s, (gtin14) => {
             GTINValidator.validateGTIN14(gtin14);
+        });
+    }
+
+    @ProxyMethod({
+        type: Type.Number,
+        isMatrix: true
+    })
+    parseVariableMeasureRCN(
+        @ProxyParameter(rcnFormatParameterDescriptor) format: string,
+        @ProxyParameter(rcnParameterDescriptor) matrixRCNs: Matrix<string>
+    ): MatrixResultError<number, ThrowError, TError> {
+        return this.mapArray(matrixRCNs, (rcn) => {
+            const rcnReference = GTINValidator.parseVariableMeasureRCN(format, rcn);
+
+            return [rcnReference.itemReference, rcnReference.priceOrWeight];
         });
     }
 }
@@ -645,6 +688,19 @@ export class GTINCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
         const sparseOrUndefined = sparse ?? undefined;
 
         return this.mapMatrix(matrixValues, value => creator.createGTIN14(indicatorDigit, value, sparseOrUndefined));
+    }
+
+    @ProxyMethod({
+        type: Type.String,
+        isMatrix: true,
+        ignoreInfix: true
+    })
+    createVariableMeasureRCN(
+        @ProxyParameter(rcnFormatParameterDescriptor) format: string,
+        @ProxyParameter(rcnItemReferenceParameterDescriptor) itemReference: number,
+        @ProxyParameter(rcnPriceOrWeightParameterDescriptor) matrixPricesOrWeights: Matrix<number>
+    ): MatrixResultError<string, ThrowError, TError> {
+        return this.mapMatrix(matrixPricesOrWeights, priceOrWeight => GTINCreator.createVariableMeasureRCN(format, itemReference, priceOrWeight));
     }
 }
 
