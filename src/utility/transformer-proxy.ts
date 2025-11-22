@@ -16,6 +16,7 @@ const domainParameterDescriptor: ParameterDescriptor = {
     isRequired: true
 };
 
+// eslint-disable-next-line no-useless-assignment -- ESLint bug.
 const transformedValueParameterDescriptor: ParameterDescriptor = {
     extendsDescriptor: valueParameterDescriptor,
     name: "transformedValue"

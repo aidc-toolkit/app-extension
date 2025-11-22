@@ -46,6 +46,7 @@ const ai82SParameterDescriptor: ParameterDescriptor = {
     name: "ai82S"
 };
 
+// eslint-disable-next-line no-useless-assignment -- ESLint bug.
 const ai82SWithCheckCharacterPairParameterDescriptor: ParameterDescriptor = {
     extendsDescriptor: ai82SParameterDescriptor,
     name: "ai82SWithCheckCharacterPair"
