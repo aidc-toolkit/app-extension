@@ -139,22 +139,6 @@ export const localeStrings = {
             name: "gtin14",
             description: "GTIN-14 to validate."
         },
-        rcnFormat: {
-            name: "format",
-            description: "Restricted Circulation Number format."
-        },
-        rcn: {
-            name: "rcn",
-            description: "Restricted Circulation Number to parse."
-        },
-        rcnItemReference: {
-            name: "itemReference",
-            description: "Item reference."
-        },
-        rcnPriceOrWeight: {
-            name: "priceOrWeight",
-            description: "Price or weight (whole number only)."
-        },
         baseIdentificationKey: {
             name: "baseIdentificationKey",
             description: "Base identification key."
@@ -166,6 +150,14 @@ export const localeStrings = {
         gtinLevel: {
             name: "level",
             description: "Level at which to validate the GTIN. Valid values are 0 (any), 1 (retail consumer trade item), and 2 (other than retail consumer trade item level)."
+        },
+        rcnFormat: {
+            name: "format",
+            description: "Restricted Circulation Number format."
+        },
+        rcn: {
+            name: "rcn",
+            description: "Restricted Circulation Number to parse."
         },
         prefix: {
             name: "prefix",
@@ -190,6 +182,14 @@ export const localeStrings = {
         sparse: {
             name: "sparse",
             description: "If true, value is mapped to a sparse sequence resistant to discovery. Default is false."
+        },
+        rcnItemReference: {
+            name: "itemReference",
+            description: "Item reference."
+        },
+        rcnPriceOrWeight: {
+            name: "priceOrWeight",
+            description: "Price or weight (whole number only)."
         },
         serialComponent: {
             name: "serialComponent",
@@ -362,13 +362,13 @@ export const localeStrings = {
                 name: "hasValidCheckDigit",
                 description: "Determine if a string has a valid check digit."
             },
-            fourDigitPriceWeightCheckDigit: {
-                name: "fourDigitPriceWeightCheckDigit",
-                description: "Calculate the check digit for a four-digit price or weight."
+            priceOrWeightCheckDigit: {
+                name: "priceOrWeightCheckDigit",
+                description: "Calculate the check digit for a price or weight."
             },
-            fiveDigitPriceWeightCheckDigit: {
-                name: "fiveDigitPriceWeightCheckDigit",
-                description: "Calculate the check digit for a five-digit price or weight."
+            isValidPriceOrWeightCheckDigit: {
+                name: "isValidPriceOrWeightCheckDigit",
+                description: "Determine if a price or weight check digit is valid."
             },
             checkCharacterPair: {
                 name: "checkCharacterPair",
@@ -481,6 +481,10 @@ export const localeStrings = {
             createGTIN14: {
                 name: "createGTIN14",
                 description: "Create a GTIN-14."
+            },
+            createVariableMeasureRCN: {
+                name: "createVariableMeasureRCN",
+                description: "Create a variable measure Restricted Circulation Number (RCN)."
             },
             createGLN: {
                 name: "createGLN",

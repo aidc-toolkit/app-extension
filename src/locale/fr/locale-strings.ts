@@ -139,22 +139,6 @@ export const localeStrings = {
             name: "gtin14",
             description: "GTIN-14 à valider."
         },
-        rcnFormat: {
-            name: "format",
-            description: "Format de numéro de diffusion restreinte."
-        },
-        rcn: {
-            name: "rcn",
-            description: "Numéro de diffusion restreint à analyser."
-        },
-        rcnItemReference: {
-            name: "itemReference",
-            description: "Référence de l'article."
-        },
-        rcnPriceOrWeight: {
-            name: "priceOrWeight",
-            description: "Prix ou poids (nombre entier uniquement)."
-        },
         baseIdentificationKey: {
             name: "cleDIdentificationDeBase",
             description: "Clé d'identification de base."
@@ -166,6 +150,14 @@ export const localeStrings = {
         gtinLevel: {
             name: "niveau",
             description: "Niveau auquel valider le GTIN. Les valeurs valides sont 0 (n'importe lequel), 1 (article commercial de consommation au détail) et 2 (autre que le niveau de l'article commercial de consommation au détail)."
+        },
+        rcnFormat: {
+            name: "format",
+            description: "Format de numéro de diffusion restreinte."
+        },
+        rcn: {
+            name: "rcn",
+            description: "Numéro de diffusion restreint à analyser."
         },
         prefix: {
             name: "prefixe",
@@ -190,6 +182,14 @@ export const localeStrings = {
         sparse: {
             name: "clairsemee",
             description: "Si cette valeur est vraie, la valeur est mappée sur une séquence clairsemée résistante à la découverte. La valeur par défaut est faux."
+        },
+        rcnItemReference: {
+            name: "referenceDArticle",
+            description: "Référence d'article."
+        },
+        rcnPriceOrWeight: {
+            name: "prixOuPoids",
+            description: "Prix ou poids (nombre entier uniquement)."
         },
         serialComponent: {
             name: "composanteSerie",
@@ -362,13 +362,13 @@ export const localeStrings = {
                 name: "aChiffreDeControleValide",
                 description: "Déterminer si une chaîne a un chiffre de contrôle valide."
             },
-            fourDigitPriceWeightCheckDigit: {
-                name: "prixPoidsAQuatreChiffresChiffreDeControle",
-                description: "Calculer le chiffre de contrôle pour un prix ou un poids à quatre chiffres."
+            priceOrWeightCheckDigit: {
+                name: "chiffreDeControlePrixOuPoids",
+                description: "Calculer le chiffre de contrôle pour un prix ou un poids."
             },
-            fiveDigitPriceWeightCheckDigit: {
-                name: "prixPoidsACinqChiffresChiffreDeControle",
-                description: "Calculer le chiffre de contrôle pour un prix ou un poids à cinq chiffres."
+            isValidPriceOrWeightCheckDigit: {
+                name: "estChiffreDeControlePrixOuPoidsValide",
+                description: "Déterminer si un chiffre de contrôle de prix ou de poids est valide."
             },
             checkCharacterPair: {
                 name: "paireDeCaracteresDeControle",
@@ -481,6 +481,10 @@ export const localeStrings = {
             createGTIN14: {
                 name: "creerGTIN14",
                 description: "Créer un GTIN-14."
+            },
+            createVariableMeasureRCN: {
+                name: "creerMesureVariableRCN",
+                description: "Créer un numéro de diffusion restreinte (RCN) à l'aide d'un format d'article commercial à mesure variable."
             },
             createGLN: {
                 name: "creerGLN",
