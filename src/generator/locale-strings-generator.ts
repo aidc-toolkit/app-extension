@@ -297,7 +297,7 @@ class LocaleStringsGenerator extends Generator {
             if (parametersSequencerEntry.isUsed) {
                 this._parametersLocaleStrings[parameterName] = {
                     name: parameterName,
-                    description: ""
+                    description: "*** LOCALIZATION REQUIRED ***"
                 };
             }
 
