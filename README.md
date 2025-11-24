@@ -14,4 +14,4 @@ Unless required by applicable law or agreed to in writing, software distributed 
 >
 > **This software is in beta**, with production release is scheduled for 2025Q4. To follow the status of this and other projects, go to the AIDC Toolkit [projects](https://github.com/orgs/aidc-toolkit/projects) page.
 
-The AIDC Toolkit `app-extension` package is the bridge between the AIDC Toolkit and applications such s Microsoft Excel and Google Sheets. It provides little functionality of its own.
+The AIDC Toolkit `app-extension` package is the bridge between the AIDC Toolkit and applications such as Microsoft Excel and Google Sheets. It does so by flattening the object model, replacing stateful object construction and method calls with stateless functions.
