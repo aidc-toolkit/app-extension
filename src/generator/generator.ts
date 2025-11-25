@@ -1,4 +1,4 @@
-import { I18nEnvironment } from "@aidc-toolkit/core";
+import { I18nEnvironments } from "@aidc-toolkit/core";
 import type { ParseKeys } from "i18next";
 import { expandParameterDescriptor, getClassDescriptors } from "../descriptor.js";
 import { appExtensionResources, i18nAppExtensionInit, i18nextAppExtension } from "../locale/i18n.js";
@@ -182,7 +182,7 @@ export abstract class Generator {
     async generate(): Promise<void> {
         let success = false;
 
-        await i18nAppExtensionInit(I18nEnvironment.CLI);
+        await i18nAppExtensionInit(I18nEnvironments.CLI);
 
         this.initialize();
 
