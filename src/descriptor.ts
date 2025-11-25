@@ -12,27 +12,32 @@ interface Descriptor {
 /**
  * Types supported by proxy methods.
  */
-export enum Type {
+export const Types = {
     /**
      * String.
      */
-    String,
+    String: 0,
 
     /**
      * Number or enumeration.
      */
-    Number,
+    Number: 1,
 
     /**
      * Boolean.
      */
-    Boolean,
+    Boolean: 2,
 
     /**
      * Any.
      */
-    Any
-}
+    Any: 3
+} as const;
+
+/**
+ * Type.
+ */
+export type Type = typeof Types[keyof typeof Types];
 
 /**
  * Type descriptor.

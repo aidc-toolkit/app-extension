@@ -6,13 +6,13 @@ import {
     isValidPriceOrWeightCheckDigit,
     priceOrWeightCheckDigit
 } from "@aidc-toolkit/gs1";
-import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Type } from "../descriptor.js";
+import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
 import type { ErrorExtends, Matrix, MatrixResultError, ResultError } from "../types.js";
 
 const checkSParameterDescriptor: ParameterDescriptor = {
     name: "checkS",
-    type: Type.String,
+    type: Types.String,
     isMatrix: true,
     isRequired: true
 };
@@ -57,7 +57,7 @@ const ai82SWithCheckCharacterPairParameterDescriptor: ParameterDescriptor = {
 })
 export class CheckProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     @ProxyMethod({
-        type: Type.String,
+        type: Types.String,
         isMatrix: true
     })
     checkDigit(
@@ -67,7 +67,7 @@ export class CheckProxy<ThrowError extends boolean, TError extends ErrorExtends<
     }
 
     @ProxyMethod({
-        type: Type.String,
+        type: Types.String,
         isMatrix: true
     })
     hasValidCheckDigit(
@@ -77,7 +77,7 @@ export class CheckProxy<ThrowError extends boolean, TError extends ErrorExtends<
     }
 
     @ProxyMethod({
-        type: Type.String,
+        type: Types.String,
         isMatrix: true
     })
     priceOrWeightCheckDigit(
@@ -87,7 +87,7 @@ export class CheckProxy<ThrowError extends boolean, TError extends ErrorExtends<
     }
 
     @ProxyMethod({
-        type: Type.String,
+        type: Types.String,
         isMatrix: false
     })
     isValidPriceOrWeightCheckDigit(
@@ -101,7 +101,7 @@ export class CheckProxy<ThrowError extends boolean, TError extends ErrorExtends<
     }
 
     @ProxyMethod({
-        type: Type.String,
+        type: Types.String,
         isMatrix: true
     })
     checkCharacterPair(
@@ -111,7 +111,7 @@ export class CheckProxy<ThrowError extends boolean, TError extends ErrorExtends<
     }
 
     @ProxyMethod({
-        type: Type.String,
+        type: Types.String,
         isMatrix: true
     })
     hasValidCheckCharacterPair(

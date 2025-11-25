@@ -1,8 +1,8 @@
-import { type ParameterDescriptor, Type } from "../descriptor.js";
+import { type ParameterDescriptor, Types } from "../descriptor.js";
 
 export const sParameterDescriptor: ParameterDescriptor = {
     name: "s",
-    type: Type.String,
+    type: Types.String,
     isMatrix: true,
     isRequired: true
 };

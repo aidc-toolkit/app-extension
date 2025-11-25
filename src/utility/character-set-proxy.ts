@@ -15,7 +15,7 @@ import {
     ProxyClass,
     ProxyMethod,
     ProxyParameter,
-    Type
+    Types
 } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
 import type { ErrorExtends, Matrix, MatrixResultError, Nullishable, ResultError } from "../types.js";
@@ -35,7 +35,7 @@ import {
 
 const lengthParameterDescriptor: ParameterDescriptor = {
     name: "length",
-    type: Type.Number,
+    type: Types.Number,
     isMatrix: false,
     isRequired: true
 };
@@ -55,7 +55,7 @@ export abstract class CharacterSetProxy<ThrowError extends boolean, TError exten
     }
 
     @ProxyMethod({
-        type: Type.String,
+        type: Types.String,
         isMatrix: true
     })
     validate(
@@ -68,7 +68,7 @@ export abstract class CharacterSetProxy<ThrowError extends boolean, TError exten
     }
 
     @ProxyMethod({
-        type: Type.Boolean,
+        type: Types.Boolean,
         isMatrix: true
     })
     isValid(
@@ -79,7 +79,7 @@ export abstract class CharacterSetProxy<ThrowError extends boolean, TError exten
     }
 
     @ProxyMethod({
-        type: Type.String,
+        type: Types.String,
         isMatrix: true
     })
     create(
@@ -96,7 +96,7 @@ export abstract class CharacterSetProxy<ThrowError extends boolean, TError exten
 
     @ProxyMethod({
         infixBefore: "Sequence",
-        type: Type.String,
+        type: Types.String,
         isMatrix: true
     })
     createSequence(
@@ -115,7 +115,7 @@ export abstract class CharacterSetProxy<ThrowError extends boolean, TError exten
     }
 
     @ProxyMethod({
-        type: Type.Number,
+        type: Types.Number,
         isMatrix: true
     })
     valueFor(

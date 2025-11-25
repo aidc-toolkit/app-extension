@@ -41,7 +41,7 @@ import {
     ProxyClass,
     ProxyMethod,
     ProxyParameter,
-    Type
+    Types
 } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
 import { i18nextAppExtension } from "../locale/i18n.js";
@@ -56,7 +56,7 @@ import {
 
 const identifierParameterDescriptor: ParameterDescriptor = {
     name: "identifier",
-    type: Type.String,
+    type: Types.String,
     isMatrix: true,
     isRequired: true
 };
@@ -83,7 +83,7 @@ abstract class IdentifierValidatorProxy<ThrowError extends boolean, TError exten
 
 abstract class NumericIdentifierValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, TNumericIdentifierValidator extends NumericIdentifierValidator> extends IdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, IdentifierValidation, TNumericIdentifierValidator> {
     @ProxyMethod({
-        type: Type.String,
+        type: Types.String,
         isMatrix: true
     })
     validate(
@@ -104,7 +104,7 @@ abstract class SerializableNumericIdentifierValidatorProxy<ThrowError extends bo
 
 abstract class NonNumericIdentifierValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends IdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonNumericIdentifierValidation, NonNumericIdentifierValidator> {
     @ProxyMethod({
-        type: Type.String,
+        type: Types.String,
         isMatrix: true
     })
     validate(
@@ -159,7 +159,7 @@ const zeroSuppressedGTIN12ParameterDescriptor: ParameterDescriptor = {
 
 const indicatorDigitParameterDescriptor: ParameterDescriptor = {
     name: "indicatorDigit",
-    type: Type.String,
+    type: Types.String,
     isMatrix: false,
     isRequired: true
 };
@@ -181,7 +181,7 @@ const validateGTINParameterDescriptor: ParameterDescriptor = {
 
 const gtinLevelParameterDescriptor: ParameterDescriptor = {
     name: "gtinLevel",
-    type: Type.Number,
+    type: Types.Number,
     isMatrix: false,
     isRequired: false
 };
@@ -193,28 +193,28 @@ const validateGTIN14ParameterDescriptor: ParameterDescriptor = {
 
 const rcnFormatParameterDescriptor: ParameterDescriptor = {
     name: "rcnFormat",
-    type: Type.String,
+    type: Types.String,
     isMatrix: false,
     isRequired: true
 };
 
 const rcnParameterDescriptor: ParameterDescriptor = {
     name: "rcn",
-    type: Type.String,
+    type: Types.String,
     isMatrix: true,
     isRequired: true
 };
 
 const rcnItemReferenceParameterDescriptor: ParameterDescriptor = {
     name: "rcnItemReference",
-    type: Type.Number,
+    type: Types.Number,
     isMatrix: false,
     isRequired: true
 };
 
 const rcnPriceOrWeightParameterDescriptor: ParameterDescriptor = {
     name: "rcnPriceOrWeight",
-    type: Type.Number,
+    type: Types.Number,
     isMatrix: true,
     isRequired: true
 };
@@ -224,7 +224,7 @@ const rcnPriceOrWeightParameterDescriptor: ParameterDescriptor = {
 })
 export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     @ProxyMethod({
-        type: Type.String,
+        type: Types.String,
         isMatrix: true
     })
     zeroSuppressGTIN12(
@@ -234,7 +234,7 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
     }
 
     @ProxyMethod({
-        type: Type.String,
+        type: Types.String,
         isMatrix: true
     })
     zeroExpandGTIN12(
@@ -244,7 +244,7 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
     }
 
     @ProxyMethod({
-        type: Type.String,
+        type: Types.String,
         isMatrix: true
     })
     convertToGTIN14(
@@ -255,7 +255,7 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
     }
 
     @ProxyMethod({
-        type: Type.String,
+        type: Types.String,
         isMatrix: true
     })
     normalizeGTIN(
@@ -265,7 +265,7 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
     }
 
     @ProxyMethod({
-        type: Type.String,
+        type: Types.String,
         isMatrix: true
     })
     validateGTIN(
@@ -280,7 +280,7 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
     }
 
     @ProxyMethod({
-        type: Type.String,
+        type: Types.String,
         isMatrix: true
     })
     validateGTIN14(
@@ -292,7 +292,7 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
     }
 
     @ProxyMethod({
-        type: Type.Number,
+        type: Types.Number,
         isMatrix: true
     })
     parseVariableMeasureRCN(
@@ -419,28 +419,28 @@ export class GMNValidatorProxy<ThrowError extends boolean, TError extends ErrorE
 
 const prefixParameterDescriptor: ParameterDescriptor = {
     name: "prefix",
-    type: Type.String,
+    type: Types.String,
     isMatrix: false,
     isRequired: true
 };
 
 const prefixTypeParameterDescriptor: ParameterDescriptor = {
     name: "prefixType",
-    type: Type.Number,
+    type: Types.Number,
     isMatrix: false,
     isRequired: false
 };
 
 const tweakFactorParameterDescriptor: ParameterDescriptor = {
     name: "tweakFactor",
-    type: Type.Number,
+    type: Types.Number,
     isMatrix: false,
     isRequired: false
 };
 
 const prefixDefinitionParameterDescriptor: ParameterDescriptor = {
     name: "prefixDefinition",
-    type: Type.Any,
+    type: Types.Any,
     isMatrix: true,
     isRequired: true
 };
@@ -460,7 +460,7 @@ const prefixDefinitionAnyParameterDescriptor: ParameterDescriptor = {
 })
 export class PrefixManagerProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     @ProxyMethod({
-        type: Type.Any,
+        type: Types.Any,
         isMatrix: true
     })
     definePrefix(
@@ -534,14 +534,14 @@ abstract class IdentifierCreatorProxy<ThrowError extends boolean, TError extends
 
 const sparseParameterDescriptor: ParameterDescriptor = {
     name: "sparse",
-    type: Type.Boolean,
+    type: Types.Boolean,
     isMatrix: false,
     isRequired: false
 };
 
 abstract class NumericIdentifierCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, TNumericIdentifierCreator extends NumericIdentifierCreator> extends IdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt, TNumericIdentifierCreator> {
     @ProxyMethod({
-        type: Type.String,
+        type: Types.String,
         isMatrix: true
     })
     create(
@@ -558,7 +558,7 @@ abstract class NumericIdentifierCreatorProxy<ThrowError extends boolean, TError 
 
     @ProxyMethod({
         infixBefore: "Sequence",
-        type: Type.String,
+        type: Types.String,
         isMatrix: true
     })
     createSequence(
@@ -573,7 +573,7 @@ abstract class NumericIdentifierCreatorProxy<ThrowError extends boolean, TError 
     }
 
     @ProxyMethod({
-        type: Type.String,
+        type: Types.String,
         isMatrix: true
     })
     createAll(
@@ -603,14 +603,14 @@ const baseIdentifierParameterDescriptor: ParameterDescriptor = {
 
 const serialComponentParameterDescriptor: ParameterDescriptor = {
     name: "serialComponent",
-    type: Type.String,
+    type: Types.String,
     isMatrix: true,
     isRequired: true
 };
 
 abstract class SerializableNumericIdentifierCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt, SerializableNumericIdentifierCreator> {
     @ProxyMethod({
-        type: Type.String,
+        type: Types.String,
         isMatrix: true
     })
     createSerialized(
@@ -627,7 +627,7 @@ abstract class SerializableNumericIdentifierCreatorProxy<ThrowError extends bool
     }
 
     @ProxyMethod({
-        type: Type.String,
+        type: Types.String,
         isMatrix: true
     })
     concatenate(
@@ -642,14 +642,14 @@ abstract class SerializableNumericIdentifierCreatorProxy<ThrowError extends bool
 
 const referenceParameterDescriptor: ParameterDescriptor = {
     name: "reference",
-    type: Type.String,
+    type: Types.String,
     isMatrix: true,
     isRequired: true
 };
 
 abstract class NonNumericIdentifierCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends IdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonNumericIdentifierCreator> {
     @ProxyMethod({
-        type: Type.String,
+        type: Types.String,
         isMatrix: true
     })
     create(
@@ -678,7 +678,7 @@ export class GTINCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
     }
 
     @ProxyMethod({
-        type: Type.String,
+        type: Types.String,
         isMatrix: true,
         ignoreInfix: true
     })
@@ -696,7 +696,7 @@ export class GTINCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
     }
 
     @ProxyMethod({
-        type: Type.String,
+        type: Types.String,
         isMatrix: true,
         ignoreInfix: true
     })

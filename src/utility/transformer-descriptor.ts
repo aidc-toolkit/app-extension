@@ -1,8 +1,8 @@
-import { type ParameterDescriptor, Type } from "../descriptor.js";
+import { type ParameterDescriptor, Types } from "../descriptor.js";
 
 export const valueParameterDescriptor: ParameterDescriptor = {
     name: "value",
-    type: Type.Number,
+    type: Types.Number,
     isMatrix: true,
     isRequired: true
 };
@@ -21,7 +21,7 @@ export const countParameterDescriptor: ParameterDescriptor = {
 
 export const tweakParameterDescriptor: ParameterDescriptor = {
     name: "tweak",
-    type: Type.Number,
+    type: Types.Number,
     isMatrix: false,
     isRequired: false
 };

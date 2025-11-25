@@ -1,18 +1,18 @@
-import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Type } from "./descriptor.js";
+import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Types } from "./descriptor.js";
 import { LibProxy } from "./lib-proxy.js";
 import { i18nextAppExtension } from "./locale/i18n.js";
 import { type ErrorExtends, isNullish, type Matrix, type NonNullishable, type Nullishable } from "./types.js";
 
 const spillMatrix: ParameterDescriptor = {
     name: "spillMatrix",
-    type: Type.Any,
+    type: Types.Any,
     isMatrix: true,
     isRequired: true
 };
 
 const spillMaximumParameterDescriptor: ParameterDescriptor = {
     name: "spillMaximum",
-    type: Type.Number,
+    type: Types.Number,
     isMatrix: false,
     isRequired: false
 };
@@ -56,7 +56,7 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
      * Version.
      */
     @ProxyMethod({
-        type: Type.String,
+        type: Types.String,
         isMatrix: false
     })
     version(): string {
@@ -124,7 +124,7 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
      */
     @ProxyMethod({
         requiresContext: true,
-        type: Type.Any,
+        type: Types.Any,
         isMatrix: true
     })
     async vSpill(
@@ -203,7 +203,7 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
      */
     @ProxyMethod({
         requiresContext: true,
-        type: Type.Any,
+        type: Types.Any,
         isMatrix: true
     })
     async hSpill(

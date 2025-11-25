@@ -1,5 +1,5 @@
 import { mapIterable, Sequence, Transformer } from "@aidc-toolkit/utility";
-import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Type } from "../descriptor.js";
+import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
 import type { ErrorExtends, Matrix, MatrixResultError, Nullishable, ResultError } from "../types.js";
 import {
@@ -11,7 +11,7 @@ import {
 
 const domainParameterDescriptor: ParameterDescriptor = {
     name: "domain",
-    type: Type.Number,
+    type: Types.Number,
     isMatrix: false,
     isRequired: true
 };
@@ -27,7 +27,7 @@ const transformedValueParameterDescriptor: ParameterDescriptor = {
 })
 export class TransformerProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     @ProxyMethod({
-        type: Type.Number,
+        type: Types.Number,
         isMatrix: true
     })
     forward(
@@ -42,7 +42,7 @@ export class TransformerProxy<ThrowError extends boolean, TError extends ErrorEx
 
     @ProxyMethod({
         infixBefore: "Sequence",
-        type: Type.Number,
+        type: Types.Number,
         isMatrix: true
     })
     forwardSequence(
@@ -57,7 +57,7 @@ export class TransformerProxy<ThrowError extends boolean, TError extends ErrorEx
     }
 
     @ProxyMethod({
-        type: Type.Number,
+        type: Types.Number,
         isMatrix: true
     })
     reverse(
