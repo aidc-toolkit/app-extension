@@ -1,4 +1,4 @@
-import { Sequence, Transformer, mapIterable } from "@aidc-toolkit/utility";
+import { mapIterable, Sequence, Transformer } from "@aidc-toolkit/utility";
 import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Type } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
 import type { ErrorExtends, Matrix, MatrixResultError, Nullishable, ResultError } from "../types.js";

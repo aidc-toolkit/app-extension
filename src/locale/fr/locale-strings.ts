@@ -7,11 +7,11 @@ export const localeStrings = {
         hSpillMustBeVerticalArray: "L'entrée doit être un tableau vertical",
         matrixMustBeArray: "L'entrée doit être un tableau unidimensionnel"
     },
-    IdentificationKeyCreatorProxy: {
+    IdentifierCreatorProxy: {
         prefixDefinitionMustBeOneDimensional: "La définition du préfixe doit être une matrice unidimensionnelle",
         prefixDefinitionMustHaveMaximumThreeElements: "La définition du préfixe doit comporter un maximum de 3 éléments",
         prefixMustBeString: "Le préfixe doit être une chaîne",
-        prefixTypeMustBeNumber: "Le type de préfixe doit être un nombre",
+        prefixTypeMustBeNumber: "Le type de préfixe doit être un nombre compris entre 0 et {{maximumPrefixType, number}}",
         tweakFactorMustBeNumber: "Le facteur de réglage doit être un nombre"
     },
     Parameters: {
@@ -111,7 +111,7 @@ export const localeStrings = {
             name: "c",
             description: "Chaîne de caractères GS1 AI 82 avec paire de caractères de contrôle."
         },
-        validateIdentificationKey: {
+        validateIdentifier: {
             name: "cleDIdentification",
             description: "Clé d'identification à valider."
         },
@@ -139,7 +139,7 @@ export const localeStrings = {
             name: "gtin14",
             description: "GTIN-14 à valider."
         },
-        baseIdentificationKey: {
+        baseIdentifier: {
             name: "cleDIdentificationDeBase",
             description: "Clé d'identification de base."
         },

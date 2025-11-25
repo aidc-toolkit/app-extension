@@ -7,11 +7,11 @@ export const localeStrings = {
         hSpillMustBeVerticalArray: "Input must be a vertical array",
         matrixMustBeArray: "Input must be a one-dimensional array"
     },
-    IdentificationKeyCreatorProxy: {
+    IdentifierCreatorProxy: {
         prefixDefinitionMustBeOneDimensional: "Prefix definition must be a one-dimensional matrix",
         prefixDefinitionMustHaveMaximumThreeElements: "Prefix definition must have a maximum of 3 elements",
         prefixMustBeString: "Prefix must be a string",
-        prefixTypeMustBeNumber: "Prefix type must be a number",
+        prefixTypeMustBeNumber: "Prefix type must be a number in the range of 0 to {{maximumPrefixType, number}}",
         tweakFactorMustBeNumber: "Tweak factor must be a number"
     },
     Parameters: {
@@ -111,9 +111,9 @@ export const localeStrings = {
             name: "s",
             description: "GS1 AI encodable character set 82 string with check character pair."
         },
-        validateIdentificationKey: {
-            name: "identificationKey",
-            description: "Identification key to validate."
+        validateIdentifier: {
+            name: "identifier",
+            description: "Identifier to validate."
         },
         zeroSuppressibleGTIN12: {
             name: "gtin12",
@@ -139,9 +139,9 @@ export const localeStrings = {
             name: "gtin14",
             description: "GTIN-14 to validate."
         },
-        baseIdentificationKey: {
-            name: "baseIdentificationKey",
-            description: "Base identification key."
+        baseIdentifier: {
+            name: "baseIdentifier",
+            description: "Base identifier."
         },
         indicatorDigit: {
             name: "indicatorDigit",
@@ -169,7 +169,7 @@ export const localeStrings = {
         },
         tweakFactor: {
             name: "tweakFactor",
-            description: "Tweak factor, used to support the creation of sparse identification keys. The default tweak factor is based on the GS1 Company Prefix, and is usually sufficient for obfuscation. This allows more control over the encryption when higher security is required."
+            description: "Tweak factor, used to support the creation of sparse identifiers. The default tweak factor is based on the GS1 Company Prefix, and is usually sufficient for obfuscation. This allows more control over the encryption when higher security is required."
         },
         prefixDefinitionAny: {
             name: "prefixDefinition",
@@ -197,7 +197,7 @@ export const localeStrings = {
         },
         reference: {
             name: "reference",
-            description: "Reference portion of identification key."
+            description: "Reference portion of identifier."
         }
     },
     Functions: {
@@ -464,7 +464,7 @@ export const localeStrings = {
             },
             definePrefix: {
                 name: "definePrefix",
-                description: "Define a prefix for use in GS1 identification key creation functions."
+                description: "Define a prefix for use in GS1 identifier creation functions."
             },
             createGTIN: {
                 name: "createGTIN",

@@ -15,20 +15,22 @@ import {
     GTINCreator,
     type GTINLevel,
     GTINValidator,
-    type IdentificationKeyCreator,
-    type IdentificationKeyValidation,
-    type IdentificationKeyValidator,
-    type NonGTINNumericIdentificationKeyCreator,
-    type NonGTINNumericIdentificationKeyValidator,
-    type NonNumericIdentificationKeyCreator,
-    type NonNumericIdentificationKeyValidation,
-    type NonNumericIdentificationKeyValidator,
-    type NumericIdentificationKeyCreator,
-    type NumericIdentificationKeyValidator,
+    type IdentifierCreator,
+    type IdentifierValidation,
+    type IdentifierValidator,
+    type NonGTINNumericIdentifierCreator,
+    type NonGTINNumericIdentifierValidator,
+    type NonNumericIdentifierCreator,
+    type NonNumericIdentifierValidation,
+    type NonNumericIdentifierValidator,
+    type NumericIdentifierCreator,
+    type NumericIdentifierValidator,
     PrefixManager,
-    PrefixType,
-    type SerializableNumericIdentificationKeyCreator,
-    type SerializableNumericIdentificationKeyValidator,
+    type PrefixType,
+    PrefixTypes,
+    PrefixValidator,
+    type SerializableNumericIdentifierCreator,
+    type SerializableNumericIdentifierValidator,
     SSCC_VALIDATOR
 } from "@aidc-toolkit/gs1";
 import { Sequence } from "@aidc-toolkit/utility";
@@ -52,66 +54,66 @@ import {
     valueParameterDescriptor
 } from "../utility/transformer-descriptor.js";
 
-const identificationKeyParameterDescriptor: ParameterDescriptor = {
-    name: "identificationKey",
+const identifierParameterDescriptor: ParameterDescriptor = {
+    name: "identifier",
     type: Type.String,
     isMatrix: true,
     isRequired: true
 };
 
-const validateIdentificationKeyParameterDescriptor: ParameterDescriptor = {
-    extendsDescriptor: identificationKeyParameterDescriptor,
+const validateIdentifierParameterDescriptor: ParameterDescriptor = {
+    extendsDescriptor: identifierParameterDescriptor,
     sortOrder: 0,
-    name: "validateIdentificationKey"
+    name: "validateIdentifier"
 };
 
-abstract class IdentificationKeyValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, TIdentificationKeyValidation extends IdentificationKeyValidation, TIdentificationKeyValidator extends IdentificationKeyValidator<TIdentificationKeyValidation>> extends StringProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    private readonly _validator: TIdentificationKeyValidator;
+abstract class IdentifierValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, TIdentifierValidation extends IdentifierValidation, TIdentifierValidator extends IdentifierValidator<TIdentifierValidation>> extends StringProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+    private readonly _validator: TIdentifierValidator;
 
-    protected constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>, validator: TIdentificationKeyValidator) {
+    protected constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>, validator: TIdentifierValidator) {
         super(appExtension);
 
         this._validator = validator;
     }
 
-    protected get validator(): TIdentificationKeyValidator {
+    protected get validator(): TIdentifierValidator {
         return this._validator;
     }
 }
 
-abstract class NumericIdentificationKeyValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, TNumericIdentificationKeyValidator extends NumericIdentificationKeyValidator> extends IdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, IdentificationKeyValidation, TNumericIdentificationKeyValidator> {
+abstract class NumericIdentifierValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, TNumericIdentifierValidator extends NumericIdentifierValidator> extends IdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, IdentifierValidation, TNumericIdentifierValidator> {
     @ProxyMethod({
         type: Type.String,
         isMatrix: true
     })
     validate(
-        @ProxyParameter(validateIdentificationKeyParameterDescriptor) matrixIdentificationKeys: Matrix<string>
+        @ProxyParameter(validateIdentifierParameterDescriptor) matrixIdentifiers: Matrix<string>
     ): MatrixResultError<string, ThrowError, TError> {
-        return this.validateString(this.validator, matrixIdentificationKeys);
+        return this.validateString(this.validator, matrixIdentifiers);
     }
 }
 
-abstract class GTINValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NumericIdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, GTINValidator> {
+abstract class GTINValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, GTINValidator> {
 }
 
-abstract class NonGTINNumericIdentificationKeyValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, TNonGTINNumericIdentificationKeyValidator extends NonGTINNumericIdentificationKeyValidator> extends NumericIdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, TNonGTINNumericIdentificationKeyValidator> {
+abstract class NonGTINNumericIdentifierValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, TNonGTINNumericIdentifierValidator extends NonGTINNumericIdentifierValidator> extends NumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, TNonGTINNumericIdentifierValidator> {
 }
 
-abstract class SerializableNumericIdentificationKeyValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, SerializableNumericIdentificationKeyValidator> {
+abstract class SerializableNumericIdentifierValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, SerializableNumericIdentifierValidator> {
 }
 
-abstract class NonNumericIdentificationKeyValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends IdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonNumericIdentificationKeyValidation, NonNumericIdentificationKeyValidator> {
+abstract class NonNumericIdentifierValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends IdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonNumericIdentifierValidation, NonNumericIdentifierValidator> {
     @ProxyMethod({
         type: Type.String,
         isMatrix: true
     })
     validate(
-        @ProxyParameter(validateIdentificationKeyParameterDescriptor) matrixIdentificationKeys: Matrix<string>,
-        @ProxyParameter(exclusionAllNumericParameterDescriptor) exclusion: Nullishable<NonNumericIdentificationKeyValidation["exclusion"]>
+        @ProxyParameter(validateIdentifierParameterDescriptor) matrixIdentifiers: Matrix<string>,
+        @ProxyParameter(exclusionAllNumericParameterDescriptor) exclusion: Nullishable<NonNumericIdentifierValidation["exclusion"]>
     ): MatrixResultError<string, ThrowError, TError> {
-        return this.validateString(this.validator, matrixIdentificationKeys, {
+        return this.validateString(this.validator, matrixIdentifiers, {
             exclusion: exclusion ?? undefined
-        } satisfies NonNumericIdentificationKeyValidation);
+        } satisfies NonNumericIdentifierValidation);
     }
 }
 
@@ -146,12 +148,12 @@ export class GTIN8ValidatorProxy<ThrowError extends boolean, TError extends Erro
 }
 
 const zeroSuppressibleGTIN12ParameterDescriptor: ParameterDescriptor = {
-    extendsDescriptor: identificationKeyParameterDescriptor,
+    extendsDescriptor: identifierParameterDescriptor,
     name: "zeroSuppressibleGTIN12"
 };
 
 const zeroSuppressedGTIN12ParameterDescriptor: ParameterDescriptor = {
-    extendsDescriptor: identificationKeyParameterDescriptor,
+    extendsDescriptor: identifierParameterDescriptor,
     name: "zeroSuppressedGTIN12"
 };
 
@@ -163,17 +165,17 @@ const indicatorDigitParameterDescriptor: ParameterDescriptor = {
 };
 
 const convertGTINParameterDescriptor: ParameterDescriptor = {
-    extendsDescriptor: identificationKeyParameterDescriptor,
+    extendsDescriptor: identifierParameterDescriptor,
     name: "convertGTIN"
 };
 
 const normalizeGTINParameterDescriptor: ParameterDescriptor = {
-    extendsDescriptor: identificationKeyParameterDescriptor,
+    extendsDescriptor: identifierParameterDescriptor,
     name: "normalizeGTIN"
 };
 
 const validateGTINParameterDescriptor: ParameterDescriptor = {
-    extendsDescriptor: identificationKeyParameterDescriptor,
+    extendsDescriptor: identifierParameterDescriptor,
     name: "validateGTIN"
 };
 
@@ -185,7 +187,7 @@ const gtinLevelParameterDescriptor: ParameterDescriptor = {
 };
 
 const validateGTIN14ParameterDescriptor: ParameterDescriptor = {
-    extendsDescriptor: identificationKeyParameterDescriptor,
+    extendsDescriptor: identifierParameterDescriptor,
     name: "validateGTIN14"
 };
 
@@ -309,7 +311,7 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
     namespace: "GS1",
     methodInfix: "GLN"
 })
-export class GLNValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonGTINNumericIdentificationKeyValidator> {
+export class GLNValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonGTINNumericIdentifierValidator> {
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
         super(appExtension, GLN_VALIDATOR);
     }
@@ -319,7 +321,7 @@ export class GLNValidatorProxy<ThrowError extends boolean, TError extends ErrorE
     namespace: "GS1",
     methodInfix: "SSCC"
 })
-export class SSCCValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonGTINNumericIdentificationKeyValidator> {
+export class SSCCValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonGTINNumericIdentifierValidator> {
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
         super(appExtension, SSCC_VALIDATOR);
     }
@@ -329,7 +331,7 @@ export class SSCCValidatorProxy<ThrowError extends boolean, TError extends Error
     namespace: "GS1",
     methodInfix: "GRAI"
 })
-export class GRAIValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends SerializableNumericIdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+export class GRAIValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends SerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
         super(appExtension, GRAI_VALIDATOR);
     }
@@ -339,7 +341,7 @@ export class GRAIValidatorProxy<ThrowError extends boolean, TError extends Error
     namespace: "GS1",
     methodInfix: "GIAI"
 })
-export class GIAIValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonNumericIdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+export class GIAIValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
         super(appExtension, GIAI_VALIDATOR);
     }
@@ -349,7 +351,7 @@ export class GIAIValidatorProxy<ThrowError extends boolean, TError extends Error
     namespace: "GS1",
     methodInfix: "GSRN"
 })
-export class GSRNValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonGTINNumericIdentificationKeyValidator> {
+export class GSRNValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonGTINNumericIdentifierValidator> {
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
         super(appExtension, GSRN_VALIDATOR);
     }
@@ -359,7 +361,7 @@ export class GSRNValidatorProxy<ThrowError extends boolean, TError extends Error
     namespace: "GS1",
     methodInfix: "GDTI"
 })
-export class GDTIValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends SerializableNumericIdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+export class GDTIValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends SerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
         super(appExtension, GDTI_VALIDATOR);
     }
@@ -369,7 +371,7 @@ export class GDTIValidatorProxy<ThrowError extends boolean, TError extends Error
     namespace: "GS1",
     methodInfix: "GINC"
 })
-export class GINCValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonNumericIdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+export class GINCValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
         super(appExtension, GINC_VALIDATOR);
     }
@@ -379,7 +381,7 @@ export class GINCValidatorProxy<ThrowError extends boolean, TError extends Error
     namespace: "GS1",
     methodInfix: "GSIN"
 })
-export class GSINValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonGTINNumericIdentificationKeyValidator> {
+export class GSINValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonGTINNumericIdentifierValidator> {
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
         super(appExtension, GSIN_VALIDATOR);
     }
@@ -389,7 +391,7 @@ export class GSINValidatorProxy<ThrowError extends boolean, TError extends Error
     namespace: "GS1",
     methodInfix: "GCN"
 })
-export class GCNValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends SerializableNumericIdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+export class GCNValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends SerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
         super(appExtension, GCN_VALIDATOR);
     }
@@ -399,7 +401,7 @@ export class GCNValidatorProxy<ThrowError extends boolean, TError extends ErrorE
     namespace: "GS1",
     methodInfix: "CPID"
 })
-export class CPIDValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonNumericIdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+export class CPIDValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
         super(appExtension, CPID_VALIDATOR);
     }
@@ -409,7 +411,7 @@ export class CPIDValidatorProxy<ThrowError extends boolean, TError extends Error
     namespace: "GS1",
     methodInfix: "GMN"
 })
-export class GMNValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonNumericIdentificationKeyValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+export class GMNValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
         super(appExtension, GMN_VALIDATOR);
     }
@@ -466,56 +468,59 @@ export class PrefixManagerProxy<ThrowError extends boolean, TError extends Error
         @ProxyParameter(prefixTypeParameterDescriptor) prefixType: Nullishable<PrefixType>,
         @ProxyParameter(tweakFactorParameterDescriptor) tweakFactor: Nullishable<number>
     ): Matrix<unknown> {
-        // Parameters will be validated by IdentificationKeyCreatorProxy.getCreator().
+        // Parameters will be validated by IdentifierCreatorProxy.getCreator().
         return [[prefix, prefixType, tweakFactor]];
     }
 }
 
-abstract class IdentificationKeyCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, TIdentificationKeyCreator extends IdentificationKeyCreator> extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    private readonly _getCreator: (prefixManager: PrefixManager) => TIdentificationKeyCreator;
+abstract class IdentifierCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, TIdentifierCreator extends IdentifierCreator> extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+    private static readonly PREFIX_TYPES: PrefixType[] = [PrefixTypes.GS1CompanyPrefix, PrefixTypes.UPCCompanyPrefix, PrefixTypes.GS18Prefix];
 
-    protected constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>, getCreator: (prefixManager: PrefixManager) => TIdentificationKeyCreator) {
+    private readonly _getCreator: (prefixManager: PrefixManager) => TIdentifierCreator;
+
+    protected constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>, getCreator: (prefixManager: PrefixManager) => TIdentifierCreator) {
         super(appExtension);
 
         this._getCreator = getCreator;
     }
 
-    protected getCreator(prefixDefinition: Matrix<unknown>): TIdentificationKeyCreator {
+    protected getCreator(prefixDefinition: Matrix<unknown>): TIdentifierCreator {
         const reducedPrefixDefinition = prefixDefinition.length === 1 ?
             // Prefix definition is horizontal.
             prefixDefinition[0] :
             // Prefix definition is vertical.
             prefixDefinition.map((prefixDefinitionRow) => {
                 if (prefixDefinitionRow.length !== 1) {
-                    throw new RangeError(i18nextAppExtension.t("IdentificationKeyCreatorProxy.prefixDefinitionMustBeOneDimensional"));
+                    throw new RangeError(i18nextAppExtension.t("IdentifierCreatorProxy.prefixDefinitionMustBeOneDimensional"));
                 }
 
                 return prefixDefinitionRow[0];
             });
 
         if (reducedPrefixDefinition.length > 3) {
-            throw new RangeError(i18nextAppExtension.t("IdentificationKeyCreatorProxy.prefixDefinitionMustHaveMaximumThreeElements"));
+            throw new RangeError(i18nextAppExtension.t("IdentifierCreatorProxy.prefixDefinitionMustHaveMaximumThreeElements"));
         }
-        
         const prefix = reducedPrefixDefinition[0];
         
         if (typeof prefix !== "string") {
-            throw new RangeError(i18nextAppExtension.t("IdentificationKeyCreatorProxy.prefixMustBeString"));
+            throw new RangeError(i18nextAppExtension.t("IdentifierCreatorProxy.prefixMustBeString"));
         }
 
-        const prefixType = reducedPrefixDefinition[1] ?? PrefixType.GS1CompanyPrefix;
-        
-        if (typeof prefixType !== "number") {
-            throw new RangeError(i18nextAppExtension.t("IdentificationKeyCreatorProxy.prefixTypeMustBeNumber"));
+        const prefixTypeIndex = reducedPrefixDefinition[1] ?? 0;
+
+        if (typeof prefixTypeIndex !== "number" || prefixTypeIndex < 0 || prefixTypeIndex >= IdentifierCreatorProxy.PREFIX_TYPES.length) {
+            throw new RangeError(i18nextAppExtension.t("IdentifierCreatorProxy.prefixTypeMustBeNumber", {
+                maximumPrefixType: IdentifierCreatorProxy.PREFIX_TYPES.length - 1
+            }));
         }
 
-        const prefixManager = PrefixManager.get(prefixType, prefix);
+        const prefixManager = PrefixManager.get(IdentifierCreatorProxy.PREFIX_TYPES[prefixTypeIndex], prefix);
 
         const tweakFactor = reducedPrefixDefinition[2];
         
         if (!isNullish(tweakFactor)) {
             if (typeof tweakFactor !== "number") {
-                throw new RangeError(i18nextAppExtension.t("IdentificationKeyCreatorProxy.tweakFactorMustBeNumber"));
+                throw new RangeError(i18nextAppExtension.t("IdentifierCreatorProxy.tweakFactorMustBeNumber"));
             }
 
             prefixManager.tweakFactor = tweakFactor;
@@ -534,7 +539,7 @@ const sparseParameterDescriptor: ParameterDescriptor = {
     isRequired: false
 };
 
-abstract class NumericIdentificationKeyCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, TNumericIdentificationKeyCreator extends NumericIdentificationKeyCreator> extends IdentificationKeyCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt, TNumericIdentificationKeyCreator> {
+abstract class NumericIdentifierCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, TNumericIdentifierCreator extends NumericIdentifierCreator> extends IdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt, TNumericIdentifierCreator> {
     @ProxyMethod({
         type: Type.String,
         isMatrix: true
@@ -582,7 +587,7 @@ abstract class NumericIdentificationKeyCreatorProxy<ThrowError extends boolean, 
     }
 }
 
-abstract class NonGTINNumericIdentificationKeyCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, TNonGTINNumericIdentificationKeyCreator extends NonGTINNumericIdentificationKeyCreator> extends NumericIdentificationKeyCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt, TNonGTINNumericIdentificationKeyCreator> {
+abstract class NonGTINNumericIdentifierCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, TNonGTINNumericIdentifierCreator extends NonGTINNumericIdentifierCreator> extends NumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt, TNonGTINNumericIdentifierCreator> {
 }
 
 const singleValueParameterDescriptor: ParameterDescriptor = {
@@ -590,9 +595,9 @@ const singleValueParameterDescriptor: ParameterDescriptor = {
     isMatrix: false
 };
 
-const baseIdentificationKeyParameterDescriptor: ParameterDescriptor = {
-    extendsDescriptor: identificationKeyParameterDescriptor,
-    name: "baseIdentificationKey",
+const baseIdentifierParameterDescriptor: ParameterDescriptor = {
+    extendsDescriptor: identifierParameterDescriptor,
+    name: "baseIdentifier",
     isMatrix: false
 };
 
@@ -603,7 +608,7 @@ const serialComponentParameterDescriptor: ParameterDescriptor = {
     isRequired: true
 };
 
-abstract class SerializableNumericIdentificationKeyCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentificationKeyCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt, SerializableNumericIdentificationKeyCreator> {
+abstract class SerializableNumericIdentifierCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt, SerializableNumericIdentifierCreator> {
     @ProxyMethod({
         type: Type.String,
         isMatrix: true
@@ -626,12 +631,12 @@ abstract class SerializableNumericIdentificationKeyCreatorProxy<ThrowError exten
         isMatrix: true
     })
     concatenate(
-        @ProxyParameter(baseIdentificationKeyParameterDescriptor) baseIdentificationKey: string,
+        @ProxyParameter(baseIdentifierParameterDescriptor) baseIdentifier: string,
         @ProxyParameter(serialComponentParameterDescriptor) matrixSerialComponents: Matrix<string>
     ): MatrixResultError<string, ThrowError, TError> {
-        const creator = this.getCreator([[baseIdentificationKey.substring(0, !baseIdentificationKey.startsWith("0") ? PrefixManager.GS1_COMPANY_PREFIX_MINIMUM_LENGTH : PrefixManager.UPC_COMPANY_PREFIX_MINIMUM_LENGTH + 1), PrefixType.GS1CompanyPrefix]]);
+        const creator = this.getCreator([[baseIdentifier.substring(0, !baseIdentifier.startsWith("0") ? PrefixValidator.GS1_COMPANY_PREFIX_MINIMUM_LENGTH : PrefixValidator.UPC_COMPANY_PREFIX_MINIMUM_LENGTH + 1), PrefixTypes.GS1CompanyPrefix]]);
 
-        return this.mapMatrix(matrixSerialComponents, serialComponent => creator.concatenate(baseIdentificationKey, serialComponent));
+        return this.mapMatrix(matrixSerialComponents, serialComponent => creator.concatenate(baseIdentifier, serialComponent));
     }
 }
 
@@ -642,7 +647,7 @@ const referenceParameterDescriptor: ParameterDescriptor = {
     isRequired: true
 };
 
-abstract class NonNumericIdentificationKeyCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends IdentificationKeyCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonNumericIdentificationKeyCreator> {
+abstract class NonNumericIdentifierCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends IdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonNumericIdentifierCreator> {
     @ProxyMethod({
         type: Type.String,
         isMatrix: true
@@ -667,7 +672,7 @@ abstract class NonNumericIdentificationKeyCreatorProxy<ThrowError extends boolea
         }
     ]
 })
-export class GTINCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NumericIdentificationKeyCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt, GTINCreator> {
+export class GTINCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt, GTINCreator> {
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
         super(appExtension, prefixManager => prefixManager.gtinCreator);
     }
@@ -708,7 +713,7 @@ export class GTINCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
     namespace: "GS1",
     methodInfix: "GLN"
 })
-export class GLNCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentificationKeyCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonGTINNumericIdentificationKeyCreator> {
+export class GLNCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonGTINNumericIdentifierCreator> {
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
         super(appExtension, prefixManager => prefixManager.glnCreator);
     }
@@ -718,7 +723,7 @@ export class GLNCreatorProxy<ThrowError extends boolean, TError extends ErrorExt
     namespace: "GS1",
     methodInfix: "SSCC"
 })
-export class SSCCCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentificationKeyCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonGTINNumericIdentificationKeyCreator> {
+export class SSCCCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonGTINNumericIdentifierCreator> {
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
         super(appExtension, prefixManager => prefixManager.ssccCreator);
     }
@@ -728,7 +733,7 @@ export class SSCCCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
     namespace: "GS1",
     methodInfix: "GRAI"
 })
-export class GRAICreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends SerializableNumericIdentificationKeyCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+export class GRAICreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends SerializableNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
         super(appExtension, prefixManager => prefixManager.graiCreator);
     }
@@ -738,7 +743,7 @@ export class GRAICreatorProxy<ThrowError extends boolean, TError extends ErrorEx
     namespace: "GS1",
     methodInfix: "GIAI"
 })
-export class GIAICreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonNumericIdentificationKeyCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+export class GIAICreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
         super(appExtension, prefixManager => prefixManager.giaiCreator);
     }
@@ -748,7 +753,7 @@ export class GIAICreatorProxy<ThrowError extends boolean, TError extends ErrorEx
     namespace: "GS1",
     methodInfix: "GSRN"
 })
-export class GSRNCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentificationKeyCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonGTINNumericIdentificationKeyCreator> {
+export class GSRNCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonGTINNumericIdentifierCreator> {
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
         super(appExtension, prefixManager => prefixManager.gsrnCreator);
     }
@@ -758,7 +763,7 @@ export class GSRNCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
     namespace: "GS1",
     methodInfix: "GDTI"
 })
-export class GDTICreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends SerializableNumericIdentificationKeyCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+export class GDTICreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends SerializableNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
         super(appExtension, prefixManager => prefixManager.gdtiCreator);
     }
@@ -768,7 +773,7 @@ export class GDTICreatorProxy<ThrowError extends boolean, TError extends ErrorEx
     namespace: "GS1",
     methodInfix: "GINC"
 })
-export class GINCCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonNumericIdentificationKeyCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+export class GINCCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
         super(appExtension, prefixManager => prefixManager.gincCreator);
     }
@@ -778,7 +783,7 @@ export class GINCCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
     namespace: "GS1",
     methodInfix: "GSIN"
 })
-export class GSINCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentificationKeyCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonGTINNumericIdentificationKeyCreator> {
+export class GSINCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonGTINNumericIdentifierCreator> {
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
         super(appExtension, prefixManager => prefixManager.gsinCreator);
     }
@@ -788,7 +793,7 @@ export class GSINCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
     namespace: "GS1",
     methodInfix: "GCN"
 })
-export class GCNCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends SerializableNumericIdentificationKeyCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+export class GCNCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends SerializableNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
         super(appExtension, prefixManager => prefixManager.gcnCreator);
     }
@@ -798,7 +803,7 @@ export class GCNCreatorProxy<ThrowError extends boolean, TError extends ErrorExt
     namespace: "GS1",
     methodInfix: "CPID"
 })
-export class CPIDCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonNumericIdentificationKeyCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+export class CPIDCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
         super(appExtension, prefixManager => prefixManager.cpidCreator);
     }
@@ -808,7 +813,7 @@ export class CPIDCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
     namespace: "GS1",
     methodInfix: "GMN"
 })
-export class GMNCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonNumericIdentificationKeyCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+export class GMNCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
         super(appExtension, prefixManager => prefixManager.gmnCreator);
     }
