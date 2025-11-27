@@ -1,4 +1,4 @@
-export const localeStrings = {
+export default {
     AppExtension: {
         sequenceCountMustBeLessThanOrEqualTo: "Sequence count {{sequenceCount, number}} must be less than or equal to {{maximumSequenceCount, number}}"
     },

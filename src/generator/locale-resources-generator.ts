@@ -1,4 +1,4 @@
-import type { LocaleStrings } from "@aidc-toolkit/core";
+import type { LocaleResources } from "@aidc-toolkit/core";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { expandParameterDescriptor, type ParameterDescriptor } from "../descriptor.js";
@@ -32,21 +32,21 @@ interface ParametersSequencerEntry {
 type ParametersSequencer = Record<string, ParametersSequencerEntry>;
 
 /**
- * Format of locale strings module.
+ * Format of locale resources module.
  */
-interface LocaleStringsModule {
+interface LocaleResourcesModule {
     /**
-     * Locale strings.
+     * Locale resources.
      */
-    localeStrings: LocaleStrings;
+    LocaleResources: LocaleResources;
 }
 
 /**
- * Locale strings generator.
+ * Locale resources generator.
  */
-class LocaleStringsGenerator extends Generator {
+class LocaleResourcesGenerator extends Generator {
     /**
-     * Locale strings import path.
+     * Locale resources import path.
      */
     private static readonly IMPORT_PATH = "../app-extension/src/locale";
 
@@ -56,21 +56,21 @@ class LocaleStringsGenerator extends Generator {
     private readonly _parametersSequencer: ParametersSequencer = {};
 
     /**
-     * Parameters locale strings.
+     * Parameters locale resources.
      */
-    private readonly _parametersLocaleStrings: LocaleStrings = {};
+    private readonly _parametersLocaleResources: LocaleResources = {};
 
     /**
-     * Functions locale strings.
+     * Functions locale resources.
      */
-    private readonly _functionsLocaleStrings: LocaleStrings = {};
+    private readonly _functionsLocaleResources: LocaleResources = {};
 
     /**
-     * Locale strings.
+     * Locale resources.
      */
-    private readonly _localeStrings: LocaleStrings = {
-        Parameters: this._parametersLocaleStrings,
-        Functions: this._functionsLocaleStrings
+    private readonly _LocaleResources: LocaleResources = {
+        Parameters: this._parametersLocaleResources,
+        Functions: this._functionsLocaleResources
     };
 
     /**
@@ -167,35 +167,35 @@ class LocaleStringsGenerator extends Generator {
             this.saveParameterSequence(parameterDescriptor, true);
         }
 
-        let functionsLocaleStrings = this._functionsLocaleStrings;
+        let functionsLocaleResources = this._functionsLocaleResources;
 
         if (namespace !== undefined) {
-            if (!(namespace in functionsLocaleStrings)) {
-                const namespaceFunctionsLocaleStrings: LocaleStrings = {};
+            if (!(namespace in functionsLocaleResources)) {
+                const namespaceFunctionsLocaleResources: LocaleResources = {};
 
                 // Add namespace and navigate to it.
-                functionsLocaleStrings[namespace] = namespaceFunctionsLocaleStrings;
-                functionsLocaleStrings = namespaceFunctionsLocaleStrings;
+                functionsLocaleResources[namespace] = namespaceFunctionsLocaleResources;
+                functionsLocaleResources = namespaceFunctionsLocaleResources;
             } else {
                 // Navigate to namespace.
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Entry is never a string.
-                functionsLocaleStrings = functionsLocaleStrings[namespace] as LocaleStrings;
+                functionsLocaleResources = functionsLocaleResources[namespace] as LocaleResources;
             }
         }
 
-        if (functionName in functionsLocaleStrings) {
+        if (functionName in functionsLocaleResources) {
             throw new Error(`Duplicate function "${functionName}"`);
         }
 
         // Add function.
-        functionsLocaleStrings[functionName] = {
+        functionsLocaleResources[functionName] = {
             name: functionName,
             description: "*** LOCALIZATION REQUIRED ***"
         };
     }
 
     /**
-     * Merge source locale strings into existing destination locale strings.
+     * Merge source locale resources into existing destination locale resources.
      *
      * @param logChanges
      * If true, changes are logged. Limits output when processing multiple sources.
@@ -203,67 +203,67 @@ class LocaleStringsGenerator extends Generator {
      * @param parentKey
      * Parent key for logging purposes.
      *
-     * @param sourceLocaleStrings
-     * Source locale strings.
+     * @param sourceLocaleResources
+     * Source locale resources.
      *
-     * @param destinationLocaleStrings
-     * Destination locale strings.
+     * @param destinationLocaleResources
+     * Destination locale resources.
      *
      * @param addMissing
-     * Add missing if true; applies to locale strings that are not regional.
+     * Add missing if true; applies to locale resources that are not regional.
      *
      * @returns
-     * Merged locale strings.
+     * Merged locale resources.
      */
-    private static merge(logChanges: boolean, parentKey: string, sourceLocaleStrings: LocaleStrings, destinationLocaleStrings: LocaleStrings, addMissing: boolean): LocaleStrings {
+    private static merge(logChanges: boolean, parentKey: string, sourceLocaleResources: LocaleResources, destinationLocaleResources: LocaleResources, addMissing: boolean): LocaleResources {
         // Some entries at the top are not part of the generator output.
         const deleteMissing = parentKey.length !== 0;
 
-        const newDestinationLocaleStrings: LocaleStrings = {};
+        const newDestinationLocaleResources: LocaleResources = {};
 
         // Copy over or delete any destination keys that are not in source.
-        for (const [key, destinationValue] of Object.entries(destinationLocaleStrings)) {
-            if (!(key in sourceLocaleStrings)) {
+        for (const [key, destinationValue] of Object.entries(destinationLocaleResources)) {
+            if (!(key in sourceLocaleResources)) {
                 if (!deleteMissing) {
-                    newDestinationLocaleStrings[key] = destinationValue;
+                    newDestinationLocaleResources[key] = destinationValue;
                 } else if (logChanges) {
                     logger.info(`Deleting ${parentKey}${key}...`);
                 }
             }
         }
 
-        for (const [key, sourceValue] of Object.entries(sourceLocaleStrings)) {
-            if (!(key in destinationLocaleStrings)) {
+        for (const [key, sourceValue] of Object.entries(sourceLocaleResources)) {
+            if (!(key in destinationLocaleResources)) {
                 if (addMissing) {
                     if (logChanges) {
                         logger.info(`Adding ${parentKey}${key}...`);
                     }
 
-                    newDestinationLocaleStrings[key] = sourceValue;
+                    newDestinationLocaleResources[key] = sourceValue;
                 }
             } else {
-                const destinationValue = destinationLocaleStrings[key];
+                const destinationValue = destinationLocaleResources[key];
 
                 if (typeof sourceValue === "object" && typeof destinationValue === "object") {
-                    newDestinationLocaleStrings[key] = LocaleStringsGenerator.merge(logChanges, `${parentKey}${key}.`, sourceValue, destinationValue, addMissing);
+                    newDestinationLocaleResources[key] = LocaleResourcesGenerator.merge(logChanges, `${parentKey}${key}.`, sourceValue, destinationValue, addMissing);
                 } else if (typeof sourceValue === "string" && typeof destinationValue === "string") {
-                    newDestinationLocaleStrings[key] = destinationValue;
+                    newDestinationLocaleResources[key] = destinationValue;
                 } else {
                     throw new Error(`Mismatched types at ${parentKey}${key}`);
                 }
             }
         }
 
-        return newDestinationLocaleStrings;
+        return newDestinationLocaleResources;
     }
 
     /**
-     * Build parameters locale strings by going through parameters sequencer.
+     * Build parameters locale resources by going through parameters sequencer.
      *
      * @param parametersSequencer
      * Parameters sequencer.
      */
-    private buildParametersLocaleStrings(parametersSequencer: ParametersSequencer): void {
+    private buildParametersLocaleResources(parametersSequencer: ParametersSequencer): void {
         const entries = Object.entries(parametersSequencer);
 
         // Sort the entries as defined by the descriptors.
@@ -295,14 +295,14 @@ class LocaleStringsGenerator extends Generator {
 
         for (const [parameterName, parametersSequencerEntry] of entries) {
             if (parametersSequencerEntry.isUsed) {
-                this._parametersLocaleStrings[parameterName] = {
+                this._parametersLocaleResources[parameterName] = {
                     name: parameterName,
                     description: "*** LOCALIZATION REQUIRED ***"
                 };
             }
 
             if (parametersSequencerEntry.parametersSequencerOrNull !== null) {
-                this.buildParametersLocaleStrings(parametersSequencerEntry.parametersSequencerOrNull);
+                this.buildParametersLocaleResources(parametersSequencerEntry.parametersSequencerOrNull);
             }
         }
     }
@@ -322,10 +322,10 @@ class LocaleStringsGenerator extends Generator {
      * @returns
      * Output string.
      */
-    private static buildOutput(prefix: string, value: LocaleStrings | string, indentLevel: number): string {
+    private static buildOutput(prefix: string, value: LocaleResources | string, indentLevel: number): string {
         return `${"    ".repeat(indentLevel)}${prefix} ${typeof value === "object" ?
             `{\n${
-                Object.entries(value).map(entry => LocaleStringsGenerator.buildOutput(`${entry[0]}:`, entry[1], indentLevel + 1)).join(",\n")
+                Object.entries(value).map(entry => LocaleResourcesGenerator.buildOutput(`${entry[0]}:`, entry[1], indentLevel + 1)).join(",\n")
             }\n${"    ".repeat(indentLevel)}}` :
             // JSON.stringify() will apply quotes as appropriate.
             JSON.stringify(value)
@@ -337,22 +337,22 @@ class LocaleStringsGenerator extends Generator {
      */
     protected async finalize(success: boolean): Promise<void> {
         if (success) {
-            this.buildParametersLocaleStrings(this._parametersSequencer);
+            this.buildParametersLocaleResources(this._parametersSequencer);
 
-            await Promise.all(fs.readdirSync(LocaleStringsGenerator.IMPORT_PATH, {
+            await Promise.all(fs.readdirSync(LocaleResourcesGenerator.IMPORT_PATH, {
                 withFileTypes: true
             }).filter(entry => entry.isDirectory()).map(async (entry) => {
-                const localeStringsSource = path.resolve(LocaleStringsGenerator.IMPORT_PATH, entry.name, "locale-strings.ts");
+                const LocaleResourcesSource = path.resolve(LocaleResourcesGenerator.IMPORT_PATH, entry.name, "locale-resources.ts");
 
-                await import(localeStringsSource).then((module) => {
+                await import(LocaleResourcesSource).then((module) => {
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Module format is known.
-                    const localeStrings = LocaleStringsGenerator.merge(entry.name === "en", "", this._localeStrings, (module as LocaleStringsModule).localeStrings, !entry.name.includes("-"));
+                    const LocaleResources = LocaleResourcesGenerator.merge(entry.name === "en", "", this._LocaleResources, (module as LocaleResourcesModule).LocaleResources, !entry.name.includes("-"));
 
-                    fs.writeFileSync(localeStringsSource, `${LocaleStringsGenerator.buildOutput("export const localeStrings =", localeStrings, 0)};\n`);
+                    fs.writeFileSync(LocaleResourcesSource, `${LocaleResourcesGenerator.buildOutput("export default", LocaleResources, 0)};\n`);
                 });
             }));
         }
     }
 }
 
-await new LocaleStringsGenerator().generate();
+await new LocaleResourcesGenerator().generate();
