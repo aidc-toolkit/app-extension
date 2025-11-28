@@ -6,6 +6,9 @@ import type { ErrorExtends, TypedFunction } from "./types.js";
  * Core descriptor.
  */
 interface Descriptor {
+    /**
+     * Name.
+     */
     readonly name: string;
 }
 
@@ -167,12 +170,12 @@ type ProxyClassType<ThrowError extends boolean, TError extends ErrorExtends<Thro
 let pendingParameterDescriptors: ParameterDescriptor[] = [];
 
 /**
- * Class method descriptors, keyed on declaration class name and method name.
+ * Class method descriptors map, keyed on declaration class name and method name.
  */
 const classMethodsDescriptorsMap = new Map<string, MethodDescriptor[]>();
 
 /**
- * Class descriptors, keyed on declaration class name.
+ * Class descriptors map, keyed on declaration class name.
  */
 const classDescriptorsMap = new Map<string, ClassDescriptor>();
 
@@ -309,11 +312,11 @@ export function ProxyClass<ThrowError extends boolean, TError extends ErrorExten
 }
 
 /**
- * Get class descriptors.
+ * Get class descriptors map.
  *
  * @returns
- * Class descriptors.
+ * Class descriptors map.
  */
-export function getClassDescriptors(): ReadonlyMap<string, ClassDescriptor> {
+export function getClassDescriptorsMap(): ReadonlyMap<string, ClassDescriptor> {
     return classDescriptorsMap;
 }

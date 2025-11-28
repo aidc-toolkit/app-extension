@@ -1,6 +1,6 @@
 import { I18nEnvironments } from "@aidc-toolkit/core";
 import type { ParseKeys } from "i18next";
-import { expandParameterDescriptor, getClassDescriptors } from "../descriptor.js";
+import { expandParameterDescriptor, getClassDescriptorsMap } from "../descriptor.js";
 import { appExtensionResources, i18nAppExtensionInit, i18nextAppExtension } from "../locale/i18n.js";
 import type {
     FunctionLocalization,
@@ -187,7 +187,7 @@ export abstract class Generator {
         this.initialize();
 
         try {
-            for (const classDescriptor of getClassDescriptors().values()) {
+            for (const classDescriptor of getClassDescriptorsMap().values()) {
                 const namespace = classDescriptor.namespace;
                 const namespacePrefix = namespace === undefined ? "" : `${namespace}.`;
                 const className = classDescriptor.name;
