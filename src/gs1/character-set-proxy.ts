@@ -6,7 +6,7 @@ import {
     exclusionAllNumericParameterDescriptor,
     exclusionNoneParameterDescriptor
 } from "../utility/character-set-descriptor";
-import { CharacterSetProxy } from "../utility/character-set-proxy";
+import { CharacterSetProxy } from "../utility";
 
 @ProxyClass({
     namespace: "GS1",
