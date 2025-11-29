@@ -34,7 +34,7 @@ import {
     SSCC_VALIDATOR
 } from "@aidc-toolkit/gs1";
 import { Sequence } from "@aidc-toolkit/utility";
-import type { AppExtension } from "../app-extension.js";
+import type { AppExtension } from "../app-extension";
 import {
     expandParameterDescriptor,
     type ParameterDescriptor,
@@ -42,17 +42,17 @@ import {
     ProxyMethod,
     ProxyParameter,
     Types
-} from "../descriptor.js";
-import { LibProxy } from "../lib-proxy.js";
-import { i18nextAppExtension } from "../locale/i18n.js";
-import { type ErrorExtends, isNullish, type Matrix, type MatrixResultError, type Nullishable } from "../types.js";
-import { exclusionAllNumericParameterDescriptor } from "../utility/character-set-descriptor.js";
-import { StringProxy } from "../utility/string-proxy.js";
+} from "../descriptor";
+import { LibProxy } from "../lib-proxy";
+import { i18nextAppExtension } from "../locale/i18n";
+import { type ErrorExtends, isNullish, type Matrix, type MatrixResultError, type Nullishable } from "../types";
+import { exclusionAllNumericParameterDescriptor } from "../utility/character-set-descriptor";
+import { StringProxy } from "../utility/string-proxy";
 import {
     countParameterDescriptor,
     startValueParameterDescriptor,
     valueParameterDescriptor
-} from "../utility/transformer-descriptor.js";
+} from "../utility/transformer-descriptor";
 
 const identifierParameterDescriptor: ParameterDescriptor = {
     name: "identifier",

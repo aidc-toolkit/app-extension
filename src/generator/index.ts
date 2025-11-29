@@ -1,2 +1,2 @@
-export type * from "./descriptor.js";
-export * from "./generator.js";
+export type * from "./descriptor";
+export * from "./generator";

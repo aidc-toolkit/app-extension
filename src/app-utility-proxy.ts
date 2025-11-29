@@ -1,7 +1,7 @@
-import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Types } from "./descriptor.js";
-import { LibProxy } from "./lib-proxy.js";
-import { i18nextAppExtension } from "./locale/i18n.js";
-import { type ErrorExtends, isNullish, type Matrix, type NonNullishable, type Nullishable } from "./types.js";
+import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Types } from "./descriptor";
+import { LibProxy } from "./lib-proxy";
+import { i18nextAppExtension } from "./locale/i18n";
+import { type ErrorExtends, isNullish, type Matrix, type NonNullishable, type Nullishable } from "./types";
 
 const spillMatrix: ParameterDescriptor = {
     name: "spillMatrix",

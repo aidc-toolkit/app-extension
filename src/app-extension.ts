@@ -1,4 +1,4 @@
-import { i18nextAppExtension } from "./locale/i18n.js";
+import { i18nextAppExtension } from "./locale/i18n";
 import type {
     ErrorExtends,
     ResultError,
@@ -7,7 +7,7 @@ import type {
     TypedAsyncFunction,
     TypedFunction,
     TypedSyncFunction
-} from "./types.js";
+} from "./types";
 
 /**
  * Application extension.

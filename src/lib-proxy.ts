@@ -1,7 +1,7 @@
 import { mapIterable } from "@aidc-toolkit/utility";
-import type { AppExtension } from "./app-extension.js";
-import { i18nextAppExtension } from "./locale/i18n.js";
-import type { ErrorExtends, Matrix, MatrixResultError, ResultError } from "./types.js";
+import type { AppExtension } from "./app-extension";
+import { i18nextAppExtension } from "./locale/i18n";
+import type { ErrorExtends, Matrix, MatrixResultError, ResultError } from "./types";
 
 /**
  * Library proxy.

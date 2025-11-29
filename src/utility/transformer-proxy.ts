@@ -1,13 +1,13 @@
 import { mapIterable, Sequence, Transformer } from "@aidc-toolkit/utility";
-import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Types } from "../descriptor.js";
-import { LibProxy } from "../lib-proxy.js";
-import type { ErrorExtends, Matrix, MatrixResultError, Nullishable, ResultError } from "../types.js";
+import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Types } from "../descriptor";
+import { LibProxy } from "../lib-proxy";
+import type { ErrorExtends, Matrix, MatrixResultError, Nullishable, ResultError } from "../types";
 import {
     countParameterDescriptor,
     startValueParameterDescriptor,
     tweakParameterDescriptor,
     valueParameterDescriptor
-} from "./transformer-descriptor.js";
+} from "./transformer-descriptor";
 
 const domainParameterDescriptor: ParameterDescriptor = {
     name: "domain",

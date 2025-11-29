@@ -1,4 +1,4 @@
-import { type ParameterDescriptor, Types } from "../descriptor.js";
+import { type ParameterDescriptor, Types } from "../descriptor";
 
 export const sParameterDescriptor: ParameterDescriptor = {
     name: "s",

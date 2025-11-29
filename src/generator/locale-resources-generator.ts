@@ -1,10 +1,10 @@
 import type { LocaleResources } from "@aidc-toolkit/core";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { expandParameterDescriptor, type ParameterDescriptor } from "../descriptor.js";
-import type { ProxyFunctionDescriptor } from "./descriptor.js";
-import { Generator } from "./generator.js";
-import { logger } from "./logger.js";
+import { expandParameterDescriptor, type ParameterDescriptor } from "../descriptor";
+import type { ProxyFunctionDescriptor } from "./descriptor";
+import { Generator } from "./generator";
+import { logger } from "./logger";
 
 /**
  * Parameters sequencer entry.

@@ -14,12 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-export * from "./locale/i18n.js";
-export * from "./types.js";
-export * from "./app-extension.js";
-export * from "./lib-proxy.js";
-export * from "./descriptor.js";
-export * from "./app-utility-proxy.js";
-export * from "./utility/index.js";
-export * as GS1 from "./gs1/index.js";
-export * from "./generator/index.js";
+export * from "./locale/i18n";
+export * from "./types";
+export * from "./app-extension";
+export * from "./lib-proxy";
+export * from "./descriptor";
+export * from "./app-utility-proxy";
+export * from "./utility/index";
+export * as GS1 from "./gs1/index";
+export * from "./generator/index";

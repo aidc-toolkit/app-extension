@@ -8,7 +8,7 @@ import {
     NUMERIC_CREATOR,
     Sequence
 } from "@aidc-toolkit/utility";
-import type { AppExtension } from "../app-extension.js";
+import type { AppExtension } from "../app-extension";
 import {
     expandParameterDescriptor,
     type ParameterDescriptor,
@@ -16,22 +16,22 @@ import {
     ProxyMethod,
     ProxyParameter,
     Types
-} from "../descriptor.js";
-import { LibProxy } from "../lib-proxy.js";
-import type { ErrorExtends, Matrix, MatrixResultError, Nullishable, ResultError } from "../types.js";
+} from "../descriptor";
+import { LibProxy } from "../lib-proxy";
+import type { ErrorExtends, Matrix, MatrixResultError, Nullishable, ResultError } from "../types";
 import {
     exclusionAnyParameterDescriptor,
     exclusionFirstZeroParameterDescriptor,
     exclusionNoneParameterDescriptor
-} from "./character-set-descriptor.js";
-import { sParameterDescriptor, validateSParameterDescriptor } from "./string-descriptor.js";
-import { StringProxy } from "./string-proxy.js";
+} from "./character-set-descriptor";
+import { sParameterDescriptor, validateSParameterDescriptor } from "./string-descriptor";
+import { StringProxy } from "./string-proxy";
 import {
     countParameterDescriptor,
     startValueParameterDescriptor,
     tweakParameterDescriptor,
     valueParameterDescriptor
-} from "./transformer-descriptor.js";
+} from "./transformer-descriptor";
 
 const lengthParameterDescriptor: ParameterDescriptor = {
     name: "length",

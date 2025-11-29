@@ -1,14 +1,14 @@
 import { I18nEnvironments } from "@aidc-toolkit/core";
 import type { ParseKeys } from "i18next";
-import { expandParameterDescriptor, getClassDescriptorsMap } from "../descriptor.js";
-import { appExtensionResources, i18nAppExtensionInit, i18nextAppExtension } from "../locale/i18n.js";
+import { expandParameterDescriptor, getClassDescriptorsMap } from "../descriptor";
+import { appExtensionResources, i18nAppExtensionInit, i18nextAppExtension } from "../locale/i18n";
 import type {
     FunctionLocalization,
     Localization,
     ParameterLocalization,
     ProxyFunctionDescriptor,
     ProxyObjectDescriptor
-} from "./descriptor.js";
+} from "./descriptor";
 
 /**
  * Abstract generator.

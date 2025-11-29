@@ -1,4 +1,4 @@
-import type { BaseParameterDescriptor, ClassDescriptor, MethodDescriptor } from "../descriptor.js";
+import type { BaseParameterDescriptor, ClassDescriptor, MethodDescriptor } from "../descriptor";
 
 /**
  * Localization.

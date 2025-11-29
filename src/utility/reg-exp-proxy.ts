@@ -1,8 +1,8 @@
 import { RegExpValidator } from "@aidc-toolkit/utility";
-import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Types } from "../descriptor.js";
-import type { ErrorExtends, Matrix, MatrixResultError, Nullishable } from "../types.js";
-import { validateSParameterDescriptor } from "./string-descriptor.js";
-import { StringProxy } from "./string-proxy.js";
+import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Types } from "../descriptor";
+import type { ErrorExtends, Matrix, MatrixResultError, Nullishable } from "../types";
+import { validateSParameterDescriptor } from "./string-descriptor";
+import { StringProxy } from "./string-proxy";
 
 const regExpParameterDescriptor: ParameterDescriptor = {
     name: "regExp",

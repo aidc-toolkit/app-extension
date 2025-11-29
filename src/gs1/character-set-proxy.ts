@@ -1,12 +1,12 @@
 import { AI39_CREATOR, AI82_CREATOR } from "@aidc-toolkit/gs1";
-import type { AppExtension } from "../app-extension.js";
-import { expandParameterDescriptor, ProxyClass } from "../descriptor.js";
-import type { ErrorExtends } from "../types.js";
+import type { AppExtension } from "../app-extension";
+import { expandParameterDescriptor, ProxyClass } from "../descriptor";
+import type { ErrorExtends } from "../types";
 import {
     exclusionAllNumericParameterDescriptor,
     exclusionNoneParameterDescriptor
-} from "../utility/character-set-descriptor.js";
-import { CharacterSetProxy } from "../utility/character-set-proxy.js";
+} from "../utility/character-set-descriptor";
+import { CharacterSetProxy } from "../utility/character-set-proxy";
 
 @ProxyClass({
     namespace: "GS1",

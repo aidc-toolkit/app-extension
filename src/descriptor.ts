@@ -1,6 +1,6 @@
-import type { AppExtension } from "./app-extension.js";
-import { LibProxy } from "./lib-proxy.js";
-import type { ErrorExtends, TypedFunction } from "./types.js";
+import type { AppExtension } from "./app-extension";
+import { LibProxy } from "./lib-proxy";
+import type { ErrorExtends, TypedFunction } from "./types";
 
 /**
  * Core descriptor.

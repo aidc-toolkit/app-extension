@@ -1,3 +1,3 @@
-export * from "./character-set-proxy.js";
-export * from "./check-proxy.js";
-export * from "./identifier-proxy.js";
+export * from "./character-set-proxy";
+export * from "./check-proxy";
+export * from "./identifier-proxy";
