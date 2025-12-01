@@ -1,3 +1,4 @@
+import type { Nullishable } from "@aidc-toolkit/core";
 import {
     ALPHABETIC_CREATOR,
     ALPHANUMERIC_CREATOR,
@@ -18,7 +19,7 @@ import {
     Types
 } from "../descriptor";
 import { LibProxy } from "../lib-proxy";
-import type { ErrorExtends, Matrix, MatrixResultError, Nullishable, ResultError } from "../types";
+import type { ErrorExtends, Matrix, MatrixResultError, ResultError } from "../type";
 import {
     exclusionAnyParameterDescriptor,
     exclusionFirstZeroParameterDescriptor,

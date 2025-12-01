@@ -1,6 +1,7 @@
+import type { TypedFunction } from "@aidc-toolkit/core";
 import type { AppExtension } from "./app-extension";
 import { LibProxy } from "./lib-proxy";
-import type { ErrorExtends, TypedFunction } from "./types";
+import type { ErrorExtends } from "./type";
 
 /**
  * Core descriptor.

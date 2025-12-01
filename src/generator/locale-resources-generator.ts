@@ -1,10 +1,9 @@
-import type { LocaleResources } from "@aidc-toolkit/core";
+import { getLogger, type LocaleResources } from "@aidc-toolkit/core";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import { expandParameterDescriptor, type ParameterDescriptor } from "../descriptor";
 import type { ProxyFunctionDescriptor } from "./descriptor";
 import { Generator } from "./generator";
-import { logger } from "./logger";
 
 /**
  * Parameters sequencer entry.
@@ -49,6 +48,11 @@ class LocaleResourcesGenerator extends Generator {
      * Locale resources import path.
      */
     private static readonly IMPORT_PATH = "../app-extension/src/locale";
+
+    /**
+     * Logger.
+     */
+    private readonly _logger = getLogger();
 
     /**
      * Parameters sequencer.
@@ -215,7 +219,7 @@ class LocaleResourcesGenerator extends Generator {
      * @returns
      * Merged locale resources.
      */
-    private static merge(logChanges: boolean, parentKey: string, sourceLocaleResources: LocaleResources, destinationLocaleResources: LocaleResources, addMissing: boolean): LocaleResources {
+    private merge(logChanges: boolean, parentKey: string, sourceLocaleResources: LocaleResources, destinationLocaleResources: LocaleResources, addMissing: boolean): LocaleResources {
         // Some entries at the top are not part of the generator output.
         const deleteMissing = parentKey.length !== 0;
 
@@ -227,7 +231,7 @@ class LocaleResourcesGenerator extends Generator {
                 if (!deleteMissing) {
                     newDestinationLocaleResources[key] = destinationValue;
                 } else if (logChanges) {
-                    logger.info(`Deleting ${parentKey}${key}...`);
+                    this._logger.info(`Deleting ${parentKey}${key}...`);
                 }
             }
         }
@@ -236,7 +240,7 @@ class LocaleResourcesGenerator extends Generator {
             if (!(key in destinationLocaleResources)) {
                 if (addMissing) {
                     if (logChanges) {
-                        logger.info(`Adding ${parentKey}${key}...`);
+                        this._logger.info(`Adding ${parentKey}${key}...`);
                     }
 
                     newDestinationLocaleResources[key] = sourceValue;
@@ -245,7 +249,7 @@ class LocaleResourcesGenerator extends Generator {
                 const destinationValue = destinationLocaleResources[key];
 
                 if (typeof sourceValue === "object" && typeof destinationValue === "object") {
-                    newDestinationLocaleResources[key] = LocaleResourcesGenerator.merge(logChanges, `${parentKey}${key}.`, sourceValue, destinationValue, addMissing);
+                    newDestinationLocaleResources[key] = this.merge(logChanges, `${parentKey}${key}.`, sourceValue, destinationValue, addMissing);
                 } else if (typeof sourceValue === "string" && typeof destinationValue === "string") {
                     newDestinationLocaleResources[key] = destinationValue;
                 } else {
@@ -346,7 +350,7 @@ class LocaleResourcesGenerator extends Generator {
 
                 await import(LocaleResourcesSource).then((module) => {
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Module format is known.
-                    const LocaleResources = LocaleResourcesGenerator.merge(entry.name === "en", "", this._LocaleResources, (module as LocaleResourcesModule).LocaleResources, !entry.name.includes("-"));
+                    const LocaleResources = this.merge(entry.name === "en", "", this._LocaleResources, (module as LocaleResourcesModule).LocaleResources, !entry.name.includes("-"));
 
                     fs.writeFileSync(LocaleResourcesSource, `${LocaleResourcesGenerator.buildOutput("export default", LocaleResources, 0)};\n`);
                 });

@@ -1,6 +1,7 @@
+import type { Nullishable } from "@aidc-toolkit/core";
 import { RegExpValidator } from "@aidc-toolkit/utility";
 import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Types } from "../descriptor";
-import type { ErrorExtends, Matrix, MatrixResultError, Nullishable } from "../types";
+import type { ErrorExtends, Matrix, MatrixResultError } from "../type";
 import { validateSParameterDescriptor } from "./string-descriptor";
 import { StringProxy } from "./string-proxy";
 

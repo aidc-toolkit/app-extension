@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 export * from "./locale/i18n";
-export * from "./types";
+export type * from "./type";
 export * from "./app-extension";
 export * from "./lib-proxy";
 export * from "./descriptor";

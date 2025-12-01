@@ -8,7 +8,7 @@ import {
 } from "@aidc-toolkit/gs1";
 import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Types } from "../descriptor";
 import { LibProxy } from "../lib-proxy";
-import type { ErrorExtends, Matrix, MatrixResultError, ResultError } from "../types";
+import type { ErrorExtends, Matrix, MatrixResultError, ResultError } from "../type";
 
 const checkSParameterDescriptor: ParameterDescriptor = {
     name: "checkS",

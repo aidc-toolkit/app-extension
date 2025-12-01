@@ -1,7 +1,8 @@
+import type { Nullishable } from "@aidc-toolkit/core";
 import { mapIterable, Sequence, Transformer } from "@aidc-toolkit/utility";
 import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Types } from "../descriptor";
 import { LibProxy } from "../lib-proxy";
-import type { ErrorExtends, Matrix, MatrixResultError, Nullishable, ResultError } from "../types";
+import type { ErrorExtends, Matrix, MatrixResultError, ResultError } from "../type";
 import {
     countParameterDescriptor,
     startValueParameterDescriptor,

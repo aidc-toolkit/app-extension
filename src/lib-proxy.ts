@@ -1,7 +1,7 @@
 import { mapIterable } from "@aidc-toolkit/utility";
 import type { AppExtension } from "./app-extension";
 import { i18nextAppExtension } from "./locale/i18n";
-import type { ErrorExtends, Matrix, MatrixResultError, ResultError } from "./types";
+import type { ErrorExtends, Matrix, MatrixResultError, ResultError } from "./type";
 
 /**
  * Library proxy.

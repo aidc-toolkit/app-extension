@@ -1,7 +1,7 @@
 import { AI39_CREATOR, AI82_CREATOR } from "@aidc-toolkit/gs1";
 import type { AppExtension } from "../app-extension";
 import { expandParameterDescriptor, ProxyClass } from "../descriptor";
-import type { ErrorExtends } from "../types";
+import type { ErrorExtends } from "../type";
 import {
     exclusionAllNumericParameterDescriptor,
     exclusionNoneParameterDescriptor

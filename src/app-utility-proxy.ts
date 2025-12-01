@@ -1,7 +1,8 @@
+import { isNullish, type NonNullishable, type Nullishable } from "@aidc-toolkit/core";
 import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Types } from "./descriptor";
 import { LibProxy } from "./lib-proxy";
 import { i18nextAppExtension } from "./locale/i18n";
-import { type ErrorExtends, isNullish, type Matrix, type NonNullishable, type Nullishable } from "./types";
+import type { ErrorExtends, Matrix } from "./type";
 
 const spillMatrix: ParameterDescriptor = {
     name: "spillMatrix",

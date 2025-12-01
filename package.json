@@ -23,8 +23,7 @@
   },
   "devDependencies": {
     "@aidc-toolkit/dev": "alpha",
-    "@types/node": "^24.10.1",
-    "tslog": "^4.10.2"
+    "@types/node": "^24.10.1"
   },
   "dependencies": {
     "@aidc-toolkit/core": "alpha",

@@ -1,3 +1,4 @@
+import { isNullish, type Nullishable } from "@aidc-toolkit/core";
 import {
     CPID_VALIDATOR,
     GCN_VALIDATOR,
@@ -45,7 +46,7 @@ import {
 } from "../descriptor";
 import { LibProxy } from "../lib-proxy";
 import { i18nextAppExtension } from "../locale/i18n";
-import { type ErrorExtends, isNullish, type Matrix, type MatrixResultError, type Nullishable } from "../types";
+import type { ErrorExtends, Matrix, MatrixResultError } from "../type";
 import { exclusionAllNumericParameterDescriptor } from "../utility/character-set-descriptor";
 import { StringProxy } from "../utility/string-proxy";
 import {

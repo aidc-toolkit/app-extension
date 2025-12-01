@@ -1,13 +1,6 @@
+import type { TypedAsyncFunction, TypedFunction, TypedSyncFunction } from "@aidc-toolkit/core";
 import { i18nextAppExtension } from "./locale/i18n";
-import type {
-    ErrorExtends,
-    ResultError,
-    SheetAddress,
-    SheetRange,
-    TypedAsyncFunction,
-    TypedFunction,
-    TypedSyncFunction
-} from "./types";
+import type { ErrorExtends, ResultError, SheetAddress, SheetRange } from "./type";
 
 /**
  * Application extension.
