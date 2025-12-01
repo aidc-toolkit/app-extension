@@ -1,6 +1,6 @@
 {
   "name": "@aidc-toolkit/app-extension",
-  "version": "1.0.24-alpha",
+  "version": "1.0.24-beta",
   "description": "Application extension framework for AIDC Toolkit",
   "type": "module",
   "main": "dist/index.js",
@@ -22,13 +22,13 @@
     "build:doc": "npm run build:dev"
   },
   "devDependencies": {
-    "@aidc-toolkit/dev": "alpha",
+    "@aidc-toolkit/dev": "beta",
     "@types/node": "^24.10.1"
   },
   "dependencies": {
-    "@aidc-toolkit/core": "alpha",
-    "@aidc-toolkit/gs1": "alpha",
-    "@aidc-toolkit/utility": "alpha",
+    "@aidc-toolkit/core": "beta",
+    "@aidc-toolkit/gs1": "beta",
+    "@aidc-toolkit/utility": "beta",
     "i18next": "^25.7.0"
   }
 }
