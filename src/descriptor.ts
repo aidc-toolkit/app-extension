@@ -39,9 +39,14 @@ export const Types = {
 } as const;
 
 /**
+ * Type key.
+ */
+export type TypeKey = keyof typeof Types;
+
+/**
  * Type.
  */
-export type Type = typeof Types[keyof typeof Types];
+export type Type = typeof Types[TypeKey];
 
 /**
  * Type descriptor.
