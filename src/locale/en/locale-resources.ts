@@ -12,6 +12,7 @@ export default {
         prefixDefinitionMustHaveMaximumThreeElements: "Prefix definition must have a maximum of 3 elements",
         prefixMustBeString: "Prefix must be a string",
         prefixTypeMustBeNumber: "Prefix type must be a number in the range of 0 to {{maximumPrefixType, number}}",
+        invalidPrefixType: "Invalid prefix type",
         tweakFactorMustBeNumber: "Tweak factor must be a number"
     },
     Parameters: {
