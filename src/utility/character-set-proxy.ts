@@ -3,7 +3,7 @@ import {
     ALPHABETIC_CREATOR,
     ALPHANUMERIC_CREATOR,
     type CharacterSetCreator,
-    type CharacterSetValidation,
+    type CharacterSetValidation, type CharacterSetValidator,
     type Exclusion,
     HEXADECIMAL_CREATOR,
     NUMERIC_CREATOR,
@@ -46,13 +46,13 @@ const valueForSParameterDescriptor: ParameterDescriptor = {
     name: "valueForS"
 };
 
-export abstract class CharacterSetProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends StringProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    private readonly _characterSetCreator: CharacterSetCreator;
+export abstract class CharacterSetValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends StringProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+    private readonly _characterSetValidator: CharacterSetValidator;
 
-    protected constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>, characterSetCreator: CharacterSetCreator) {
+    protected constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>, characterSetValidator: CharacterSetValidator) {
         super(appExtension);
 
-        this._characterSetCreator = characterSetCreator;
+        this._characterSetValidator = characterSetValidator;
     }
 
     @ProxyMethod({
@@ -63,7 +63,7 @@ export abstract class CharacterSetProxy<ThrowError extends boolean, TError exten
         @ProxyParameter(validateSParameterDescriptor) matrixSs: Matrix<string>,
         @ProxyParameter(exclusionNoneParameterDescriptor) exclusion: Nullishable<Exclusion>
     ): MatrixResultError<string, ThrowError, TError> {
-        return this.validateString(this._characterSetCreator, matrixSs, {
+        return this.validateString(this._characterSetValidator, matrixSs, {
             exclusion: exclusion ?? undefined
         } satisfies CharacterSetValidation);
     }
@@ -77,6 +77,16 @@ export abstract class CharacterSetProxy<ThrowError extends boolean, TError exten
         @ProxyParameter(exclusionNoneParameterDescriptor) exclusion: Nullishable<Exclusion>
     ): MatrixResultError<boolean, ThrowError, TError> {
         return this.isValidString(this.validate(matrixSs, exclusion));
+    }
+}
+
+export abstract class CharacterSetCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends CharacterSetValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+    private readonly _characterSetCreator: CharacterSetCreator;
+
+    protected constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>, characterSetCreator: CharacterSetCreator) {
+        super(appExtension, characterSetCreator);
+
+        this._characterSetCreator = characterSetCreator;
     }
 
     @ProxyMethod({
@@ -140,7 +150,7 @@ export abstract class CharacterSetProxy<ThrowError extends boolean, TError exten
         }
     ]
 })
-export class NumericProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends CharacterSetProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+export class NumericProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends CharacterSetCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
         super(appExtension, NUMERIC_CREATOR);
     }
@@ -155,7 +165,7 @@ export class NumericProxy<ThrowError extends boolean, TError extends ErrorExtend
         }
     ]
 })
-export class HexadecimalProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends CharacterSetProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+export class HexadecimalProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends CharacterSetCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
         super(appExtension, HEXADECIMAL_CREATOR);
     }
@@ -164,7 +174,7 @@ export class HexadecimalProxy<ThrowError extends boolean, TError extends ErrorEx
 @ProxyClass({
     methodInfix: "Alphabetic"
 })
-export class AlphabeticProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends CharacterSetProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+export class AlphabeticProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends CharacterSetCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
         super(appExtension, ALPHABETIC_CREATOR);
     }
@@ -179,7 +189,7 @@ export class AlphabeticProxy<ThrowError extends boolean, TError extends ErrorExt
         }
     ]
 })
-export class AlphanumericProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends CharacterSetProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+export class AlphanumericProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends CharacterSetCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
         super(appExtension, ALPHANUMERIC_CREATOR);
     }

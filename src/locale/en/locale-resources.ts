@@ -355,6 +355,14 @@ export default {
                 name: "valueForAI39",
                 description: "Get the value for a GS1 AI 39 encodable character set string."
             },
+            validateAI64: {
+                name: "validateAI64",
+                description: "Validate a GS1 AI 64 encodable character set string."
+            },
+            isValidAI64: {
+                name: "isValidAI64",
+                description: "Determine if a string is GS1 AI 64 encodable character set."
+            },
             checkDigit: {
                 name: "checkDigit",
                 description: "Calculate the check digit for a numeric string."

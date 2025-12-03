@@ -355,6 +355,14 @@ export default {
                 name: "valeurDeAI39",
                 description: "Obtenez la valeur d'une chaîne de caractères GS1 AI 39."
             },
+            validateAI64: {
+                name: "validerAI64",
+                description: "Valider une chaîne de caractères GS1 AI 64."
+            },
+            isValidAI64: {
+                name: "estValideAI64",
+                description: "Déterminer si une chaîne est un jeu de caractères GS1 AI 64."
+            },
             checkDigit: {
                 name: "chiffreDeControle",
                 description: "Calculer le chiffre de contrôle pour une chaîne numérique."
