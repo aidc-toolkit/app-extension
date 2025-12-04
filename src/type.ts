@@ -1,6 +1,6 @@
 /**
  * Type that error type is expected to extend. If the application framework reports errors through the throw/catch
- * mechanism, the error type is expected to extend {@link Error}. Otherwise, it may extend any object type.
+ * mechanism, the error type is expected to extend {@linkcode Error}. Otherwise, it may extend any object type.
  *
  * @template ThrowError
  * If true, errors are reported through the throw/catch mechanism.
