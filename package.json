@@ -22,13 +22,13 @@
     "build:doc": "npm run build:dev"
   },
   "devDependencies": {
-    "@aidc-toolkit/dev": "1.0.25-alpha.202512032320",
+    "@aidc-toolkit/dev": "1.0.25-alpha.202512041938",
     "@types/node": "^24.10.1"
   },
   "dependencies": {
-    "@aidc-toolkit/core": "1.0.25-alpha.202512041655",
-    "@aidc-toolkit/gs1": "1.0.25-alpha.202512041657",
-    "@aidc-toolkit/utility": "1.0.25-alpha.202512041656",
+    "@aidc-toolkit/core": "1.0.25-alpha.202512041938",
+    "@aidc-toolkit/gs1": "1.0.25-alpha.202512041940",
+    "@aidc-toolkit/utility": "1.0.25-alpha.202512041940",
     "i18next": "^25.7.1"
   }
 }
