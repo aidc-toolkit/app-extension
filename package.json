@@ -5,7 +5,10 @@
   "type": "module",
   "main": "dist/index.js",
   "homepage": "https://aidc-toolkit.com/",
-  "repository": "aidc-toolkit/app-extension",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aidc-toolkit/app-extension.git"
+  },
   "bugs": {
     "url": "https://github.com/aidc-toolkit/app-extension/issues"
   },
