@@ -89,7 +89,7 @@ export abstract class Generator {
         const functionLocalization = this._functionLocalizationsMapsMap.get(namespaceFunctionName)?.get(locale);
 
         if (functionLocalization === undefined) {
-            throw new Error(`Localization for function "${namespaceFunctionName}", locale "${locale}" not found`);
+            throw new Error(`${locale} localization for function ${namespaceFunctionName} not found`);
         }
 
         return functionLocalization;
@@ -114,7 +114,7 @@ export abstract class Generator {
         const parameterLocalization = this._parameterLocalizationsMapsMap.get(`${namespaceFunctionName}.${parameterName}`)?.get(locale);
 
         if (parameterLocalization === undefined) {
-            throw new Error(`Localization for function "${namespaceFunctionName}", parameter "${parameterName}", locale "${locale}" not found`);
+            throw new Error(`${locale} localization for function ${namespaceFunctionName} parameter ${parameterName} not found`);
         }
 
         return parameterLocalization;
@@ -237,7 +237,7 @@ export abstract class Generator {
                         const insertIndex = methodName.indexOf(infixBefore);
 
                         if (insertIndex === -1) {
-                            throw new Error(`Cannot find "${infixBefore}" in method name ${methodName}`);
+                            throw new Error(`Cannot find "${infixBefore}" in method ${methodName}`);
                         }
 
                         // Other classes in the hierarchy and infix is in the middle of the string.

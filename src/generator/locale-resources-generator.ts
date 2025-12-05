@@ -188,7 +188,7 @@ class LocaleResourcesGenerator extends Generator {
         }
 
         if (functionName in functionsLocaleResources) {
-            throw new Error(`Duplicate function "${functionName}"`);
+            throw new Error(`Duplicate function ${functionName}`);
         }
 
         // Add function.
