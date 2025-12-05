@@ -25,8 +25,7 @@
     "build:doc": "npm run build:dev"
   },
   "devDependencies": {
-    "@aidc-toolkit/dev": "1.0.25-alpha.202512051624",
-    "@types/node": "^24.10.1"
+    "@aidc-toolkit/dev": "1.0.25-alpha.202512051624"
   },
   "dependencies": {
     "@aidc-toolkit/core": "1.0.25-alpha.202512051624",
