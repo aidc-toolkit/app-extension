@@ -76,7 +76,7 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
      * @returns
      * Array of maximum width and maximum height.
      */
-    private async defaultMaximums(maximumDimensions: MaximumDimensions, invocationContext: Nullishable<TInvocationContext>): Promise<NonNullishable<MaximumDimensions>> {
+    async #defaultMaximums(maximumDimensions: MaximumDimensions, invocationContext: Nullishable<TInvocationContext>): Promise<NonNullishable<MaximumDimensions>> {
         if (isNullish(invocationContext)) {
             // Application error; no localization necessary.
             throw new Error("Invocation context not provided by application");
@@ -140,7 +140,7 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
             throw new RangeError(i18nextAppExtension.t("Proxy.vSpillMustBeHorizontalArray"));
         }
 
-        const maximumDimensions = await this.defaultMaximums({
+        const maximumDimensions = await this.#defaultMaximums({
             width: maximumWidth,
             height: maximumHeight
         }, invocationContext);
@@ -222,7 +222,7 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
             }
         }
 
-        const maximumDimensions = await this.defaultMaximums({
+        const maximumDimensions = await this.#defaultMaximums({
             width: maximumWidth,
             height: maximumHeight
         }, invocationContext);

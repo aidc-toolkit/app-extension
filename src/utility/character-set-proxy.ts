@@ -48,12 +48,12 @@ const valueForSParameterDescriptor: ParameterDescriptor = {
 };
 
 export abstract class CharacterSetValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends StringProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    private readonly _characterSetValidator: CharacterSetValidator;
+    readonly #characterSetValidator: CharacterSetValidator;
 
     protected constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>, characterSetValidator: CharacterSetValidator) {
         super(appExtension);
 
-        this._characterSetValidator = characterSetValidator;
+        this.#characterSetValidator = characterSetValidator;
     }
 
     @ProxyMethod({
@@ -64,7 +64,7 @@ export abstract class CharacterSetValidatorProxy<ThrowError extends boolean, TEr
         @ProxyParameter(validateSParameterDescriptor) matrixSs: Matrix<string>,
         @ProxyParameter(exclusionNoneParameterDescriptor) exclusion: Nullishable<Exclusion>
     ): MatrixResultError<string, ThrowError, TError> {
-        return this.validateString(this._characterSetValidator, matrixSs, {
+        return this.validateString(this.#characterSetValidator, matrixSs, {
             exclusion: exclusion ?? undefined
         } satisfies CharacterSetValidation);
     }
@@ -82,12 +82,12 @@ export abstract class CharacterSetValidatorProxy<ThrowError extends boolean, TEr
 }
 
 export abstract class CharacterSetCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends CharacterSetValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    private readonly _characterSetCreator: CharacterSetCreator;
+    readonly #characterSetCreator: CharacterSetCreator;
 
     protected constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>, characterSetCreator: CharacterSetCreator) {
         super(appExtension, characterSetCreator);
 
-        this._characterSetCreator = characterSetCreator;
+        this.#characterSetCreator = characterSetCreator;
     }
 
     @ProxyMethod({
@@ -103,7 +103,7 @@ export abstract class CharacterSetCreatorProxy<ThrowError extends boolean, TErro
         const exclusionOrUndefined = exclusion ?? undefined;
         const tweakOrUndefined = tweak ?? undefined;
 
-        return this.mapMatrix(matrixValues, value => this._characterSetCreator.create(length, value, exclusionOrUndefined, tweakOrUndefined));
+        return this.mapMatrix(matrixValues, value => this.#characterSetCreator.create(length, value, exclusionOrUndefined, tweakOrUndefined));
     }
 
     @ProxyMethod({
@@ -123,7 +123,7 @@ export abstract class CharacterSetCreatorProxy<ThrowError extends boolean, TErro
         const exclusionOrUndefined = exclusion ?? undefined;
         const tweakOrUndefined = tweak ?? undefined;
 
-        return LibProxy.matrixResult(this._characterSetCreator.create(length, new Sequence(startValue, count), exclusionOrUndefined, tweakOrUndefined));
+        return LibProxy.matrixResult(this.#characterSetCreator.create(length, new Sequence(startValue, count), exclusionOrUndefined, tweakOrUndefined));
     }
 
     @ProxyMethod({
@@ -138,7 +138,7 @@ export abstract class CharacterSetCreatorProxy<ThrowError extends boolean, TErro
         const exclusionOrUndefined = exclusion ?? undefined;
         const tweakOrUndefined = tweak ?? undefined;
 
-        return this.mapMatrix(matrixSs, s => this.mapBigInt(this._characterSetCreator.valueFor(s, exclusionOrUndefined, tweakOrUndefined)));
+        return this.mapMatrix(matrixSs, s => this.mapBigInt(this.#characterSetCreator.valueFor(s, exclusionOrUndefined, tweakOrUndefined)));
     }
 }
 

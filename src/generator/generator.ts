@@ -31,32 +31,32 @@ export abstract class Generator {
     /**
      * Documentation base URL.
      */
-    private static readonly DOCUMENTATION_BASE_URL = "https://aidc-toolkit.com/";
+    static readonly #DOCUMENTATION_BASE_URL = "https://aidc-toolkit.com/";
 
     /**
      * Documentation path, optionally preceded by locale.
      */
-    private static readonly DOCUMENTATION_PATH = "app-extension/";
+    static readonly #DOCUMENTATION_PATH = "app-extension/";
 
     /**
      * Locales.
      */
-    private readonly _locales: readonly string[];
+    readonly #locales: readonly string[];
 
     /**
      * Default locale.
      */
-    private readonly _defaultLocale: string;
+    readonly #defaultLocale: string;
 
     /**
      * Map of function localizations maps by namespace function name.
      */
-    private readonly _functionLocalizationsMapsMap = new Map<string, ReadonlyMap<string, FunctionLocalization>>();
+    readonly #functionLocalizationsMapsMap = new Map<string, ReadonlyMap<string, FunctionLocalization>>();
 
     /**
      * Map of parameter localizations maps by namespace function parameter name.
      */
-    private readonly _parameterLocalizationsMapsMap = new Map<string, ReadonlyMap<string, ParameterLocalization>>();
+    readonly #parameterLocalizationsMapsMap = new Map<string, ReadonlyMap<string, ParameterLocalization>>();
 
     /**
      *
@@ -69,22 +69,22 @@ export abstract class Generator {
      * Include localizations if true.
      */
     constructor(includeLocalizations = true) {
-        this._locales = includeLocalizations ? Object.keys(appExtensionResources) : [];
-        this._defaultLocale = this._locales[0] ?? "";
+        this.#locales = includeLocalizations ? Object.keys(appExtensionResources) : [];
+        this.#defaultLocale = this.#locales[0] ?? "";
     }
 
     /**
      * Get the locales.
      */
     protected get locales(): readonly string[] {
-        return this._locales;
+        return this.#locales;
     }
 
     /**
      * Get the default locale.
      */
     protected get defaultLocale(): string {
-        return this._defaultLocale;
+        return this.#defaultLocale;
     }
 
     /**
@@ -100,7 +100,7 @@ export abstract class Generator {
      * Function localization.
      */
     protected getFunctionLocalization(namespaceFunctionName: string, locale: string): FunctionLocalization {
-        const functionLocalization = this._functionLocalizationsMapsMap.get(namespaceFunctionName)?.get(locale);
+        const functionLocalization = this.#functionLocalizationsMapsMap.get(namespaceFunctionName)?.get(locale);
 
         if (functionLocalization === undefined) {
             throw new Error(`${locale} localization for function ${namespaceFunctionName} not found`);
@@ -125,7 +125,7 @@ export abstract class Generator {
      * Function localization.
      */
     protected getParameterLocalization(namespaceFunctionName: string, parameterName: string, locale: string): ParameterLocalization {
-        const parameterLocalization = this._parameterLocalizationsMapsMap.get(`${namespaceFunctionName}.${parameterName}`)?.get(locale);
+        const parameterLocalization = this.#parameterLocalizationsMapsMap.get(`${namespaceFunctionName}.${parameterName}`)?.get(locale);
 
         if (parameterLocalization === undefined) {
             throw new Error(`${locale} localization for function ${namespaceFunctionName} parameter ${parameterName} not found`);
@@ -175,8 +175,8 @@ export abstract class Generator {
      * @returns
      * Localization map.
      */
-    private generateLocalizationsMap<T extends Localization>(localizedKeyPrefix: string, localizationCallback: (locale: string, localization: Localization) => T): ReadonlyMap<string, T> {
-        return new Map(this._locales.map((locale) => {
+    #generateLocalizationsMap<T extends Localization>(localizedKeyPrefix: string, localizationCallback: (locale: string, localization: Localization) => T): ReadonlyMap<string, T> {
+        return new Map(this.#locales.map((locale) => {
             const lngOption = {
                 lng: locale
             };
@@ -264,12 +264,12 @@ export abstract class Generator {
 
                     const namespaceFunctionName = `${namespacePrefix}${functionName}`;
 
-                    const functionLocalizationsMap = this.generateLocalizationsMap<FunctionLocalization>(`Functions.${namespaceFunctionName}.`, (locale, localization) => ({
+                    const functionLocalizationsMap = this.#generateLocalizationsMap<FunctionLocalization>(`Functions.${namespaceFunctionName}.`, (locale, localization) => ({
                         ...localization,
-                        documentationURL: `${Generator.DOCUMENTATION_BASE_URL}${locale === this.defaultLocale ? "" : `${locale}/`}${Generator.DOCUMENTATION_PATH}${namespace === undefined ? "" : `${namespace}/`}${localization.name}.html`
+                        documentationURL: `${Generator.#DOCUMENTATION_BASE_URL}${locale === this.defaultLocale ? "" : `${locale}/`}${Generator.#DOCUMENTATION_PATH}${namespace === undefined ? "" : `${namespace}/`}${localization.name}.html`
                     }));
 
-                    this._functionLocalizationsMapsMap.set(namespaceFunctionName, functionLocalizationsMap);
+                    this.#functionLocalizationsMapsMap.set(namespaceFunctionName, functionLocalizationsMap);
 
                     this.createProxyFunction({
                         ...proxyObjectDescriptor,
@@ -281,9 +281,9 @@ export abstract class Generator {
 
                             const parameterName = expandedParameterDescriptor.name;
 
-                            const parameterLocalizationsMap = this.generateLocalizationsMap(`Parameters.${parameterName}.`, (_locale, localization) => localization);
+                            const parameterLocalizationsMap = this.#generateLocalizationsMap(`Parameters.${parameterName}.`, (_locale, localization) => localization);
 
-                            this._parameterLocalizationsMapsMap.set(`${namespaceFunctionName}.${parameterName}`, parameterLocalizationsMap);
+                            this.#parameterLocalizationsMapsMap.set(`${namespaceFunctionName}.${parameterName}`, parameterLocalizationsMap);
 
                             return {
                                 namespace,

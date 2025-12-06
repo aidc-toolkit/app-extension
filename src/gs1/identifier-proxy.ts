@@ -66,16 +66,16 @@ const validateIdentifierParameterDescriptor: ParameterDescriptor = {
 };
 
 abstract class IdentifierValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, TIdentifierType extends IdentifierType> extends StringProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    private readonly _validator: IdentifierTypeValidator<TIdentifierType>;
+    readonly #validator: IdentifierTypeValidator<TIdentifierType>;
 
     protected constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>, validator: IdentifierTypeValidator<TIdentifierType>) {
         super(appExtension);
 
-        this._validator = validator;
+        this.#validator = validator;
     }
 
     protected get validator(): IdentifierTypeValidator<TIdentifierType> {
-        return this._validator;
+        return this.#validator;
     }
 }
 
@@ -472,14 +472,14 @@ export class PrefixManagerProxy<ThrowError extends boolean, TError extends Error
 }
 
 abstract class IdentifierCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, TIdentifierDescriptor extends IdentifierDescriptor, TIdentifierValidation extends IdentifierValidation, TIdentifierCreator extends IdentifierCreator<TIdentifierDescriptor, TIdentifierValidation>> extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    private static readonly PREFIX_TYPES: Array<PrefixType | undefined> = [PrefixTypes.GS1CompanyPrefix, PrefixTypes.UPCCompanyPrefix, PrefixTypes.GS18Prefix];
+    static readonly #PREFIX_TYPES: Array<PrefixType | undefined> = [PrefixTypes.GS1CompanyPrefix, PrefixTypes.UPCCompanyPrefix, PrefixTypes.GS18Prefix];
 
-    private readonly _getCreator: (prefixManager: PrefixManager) => TIdentifierCreator;
+    readonly #getCreator: (prefixManager: PrefixManager) => TIdentifierCreator;
 
     protected constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>, getCreator: (prefixManager: PrefixManager) => TIdentifierCreator) {
         super(appExtension);
 
-        this._getCreator = getCreator;
+        this.#getCreator = getCreator;
     }
 
     protected getCreator(prefixDefinition: Matrix<unknown>): TIdentifierCreator {
@@ -506,13 +506,13 @@ abstract class IdentifierCreatorProxy<ThrowError extends boolean, TError extends
 
         const prefixTypeIndex = reducedPrefixDefinition[1] ?? 0;
 
-        if (typeof prefixTypeIndex !== "number" || prefixTypeIndex < 0 || prefixTypeIndex >= IdentifierCreatorProxy.PREFIX_TYPES.length) {
+        if (typeof prefixTypeIndex !== "number" || prefixTypeIndex < 0 || prefixTypeIndex >= IdentifierCreatorProxy.#PREFIX_TYPES.length) {
             throw new RangeError(i18nextAppExtension.t("IdentifierCreatorProxy.prefixTypeMustBeNumber", {
-                maximumPrefixType: IdentifierCreatorProxy.PREFIX_TYPES.length - 1
+                maximumPrefixType: IdentifierCreatorProxy.#PREFIX_TYPES.length - 1
             }));
         }
 
-        const prefixType = IdentifierCreatorProxy.PREFIX_TYPES[prefixTypeIndex];
+        const prefixType = IdentifierCreatorProxy.#PREFIX_TYPES[prefixTypeIndex];
         
         // Undefined is included in type in case of invalid input.
         if (prefixType === undefined) {
@@ -533,7 +533,7 @@ abstract class IdentifierCreatorProxy<ThrowError extends boolean, TError extends
             prefixManager.resetTweakFactor();
         }
         
-        return this._getCreator(prefixManager);
+        return this.#getCreator(prefixManager);
     }
 }
 

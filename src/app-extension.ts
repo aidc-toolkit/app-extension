@@ -18,27 +18,27 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
     /**
      * Application version.
      */
-    private readonly _version: string;
+    readonly #version: string;
 
     /**
      * Maximum sequence count supported by application.
      */
-    private readonly _maximumSequenceCount: number;
+    readonly #maximumSequenceCount: number;
 
     /**
      * If true, errors are reported through the throw/catch mechanism.
      */
-    private readonly _throwError: ThrowError;
+    readonly #throwError: ThrowError;
 
     /**
      * Maximum width supported by application.
      */
-    private _maximumWidth?: number;
+    #maximumWidth?: number;
 
     /**
      * Maximum height supported by application.
      */
-    private _maximumHeight?: number;
+    #maximumHeight?: number;
 
     /**
      * Constructor.
@@ -53,9 +53,9 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * If true, errors are reported through the throw/catch mechanism.
      */
     protected constructor(version: string, maximumSequenceCount: number, throwError: ThrowError) {
-        this._version = version;
-        this._maximumSequenceCount = maximumSequenceCount;
-        this._throwError = throwError;
+        this.#version = version;
+        this.#maximumSequenceCount = maximumSequenceCount;
+        this.#throwError = throwError;
     }
 
     /**
@@ -65,14 +65,14 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * Version.
      */
     get version(): string {
-        return this._version;
+        return this.#version;
     }
 
     /**
      * Determine if errors are reported through the throw/catch mechanism.
      */
     get throwError(): ThrowError {
-        return this._throwError;
+        return this.#throwError;
     }
 
     /**
@@ -82,9 +82,9 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * Maximum width supported by the application.
      */
     async maximumWidth(): Promise<number> {
-        this._maximumWidth ??= await this.getMaximumWidth();
+        this.#maximumWidth ??= await this.getMaximumWidth();
 
-        return this._maximumWidth;
+        return this.#maximumWidth;
     }
 
     /**
@@ -102,9 +102,9 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * Maximum height supported by the application.
      */
     async maximumHeight(): Promise<number> {
-        this._maximumHeight ??= await this.getMaximumHeight();
+        this.#maximumHeight ??= await this.getMaximumHeight();
 
-        return this._maximumHeight;
+        return this.#maximumHeight;
     }
 
     /**
@@ -149,10 +149,10 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
     validateSequenceCount(sequenceCount: number): void {
         const absoluteSequenceCount = Math.abs(sequenceCount);
 
-        if (absoluteSequenceCount > this._maximumSequenceCount) {
+        if (absoluteSequenceCount > this.#maximumSequenceCount) {
             throw new RangeError(i18nextAppExtension.t("AppExtension.sequenceCountMustBeLessThanOrEqualTo", {
                 sequenceCount: absoluteSequenceCount,
-                maximumSequenceCount: this._maximumSequenceCount
+                maximumSequenceCount: this.#maximumSequenceCount
             }));
         }
     }
