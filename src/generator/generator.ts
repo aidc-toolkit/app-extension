@@ -1,7 +1,10 @@
 import { I18nEnvironments } from "@aidc-toolkit/core";
 import type { ParseKeys } from "i18next";
+import { AppUtilityProxy } from "../app-utility-proxy";
 import { expandParameterDescriptor, getClassDescriptorsMap } from "../descriptor";
+import * as GS1 from "../gs1";
 import { appExtensionResources, i18nAppExtensionInit, i18nextAppExtension } from "../locale/i18n";
+import * as Utility from "../utility";
 import type {
     FunctionLocalization,
     Localization,
@@ -9,6 +12,17 @@ import type {
     ProxyFunctionDescriptor,
     ProxyObjectDescriptor
 } from "./descriptor";
+
+/**
+ * Dummy method to force proxies to register their decorators.
+ *
+ * @param _proxies
+ * Proxies.
+ */
+function registerProxies(..._proxies: unknown[]): void {
+}
+
+registerProxies(AppUtilityProxy, Utility, GS1);
 
 /**
  * Abstract generator.
@@ -183,6 +197,10 @@ export abstract class Generator {
         let success = false;
 
         await i18nAppExtensionInit(I18nEnvironments.CLI);
+
+        // const LocaleResourcesSource = path.resolve(LocaleResourcesGenerator.IMPORT_PATH, entry.name, "locale-resources.ts");
+        //
+        // await import(LocaleResourcesSource).then((module) => {
 
         this.initialize();
 
