@@ -37,7 +37,7 @@ interface LocaleResourcesModule {
     /**
      * Locale resources.
      */
-    LocaleResources: LocaleResources;
+    default: LocaleResources;
 }
 
 /**
@@ -346,13 +346,13 @@ class LocaleResourcesGenerator extends Generator {
             await Promise.all(fs.readdirSync(LocaleResourcesGenerator.IMPORT_PATH, {
                 withFileTypes: true
             }).filter(entry => entry.isDirectory()).map(async (entry) => {
-                const LocaleResourcesSource = path.resolve(LocaleResourcesGenerator.IMPORT_PATH, entry.name, "locale-resources.ts");
+                const localeResourcesSource = path.resolve(LocaleResourcesGenerator.IMPORT_PATH, entry.name, "locale-resources.ts");
 
-                await import(LocaleResourcesSource).then((module) => {
+                await import(localeResourcesSource).then((module) => {
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Module format is known.
-                    const LocaleResources = this.merge(entry.name === "en", "", this._LocaleResources, (module as LocaleResourcesModule).LocaleResources, !entry.name.includes("-"));
+                    const localeResources = this.merge(entry.name === "en", "", this._LocaleResources, (module as LocaleResourcesModule).default, !entry.name.includes("-"));
 
-                    fs.writeFileSync(LocaleResourcesSource, `${LocaleResourcesGenerator.buildOutput("export default", LocaleResources, 0)};\n`);
+                    fs.writeFileSync(localeResourcesSource, `${LocaleResourcesGenerator.buildOutput("export default", localeResources, 0)};\n`);
                 });
             }));
         }
