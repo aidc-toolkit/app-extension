@@ -1,4 +1,4 @@
-import { type ParameterDescriptor, Types } from "../descriptor";
+import { type ParameterDescriptor, Types } from "../descriptor.js";
 
 const exclusionParameterDescriptor: ParameterDescriptor = {
     name: "exclusion",

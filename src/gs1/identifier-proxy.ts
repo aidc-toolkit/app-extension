@@ -32,7 +32,7 @@ import {
     type SerializableNumericIdentifierType
 } from "@aidc-toolkit/gs1";
 import { Sequence } from "@aidc-toolkit/utility";
-import type { AppExtension } from "../app-extension";
+import type { AppExtension } from "../app-extension.js";
 import {
     expandParameterDescriptor,
     type ParameterDescriptor,
@@ -40,17 +40,17 @@ import {
     ProxyMethod,
     ProxyParameter,
     Types
-} from "../descriptor";
-import { LibProxy } from "../lib-proxy";
-import { i18nextAppExtension } from "../locale/i18n";
-import type { ErrorExtends, Matrix, MatrixResultError } from "../type";
-import { exclusionAllNumericParameterDescriptor } from "../utility/character-set-descriptor";
-import { StringProxy } from "../utility/string-proxy";
+} from "../descriptor.js";
+import { LibProxy } from "../lib-proxy.js";
+import { i18nextAppExtension } from "../locale/i18n.js";
+import type { ErrorExtends, Matrix, MatrixResultError } from "../type.js";
+import { exclusionAllNumericParameterDescriptor } from "../utility/character-set-descriptor.js";
+import { StringProxy } from "../utility/string-proxy.js";
 import {
     countParameterDescriptor,
     startValueParameterDescriptor,
     valueParameterDescriptor
-} from "../utility/transformer-descriptor";
+} from "../utility/transformer-descriptor.js";
 
 const identifierParameterDescriptor: ParameterDescriptor = {
     name: "identifier",

@@ -1,3 +1,3 @@
-export * from "./transformer-proxy";
-export * from "./reg-exp-proxy";
-export * from "./character-set-proxy";
+export * from "./transformer-proxy.js";
+export * from "./reg-exp-proxy.js";
+export * from "./character-set-proxy.js";

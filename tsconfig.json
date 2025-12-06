@@ -1,6 +1,11 @@
 {
-  "extends": "@aidc-toolkit/dev/tsconfig.json",
-  "compilerOptions": {
-    "experimentalDecorators": true
-  }
+  "include": [],
+  "references": [
+    {
+      "path": "./tsconfig-src.json"
+    },
+    {
+      "path": "./tsconfig-config.json"
+    }
+  ]
 }

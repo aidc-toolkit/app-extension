@@ -1,17 +1,17 @@
 import { I18nEnvironments } from "@aidc-toolkit/core";
 import type { ParseKeys } from "i18next";
-import { AppUtilityProxy } from "../app-utility-proxy";
-import { expandParameterDescriptor, getClassDescriptorsMap } from "../descriptor";
-import * as GS1 from "../gs1";
-import { appExtensionResources, i18nAppExtensionInit, i18nextAppExtension } from "../locale/i18n";
-import * as Utility from "../utility";
+import { AppUtilityProxy } from "../app-utility-proxy.js";
+import { expandParameterDescriptor, getClassDescriptorsMap } from "../descriptor.js";
+import * as GS1 from "../gs1/index.js";
+import { appExtensionResources, i18nAppExtensionInit, i18nextAppExtension } from "../locale/i18n.js";
+import * as Utility from "../utility/index.js";
 import type {
     FunctionLocalization,
     Localization,
     ParameterLocalization,
     ProxyFunctionDescriptor,
     ProxyObjectDescriptor
-} from "./descriptor";
+} from "./descriptor.js";
 
 /**
  * Dummy method to force proxies to register their decorators.
