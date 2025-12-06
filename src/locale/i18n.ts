@@ -24,7 +24,7 @@ export const appExtensionResources: Resource = {
     }
 };
 
-// Explicit type is necessary to work around bug in type discovery with linked packages.
+// Explicit type is necessary because type can't be inferred without additional references.
 export const i18nextAppExtension: i18n = i18next.createInstance();
 
 /**
