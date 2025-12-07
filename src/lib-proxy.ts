@@ -6,14 +6,17 @@ import type { ErrorExtends, Matrix, MatrixResultError, ResultError } from "./typ
 /**
  * Library proxy.
  *
- * @template TBigInt
- * Type to which big integer is mapped.
- *
  * @template ThrowError
  * If true, errors are reported through the throw/catch mechanism.
  *
  * @template TError
  * Error type.
+ *
+ * @template TInvocationContext
+ * Application-specific invocation context type.
+ *
+ * @template TBigInt
+ * Type to which big integer is mapped.
  */
 export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> {
     /**

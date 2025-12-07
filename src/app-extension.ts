@@ -5,14 +5,17 @@ import type { ErrorExtends, ResultError, SheetAddress, SheetRange } from "./type
 /**
  * Application extension.
  *
- * @template TBigInt
- * Type to which big integer is mapped.
- *
  * @template ThrowError
  * If true, errors are reported through the throw/catch mechanism.
  *
  * @template TError
  * Error type.
+ *
+ * @template TInvocationContext
+ * Application-specific invocation context type.
+ *
+ * @template TBigInt
+ * Type to which big integer is mapped.
  */
 export abstract class AppExtension<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> {
     /**
