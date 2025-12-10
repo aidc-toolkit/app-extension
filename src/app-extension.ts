@@ -191,6 +191,9 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
     /**
      * Bind a synchronous method and wrap it in a try/catch for comprehensive error handling.
      *
+     * @template TMethod
+     * Method type.
+     *
      * @param thisArg
      * The value to be passed as the `this` parameter to the method.
      *
@@ -217,6 +220,9 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
 
     /**
      * Bind an asynchronous method and wrap it in a try/catch for comprehensive error handling.
+     *
+     * @template TMethod
+     * Method type.
      *
      * @param thisArg
      * The value to be passed as the `this` parameter to the method.

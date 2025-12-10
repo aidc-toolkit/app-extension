@@ -167,6 +167,21 @@ export interface ClassDescriptor extends Descriptor {
 
 /**
  * Proxy class type with fixed constructor.
+ *
+ * @template ThrowError
+ * If true, errors are reported through the throw/catch mechanism.
+ *
+ * @template TError
+ * Error type.
+ *
+ * @template TInvocationContext
+ * Application-specific invocation context type.
+ *
+ * @template TBigInt
+ * Type to which big integer is mapped.
+ *
+ * @template T
+ * Proxy type.
  */
 type ProxyClassType<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, T extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt>> = (new (appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) => T) & typeof LibProxy;
 
@@ -188,6 +203,21 @@ const classDescriptorsMap = new Map<string, ClassDescriptor>();
 /**
  * Proxy parameter decorator.
  *
+ * @template ThrowError
+ * If true, errors are reported through the throw/catch mechanism.
+ *
+ * @template TError
+ * Error type.
+ *
+ * @template TInvocationContext
+ * Application-specific invocation context type.
+ *
+ * @template TBigInt
+ * Type to which big integer is mapped.
+ *
+ * @template T
+ * Proxy type.
+ *
  * @param parameterDescriptor
  * Parameter descriptor.
  *
@@ -202,6 +232,21 @@ export function ProxyParameter<ThrowError extends boolean, TError extends ErrorE
 
 /**
  * Proxy method decorator.
+ *
+ * @template ThrowError
+ * If true, errors are reported through the throw/catch mechanism.
+ *
+ * @template TError
+ * Error type.
+ *
+ * @template TInvocationContext
+ * Application-specific invocation context type.
+ *
+ * @template TBigInt
+ * Type to which big integer is mapped.
+ *
+ * @template T
+ * Proxy type.
  *
  * @param methodDescriptor
  * Method descriptor.
@@ -257,6 +302,21 @@ export function ProxyMethod<ThrowError extends boolean, TError extends ErrorExte
 
 /**
  * Proxy class decorator.
+ *
+ * @template ThrowError
+ * If true, errors are reported through the throw/catch mechanism.
+ *
+ * @template TError
+ * Error type.
+ *
+ * @template TInvocationContext
+ * Application-specific invocation context type.
+ *
+ * @template TBigInt
+ * Type to which big integer is mapped.
+ *
+ * @template T
+ * Proxy type.
  *
  * @param classDescriptor
  * Class descriptor.

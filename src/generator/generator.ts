@@ -166,6 +166,9 @@ export abstract class Generator {
     /**
      * Generate localizations map.
      *
+     * @template TLocalization
+     * Localization type.
+     *
      * @param localizedKeyPrefix
      * Localized key prefix.
      *
@@ -175,7 +178,7 @@ export abstract class Generator {
      * @returns
      * Localization map.
      */
-    #generateLocalizationsMap<T extends Localization>(localizedKeyPrefix: string, localizationCallback: (locale: string, localization: Localization) => T): ReadonlyMap<string, T> {
+    #generateLocalizationsMap<TLocalization extends Localization>(localizedKeyPrefix: string, localizationCallback: (locale: string, localization: Localization) => TLocalization): ReadonlyMap<string, TLocalization> {
         return new Map(this.#locales.map((locale) => {
             const lngOption = {
                 lng: locale

@@ -33,12 +33,15 @@ export interface ParameterLocalization extends Localization {
 
 /**
  * Localization descriptor.
+ *
+ * @param TLocalization
+ * Localization type.
  */
-export interface LocalizationDescriptor<T extends Localization> {
+export interface LocalizationDescriptor<TLocalization extends Localization> {
     /**
      * Localizations map by locale.
      */
-    readonly localizationsMap: ReadonlyMap<string, T>;
+    readonly localizationsMap: ReadonlyMap<string, TLocalization>;
 }
 
 /**

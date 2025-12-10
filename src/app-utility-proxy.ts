@@ -47,6 +47,18 @@ interface MaximumDimensions {
 
 /**
  * Application utilities.
+ *
+ *@template ThrowError
+ * If true, errors are reported through the throw/catch mechanism.
+ *
+ * @template TError
+ * Error type.
+ *
+ * @template TInvocationContext
+ * Application-specific invocation context type.
+ *
+ * @template TBigInt
+ * Type to which big integer is mapped.
  */
 @ProxyClass()
 export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt> {
