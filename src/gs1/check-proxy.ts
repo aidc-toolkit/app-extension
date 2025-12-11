@@ -6,8 +6,9 @@ import {
     isValidPriceOrWeightCheckDigit,
     priceOrWeightCheckDigit
 } from "@aidc-toolkit/gs1";
-import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Types } from "../descriptor.js";
+import { type ParameterDescriptor, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
+import { proxy } from "../proxy.js";
 import type { ErrorExtends, Matrix, MatrixResultError, ResultError } from "../type.js";
 
 const checkSParameterDescriptor: ParameterDescriptor = {
@@ -46,77 +47,69 @@ const ai82SParameterDescriptor: ParameterDescriptor = {
     name: "ai82S"
 };
 
-// eslint-disable-next-line no-useless-assignment -- ESLint bug.
 const ai82SWithCheckCharacterPairParameterDescriptor: ParameterDescriptor = {
     extendsDescriptor: ai82SParameterDescriptor,
     name: "ai82SWithCheckCharacterPair"
 };
 
-@ProxyClass({
+@proxy.describeClass(false, {
     namespace: "GS1"
 })
 export class CheckProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    @ProxyMethod({
+    @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true
+        isMatrix: true,
+        parameterDescriptors: [numericSParameterDescriptor]
     })
-    checkDigit(
-        @ProxyParameter(numericSParameterDescriptor) matrixSs: Matrix<string>
-    ): MatrixResultError<string, ThrowError, TError> {
+    checkDigit(matrixSs: Matrix<string>): MatrixResultError<string, ThrowError, TError> {
         return this.mapMatrix(matrixSs, s => checkDigit(s));
     }
 
-    @ProxyMethod({
+    @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true
+        isMatrix: true,
+        parameterDescriptors: [numericSWithCheckDigitParameterDescriptor]
     })
-    hasValidCheckDigit(
-        @ProxyParameter(numericSWithCheckDigitParameterDescriptor) matrixSs: Matrix<string>
-    ): MatrixResultError<boolean, ThrowError, TError> {
+    hasValidCheckDigit(matrixSs: Matrix<string>): MatrixResultError<boolean, ThrowError, TError> {
         return this.mapMatrix(matrixSs, s => hasValidCheckDigit(s));
     }
 
-    @ProxyMethod({
+    @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true
+        isMatrix: true,
+        parameterDescriptors: [numericSFourOrFiveDigitsParameterDescriptor]
     })
-    priceOrWeightCheckDigit(
-        @ProxyParameter(numericSFourOrFiveDigitsParameterDescriptor) matrixSs: Matrix<string>
-    ): MatrixResultError<string, ThrowError, TError> {
+    priceOrWeightCheckDigit(matrixSs: Matrix<string>): MatrixResultError<string, ThrowError, TError> {
         return this.mapMatrix(matrixSs, s => priceOrWeightCheckDigit(s));
     }
 
-    @ProxyMethod({
+    @proxy.describeMethod({
         type: Types.String,
-        isMatrix: false
-    })
-    isValidPriceOrWeightCheckDigit(
-        @ProxyParameter({
+        isMatrix: false,
+        parameterDescriptors: [{
             ...numericSFourOrFiveDigitsParameterDescriptor,
             isMatrix: false
-        }) s: string,
-        @ProxyParameter(checkDigitParameterDescriptor) checkDigit: string
-    ): ResultError<boolean, ThrowError, TError> {
+        }, checkDigitParameterDescriptor]
+    })
+    isValidPriceOrWeightCheckDigit(s: string, checkDigit: string): ResultError<boolean, ThrowError, TError> {
         return isValidPriceOrWeightCheckDigit(s, checkDigit);
     }
 
-    @ProxyMethod({
+    @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true
+        isMatrix: true,
+        parameterDescriptors: [ai82SParameterDescriptor]
     })
-    checkCharacterPair(
-        @ProxyParameter(ai82SParameterDescriptor) matrixSs: Matrix<string>
-    ): MatrixResultError<string, ThrowError, TError> {
+    checkCharacterPair(matrixSs: Matrix<string>): MatrixResultError<string, ThrowError, TError> {
         return this.mapMatrix(matrixSs, s => checkCharacterPair(s));
     }
 
-    @ProxyMethod({
+    @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true
+        isMatrix: true,
+        parameterDescriptors: [ai82SWithCheckCharacterPairParameterDescriptor]
     })
-    hasValidCheckCharacterPair(
-        @ProxyParameter(ai82SWithCheckCharacterPairParameterDescriptor) matrixSs: Matrix<string>
-    ): MatrixResultError<boolean, ThrowError, TError> {
+    hasValidCheckCharacterPair(matrixSs: Matrix<string>): MatrixResultError<boolean, ThrowError, TError> {
         return this.mapMatrix(matrixSs, s => hasValidCheckCharacterPair(s));
     }
 }

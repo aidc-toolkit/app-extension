@@ -1,6 +1,7 @@
 import type { Nullishable } from "@aidc-toolkit/core";
 import { RegExpValidator } from "@aidc-toolkit/utility";
-import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Types } from "../descriptor.js";
+import { type ParameterDescriptor, Types } from "../descriptor.js";
+import { proxy } from "../proxy.js";
 import type { ErrorExtends, Matrix, MatrixResultError } from "../type.js";
 import { validateSParameterDescriptor } from "./string-descriptor.js";
 import { StringProxy } from "./string-proxy.js";
@@ -19,19 +20,16 @@ const errorMessageParameterDescriptor: ParameterDescriptor = {
     isRequired: false
 };
 
-@ProxyClass({
+@proxy.describeClass(false, {
     methodInfix: "RegExp"
 })
 export class RegExpProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends StringProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    @ProxyMethod({
+    @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true
+        isMatrix: true,
+        parameterDescriptors: [regExpParameterDescriptor, validateSParameterDescriptor, errorMessageParameterDescriptor]
     })
-    validate(
-        @ProxyParameter(regExpParameterDescriptor) regExp: string,
-        @ProxyParameter(validateSParameterDescriptor) matrixSs: Matrix<string>,
-        @ProxyParameter(errorMessageParameterDescriptor) errorMessage: Nullishable<string>
-    ): MatrixResultError<string, ThrowError, TError> {
+    validate(regExp: string, matrixSs: Matrix<string>, errorMessage: Nullishable<string>): MatrixResultError<string, ThrowError, TError> {
         return this.validateString(new class extends RegExpValidator {
             protected override createErrorMessage(s: string): string {
                 return errorMessage ?? super.createErrorMessage(s);
@@ -39,14 +37,12 @@ export class RegExpProxy<ThrowError extends boolean, TError extends ErrorExtends
         }(new RegExp(regExp)), matrixSs);
     }
 
-    @ProxyMethod({
+    @proxy.describeMethod({
         type: Types.Boolean,
-        isMatrix: true
+        isMatrix: true,
+        parameterDescriptors: [regExpParameterDescriptor, validateSParameterDescriptor]
     })
-    isValid(
-        @ProxyParameter(regExpParameterDescriptor) regExp: string,
-        @ProxyParameter(validateSParameterDescriptor) matrixSs: Matrix<string>
-    ): MatrixResultError<boolean, ThrowError, TError> {
+    isValid(regExp: string, matrixSs: Matrix<string>): MatrixResultError<boolean, ThrowError, TError> {
         return this.isValidString(this.validate(regExp, matrixSs, undefined));
     }
 }

@@ -55,7 +55,7 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * @param throwError
      * If true, errors are reported through the throw/catch mechanism.
      */
-    protected constructor(version: string, maximumSequenceCount: number, throwError: ThrowError) {
+    constructor(version: string, maximumSequenceCount: number, throwError: ThrowError) {
         this.#version = version;
         this.#maximumSequenceCount = maximumSequenceCount;
         this.#throwError = throwError;

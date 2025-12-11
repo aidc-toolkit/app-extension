@@ -11,15 +11,9 @@ import {
     Sequence
 } from "@aidc-toolkit/utility";
 import type { AppExtension } from "../app-extension.js";
-import {
-    expandParameterDescriptor,
-    type ParameterDescriptor,
-    ProxyClass,
-    ProxyMethod,
-    ProxyParameter,
-    Types
-} from "../descriptor.js";
+import { expandParameterDescriptor, type ParameterDescriptor, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
+import { proxy } from "../proxy.js";
 import type { ErrorExtends, Matrix, MatrixResultError, ResultError } from "../type.js";
 import {
     exclusionAnyParameterDescriptor,
@@ -47,77 +41,66 @@ const valueForSParameterDescriptor: ParameterDescriptor = {
     name: "valueForS"
 };
 
+@proxy.describeClass(true)
 export abstract class CharacterSetValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends StringProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     readonly #characterSetValidator: CharacterSetValidator;
 
-    protected constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>, characterSetValidator: CharacterSetValidator) {
+    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>, characterSetValidator: CharacterSetValidator) {
         super(appExtension);
 
         this.#characterSetValidator = characterSetValidator;
     }
 
-    @ProxyMethod({
+    @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true
+        isMatrix: true,
+        parameterDescriptors: [validateSParameterDescriptor, exclusionNoneParameterDescriptor]
     })
-    validate(
-        @ProxyParameter(validateSParameterDescriptor) matrixSs: Matrix<string>,
-        @ProxyParameter(exclusionNoneParameterDescriptor) exclusion: Nullishable<Exclusion>
-    ): MatrixResultError<string, ThrowError, TError> {
+    validate(matrixSs: Matrix<string>, exclusion: Nullishable<Exclusion>): MatrixResultError<string, ThrowError, TError> {
         return this.validateString(this.#characterSetValidator, matrixSs, {
             exclusion: exclusion ?? undefined
         } satisfies CharacterSetValidation);
     }
 
-    @ProxyMethod({
+    @proxy.describeMethod({
         type: Types.Boolean,
-        isMatrix: true
+        isMatrix: true,
+        parameterDescriptors: [validateSParameterDescriptor, exclusionNoneParameterDescriptor]
     })
-    isValid(
-        @ProxyParameter(validateSParameterDescriptor) matrixSs: Matrix<string>,
-        @ProxyParameter(exclusionNoneParameterDescriptor) exclusion: Nullishable<Exclusion>
-    ): MatrixResultError<boolean, ThrowError, TError> {
+    isValid(matrixSs: Matrix<string>, exclusion: Nullishable<Exclusion>): MatrixResultError<boolean, ThrowError, TError> {
         return this.isValidString(this.validate(matrixSs, exclusion));
     }
 }
 
+@proxy.describeClass(true)
 export abstract class CharacterSetCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends CharacterSetValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     readonly #characterSetCreator: CharacterSetCreator;
 
-    protected constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>, characterSetCreator: CharacterSetCreator) {
+    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>, characterSetCreator: CharacterSetCreator) {
         super(appExtension, characterSetCreator);
 
         this.#characterSetCreator = characterSetCreator;
     }
 
-    @ProxyMethod({
+    @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true
+        isMatrix: true,
+        parameterDescriptors: [lengthParameterDescriptor, valueParameterDescriptor, exclusionNoneParameterDescriptor, tweakParameterDescriptor]
     })
-    create(
-        @ProxyParameter(lengthParameterDescriptor) length: number,
-        @ProxyParameter(valueParameterDescriptor) matrixValues: Matrix<number | bigint>,
-        @ProxyParameter(exclusionNoneParameterDescriptor) exclusion: Nullishable<Exclusion>,
-        @ProxyParameter(tweakParameterDescriptor) tweak: Nullishable<number | bigint>
-    ): MatrixResultError<string, ThrowError, TError> {
+    create(length: number, matrixValues: Matrix<number | bigint>, exclusion: Nullishable<Exclusion>, tweak: Nullishable<number | bigint>): MatrixResultError<string, ThrowError, TError> {
         const exclusionOrUndefined = exclusion ?? undefined;
         const tweakOrUndefined = tweak ?? undefined;
 
         return this.mapMatrix(matrixValues, value => this.#characterSetCreator.create(length, value, exclusionOrUndefined, tweakOrUndefined));
     }
 
-    @ProxyMethod({
+    @proxy.describeMethod({
         infixBefore: "Sequence",
         type: Types.String,
-        isMatrix: true
+        isMatrix: true,
+        parameterDescriptors: [lengthParameterDescriptor, startValueParameterDescriptor, countParameterDescriptor, exclusionNoneParameterDescriptor, tweakParameterDescriptor]
     })
-    createSequence(
-        @ProxyParameter(lengthParameterDescriptor) length: number,
-        @ProxyParameter(startValueParameterDescriptor) startValue: number,
-        @ProxyParameter(countParameterDescriptor) count: number,
-        @ProxyParameter(exclusionNoneParameterDescriptor) exclusion: Nullishable<Exclusion>,
-        @ProxyParameter(tweakParameterDescriptor) tweak: Nullishable<number | bigint>
-    ): Matrix<string> {
+    createSequence(length: number, startValue: number, count: number, exclusion: Nullishable<Exclusion>, tweak: Nullishable<number | bigint>): Matrix<string> {
         this.appExtension.validateSequenceCount(count);
 
         const exclusionOrUndefined = exclusion ?? undefined;
@@ -126,15 +109,12 @@ export abstract class CharacterSetCreatorProxy<ThrowError extends boolean, TErro
         return LibProxy.matrixResult(this.#characterSetCreator.create(length, new Sequence(startValue, count), exclusionOrUndefined, tweakOrUndefined));
     }
 
-    @ProxyMethod({
+    @proxy.describeMethod({
         type: Types.Number,
-        isMatrix: true
+        isMatrix: true,
+        parameterDescriptors: [valueForSParameterDescriptor, exclusionNoneParameterDescriptor, tweakParameterDescriptor]
     })
-    valueFor(
-        @ProxyParameter(valueForSParameterDescriptor) matrixSs: Matrix<string>,
-        @ProxyParameter(exclusionNoneParameterDescriptor) exclusion: Nullishable<Exclusion>,
-        @ProxyParameter(tweakParameterDescriptor) tweak: Nullishable<number | bigint>
-    ): MatrixResultError<ResultError<TBigInt, ThrowError, TError>, ThrowError, TError> {
+    valueFor(matrixSs: Matrix<string>, exclusion: Nullishable<Exclusion>, tweak: Nullishable<number | bigint>): MatrixResultError<ResultError<TBigInt, ThrowError, TError>, ThrowError, TError> {
         const exclusionOrUndefined = exclusion ?? undefined;
         const tweakOrUndefined = tweak ?? undefined;
 
@@ -142,7 +122,7 @@ export abstract class CharacterSetCreatorProxy<ThrowError extends boolean, TErro
     }
 }
 
-@ProxyClass({
+@proxy.describeClass(false, {
     methodInfix: "Numeric",
     replaceParameterDescriptors: [
         {
@@ -157,7 +137,7 @@ export class NumericProxy<ThrowError extends boolean, TError extends ErrorExtend
     }
 }
 
-@ProxyClass({
+@proxy.describeClass(false, {
     methodInfix: "Hexadecimal",
     replaceParameterDescriptors: [
         {
@@ -172,7 +152,7 @@ export class HexadecimalProxy<ThrowError extends boolean, TError extends ErrorEx
     }
 }
 
-@ProxyClass({
+@proxy.describeClass(false, {
     methodInfix: "Alphabetic"
 })
 export class AlphabeticProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends CharacterSetCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
@@ -181,7 +161,7 @@ export class AlphabeticProxy<ThrowError extends boolean, TError extends ErrorExt
     }
 }
 
-@ProxyClass({
+@proxy.describeClass(false, {
     methodInfix: "Alphanumeric",
     replaceParameterDescriptors: [
         {

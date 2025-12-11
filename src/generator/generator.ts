@@ -1,9 +1,10 @@
 import { I18nEnvironments } from "@aidc-toolkit/core";
 import type { ParseKeys } from "i18next";
 import { AppUtilityProxy } from "../app-utility-proxy.js";
-import { expandParameterDescriptor, getClassDescriptorsMap } from "../descriptor.js";
+import { expandParameterDescriptor } from "../descriptor.js";
 import * as GS1 from "../gs1/index.js";
 import { appExtensionResources, i18nAppExtensionInit, i18nextAppExtension } from "../locale/i18n.js";
+import { proxy } from "../proxy.js";
 import * as Utility from "../utility/index.js";
 import type {
     FunctionLocalization,
@@ -208,14 +209,11 @@ export abstract class Generator {
         this.initialize();
 
         try {
-            for (const classDescriptor of getClassDescriptorsMap().values()) {
+            for (const [namespaceClassName, classDescriptor] of proxy.classDescriptorsMap.entries()) {
                 const namespace = classDescriptor.namespace;
                 const namespacePrefix = namespace === undefined ? "" : `${namespace}.`;
                 const className = classDescriptor.name;
                 const methodInfix = classDescriptor.methodInfix;
-
-                // Namespace-qualified class name is used to construct object name.
-                const namespaceClassName = `${namespacePrefix}${className}`;
 
                 // First capture group is:
                 // - one or more uppercase letters followed by zero or more numbers; or

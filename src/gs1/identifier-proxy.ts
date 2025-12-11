@@ -28,16 +28,10 @@ import {
 } from "@aidc-toolkit/gs1";
 import { Sequence } from "@aidc-toolkit/utility";
 import type { AppExtension } from "../app-extension.js";
-import {
-    expandParameterDescriptor,
-    type ParameterDescriptor,
-    ProxyClass,
-    ProxyMethod,
-    ProxyParameter,
-    Types
-} from "../descriptor.js";
+import { expandParameterDescriptor, type ParameterDescriptor, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
 import { i18nextAppExtension } from "../locale/i18n.js";
+import { proxy } from "../proxy.js";
 import type { ErrorExtends, Matrix, MatrixResultError } from "../type.js";
 import { exclusionAllNumericParameterDescriptor } from "../utility/character-set-descriptor.js";
 import { StringProxy } from "../utility/string-proxy.js";
@@ -63,7 +57,7 @@ const validateIdentifierParameterDescriptor: ParameterDescriptor = {
 abstract class IdentifierValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, TIdentifierType extends IdentifierType> extends StringProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     readonly #validator: IdentifierTypeValidator<TIdentifierType>;
 
-    protected constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>, validator: IdentifierTypeValidator<TIdentifierType>) {
+    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>, validator: IdentifierTypeValidator<TIdentifierType>) {
         super(appExtension);
 
         this.#validator = validator;
@@ -74,14 +68,16 @@ abstract class IdentifierValidatorProxy<ThrowError extends boolean, TError exten
     }
 }
 
+@proxy.describeClass(true, {
+    namespace: "GS1"
+})
 abstract class NumericIdentifierValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, TNumericIdentifierType extends NumericIdentifierType> extends IdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, TNumericIdentifierType> {
-    @ProxyMethod({
+    @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true
+        isMatrix: true,
+        parameterDescriptors: [validateIdentifierParameterDescriptor]
     })
-    validate(
-        @ProxyParameter(validateIdentifierParameterDescriptor) matrixIdentifiers: Matrix<string>
-    ): MatrixResultError<string, ThrowError, TError> {
+    validate(matrixIdentifiers: Matrix<string>): MatrixResultError<string, ThrowError, TError> {
         return this.validateString(this.validator, matrixIdentifiers);
     }
 }
@@ -98,22 +94,23 @@ abstract class NonSerializableNumericIdentifierValidatorProxy<ThrowError extends
 abstract class SerializableNumericIdentifierValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, SerializableNumericIdentifierType> {
 }
 
+@proxy.describeClass(true, {
+    namespace: "GS1"
+})
 abstract class NonNumericIdentifierValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends IdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonNumericIdentifierType> {
-    @ProxyMethod({
+    @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true
+        isMatrix: true,
+        parameterDescriptors: [validateIdentifierParameterDescriptor, exclusionAllNumericParameterDescriptor]
     })
-    validate(
-        @ProxyParameter(validateIdentifierParameterDescriptor) matrixIdentifiers: Matrix<string>,
-        @ProxyParameter(exclusionAllNumericParameterDescriptor) exclusion: Nullishable<NonNumericIdentifierValidation["exclusion"]>
-    ): MatrixResultError<string, ThrowError, TError> {
+    validate(matrixIdentifiers: Matrix<string>, exclusion: Nullishable<NonNumericIdentifierValidation["exclusion"]>): MatrixResultError<string, ThrowError, TError> {
         return this.validateString(this.validator, matrixIdentifiers, {
             exclusion: exclusion ?? undefined
         } satisfies NonNumericIdentifierValidation);
     }
 }
 
-@ProxyClass({
+@proxy.describeClass(false, {
     namespace: "GS1",
     methodInfix: "GTIN13"
 })
@@ -123,7 +120,7 @@ export class GTIN13ValidatorProxy<ThrowError extends boolean, TError extends Err
     }
 }
 
-@ProxyClass({
+@proxy.describeClass(false, {
     namespace: "GS1",
     methodInfix: "GTIN12"
 })
@@ -133,7 +130,7 @@ export class GTIN12ValidatorProxy<ThrowError extends boolean, TError extends Err
     }
 }
 
-@ProxyClass({
+@proxy.describeClass(false, {
     namespace: "GS1",
     methodInfix: "GTIN8"
 })
@@ -215,59 +212,52 @@ const rcnPriceOrWeightParameterDescriptor: ParameterDescriptor = {
     isRequired: true
 };
 
-@ProxyClass({
+@proxy.describeClass(false, {
     namespace: "GS1"
 })
 export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    @ProxyMethod({
+    @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true
+        isMatrix: true,
+        parameterDescriptors: [zeroSuppressibleGTIN12ParameterDescriptor]
     })
-    zeroSuppressGTIN12(
-        @ProxyParameter(zeroSuppressibleGTIN12ParameterDescriptor) matrixGTIN12s: Matrix<string>
-    ): MatrixResultError<string, ThrowError, TError> {
+    zeroSuppressGTIN12(matrixGTIN12s: Matrix<string>): MatrixResultError<string, ThrowError, TError> {
         return this.mapMatrix(matrixGTIN12s, gtin12 => GTINValidator.zeroSuppress(gtin12));
     }
 
-    @ProxyMethod({
+    @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true
+        isMatrix: true,
+        parameterDescriptors: [zeroSuppressedGTIN12ParameterDescriptor]
     })
-    zeroExpandGTIN12(
-        @ProxyParameter(zeroSuppressedGTIN12ParameterDescriptor) matrixZeroSuppressedGTIN12s: Matrix<string>
-    ): MatrixResultError<string, ThrowError, TError> {
+    zeroExpandGTIN12(matrixZeroSuppressedGTIN12s: Matrix<string>): MatrixResultError<string, ThrowError, TError> {
         return this.mapMatrix(matrixZeroSuppressedGTIN12s, zeroSuppressedGTIN12 => GTINValidator.zeroExpand(zeroSuppressedGTIN12));
     }
 
-    @ProxyMethod({
+    @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true
+        isMatrix: true,
+        parameterDescriptors: [indicatorDigitParameterDescriptor, convertGTINParameterDescriptor]
     })
-    convertToGTIN14(
-        @ProxyParameter(indicatorDigitParameterDescriptor) indicatorDigit: string,
-        @ProxyParameter(convertGTINParameterDescriptor) matrixGTINs: Matrix<string>
-    ): MatrixResultError<string, ThrowError, TError> {
+    convertToGTIN14(indicatorDigit: string, matrixGTINs: Matrix<string>): MatrixResultError<string, ThrowError, TError> {
         return this.mapMatrix(matrixGTINs, gtin => GTINValidator.convertToGTIN14(indicatorDigit, gtin));
     }
 
-    @ProxyMethod({
+    @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true
+        isMatrix: true,
+        parameterDescriptors: [normalizeGTINParameterDescriptor]
     })
-    normalizeGTIN(
-        @ProxyParameter(normalizeGTINParameterDescriptor) matrixGTINs: Matrix<string>
-    ): MatrixResultError<string, ThrowError, TError> {
+    normalizeGTIN(matrixGTINs: Matrix<string>): MatrixResultError<string, ThrowError, TError> {
         return this.mapMatrix(matrixGTINs, gtin => GTINValidator.normalize(gtin));
     }
 
-    @ProxyMethod({
+    @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true
+        isMatrix: true,
+        parameterDescriptors: [validateGTINParameterDescriptor, gtinLevelParameterDescriptor]
     })
-    validateGTIN(
-        @ProxyParameter(validateGTINParameterDescriptor) matrixGTINs: Matrix<string>,
-        @ProxyParameter(gtinLevelParameterDescriptor) gtinLevel: Nullishable<GTINLevel>
-    ): Matrix<string> {
+    validateGTIN(matrixGTINs: Matrix<string>, gtinLevel: Nullishable<GTINLevel>): Matrix<string> {
         const gtinLevelOrUndefined = gtinLevel ?? undefined;
 
         return LibProxy.mapMatrixRangeError(matrixGTINs, (gtin) => {
@@ -275,26 +265,23 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
         });
     }
 
-    @ProxyMethod({
+    @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true
+        isMatrix: true,
+        parameterDescriptors: [validateGTIN14ParameterDescriptor]
     })
-    validateGTIN14(
-        @ProxyParameter(validateGTIN14ParameterDescriptor) matrixGTIN14s: Matrix<string>
-    ): Matrix<string> {
+    validateGTIN14(matrixGTIN14s: Matrix<string>): Matrix<string> {
         return LibProxy.mapMatrixRangeError(matrixGTIN14s, (gtin14) => {
             GTINValidator.validateGTIN14(gtin14);
         });
     }
 
-    @ProxyMethod({
+    @proxy.describeMethod({
         type: Types.Number,
-        isMatrix: true
+        isMatrix: true,
+        parameterDescriptors: [rcnFormatParameterDescriptor, rcnParameterDescriptor]
     })
-    parseVariableMeasureRCN(
-        @ProxyParameter(rcnFormatParameterDescriptor) format: string,
-        @ProxyParameter(rcnParameterDescriptor) matrixRCNs: Matrix<string>
-    ): MatrixResultError<number, ThrowError, TError> {
+    parseVariableMeasureRCN(format: string, matrixRCNs: Matrix<string>): MatrixResultError<number, ThrowError, TError> {
         return this.mapArray(matrixRCNs, (rcn) => {
             const rcnReference = GTINValidator.parseVariableMeasureRCN(format, rcn);
 
@@ -303,7 +290,7 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
     }
 }
 
-@ProxyClass({
+@proxy.describeClass(false, {
     namespace: "GS1",
     methodInfix: "GLN"
 })
@@ -313,7 +300,7 @@ export class GLNValidatorProxy<ThrowError extends boolean, TError extends ErrorE
     }
 }
 
-@ProxyClass({
+@proxy.describeClass(false, {
     namespace: "GS1",
     methodInfix: "SSCC"
 })
@@ -323,7 +310,7 @@ export class SSCCValidatorProxy<ThrowError extends boolean, TError extends Error
     }
 }
 
-@ProxyClass({
+@proxy.describeClass(false, {
     namespace: "GS1",
     methodInfix: "GRAI"
 })
@@ -333,7 +320,7 @@ export class GRAIValidatorProxy<ThrowError extends boolean, TError extends Error
     }
 }
 
-@ProxyClass({
+@proxy.describeClass(false, {
     namespace: "GS1",
     methodInfix: "GIAI"
 })
@@ -343,7 +330,7 @@ export class GIAIValidatorProxy<ThrowError extends boolean, TError extends Error
     }
 }
 
-@ProxyClass({
+@proxy.describeClass(false, {
     namespace: "GS1",
     methodInfix: "GSRN"
 })
@@ -353,7 +340,7 @@ export class GSRNValidatorProxy<ThrowError extends boolean, TError extends Error
     }
 }
 
-@ProxyClass({
+@proxy.describeClass(false, {
     namespace: "GS1",
     methodInfix: "GDTI"
 })
@@ -363,7 +350,7 @@ export class GDTIValidatorProxy<ThrowError extends boolean, TError extends Error
     }
 }
 
-@ProxyClass({
+@proxy.describeClass(false, {
     namespace: "GS1",
     methodInfix: "GINC"
 })
@@ -373,7 +360,7 @@ export class GINCValidatorProxy<ThrowError extends boolean, TError extends Error
     }
 }
 
-@ProxyClass({
+@proxy.describeClass(false, {
     namespace: "GS1",
     methodInfix: "GSIN"
 })
@@ -383,7 +370,7 @@ export class GSINValidatorProxy<ThrowError extends boolean, TError extends Error
     }
 }
 
-@ProxyClass({
+@proxy.describeClass(false, {
     namespace: "GS1",
     methodInfix: "GCN"
 })
@@ -393,7 +380,7 @@ export class GCNValidatorProxy<ThrowError extends boolean, TError extends ErrorE
     }
 }
 
-@ProxyClass({
+@proxy.describeClass(false, {
     namespace: "GS1",
     methodInfix: "CPID"
 })
@@ -403,7 +390,7 @@ export class CPIDValidatorProxy<ThrowError extends boolean, TError extends Error
     }
 }
 
-@ProxyClass({
+@proxy.describeClass(false, {
     namespace: "GS1",
     methodInfix: "GMN"
 })
@@ -451,19 +438,16 @@ const prefixDefinitionAnyParameterDescriptor: ParameterDescriptor = {
     name: "prefixDefinitionAny"
 };
 
-@ProxyClass({
+@proxy.describeClass(false, {
     namespace: "GS1"
 })
 export class PrefixManagerProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    @ProxyMethod({
+    @proxy.describeMethod({
         type: Types.Any,
-        isMatrix: true
+        isMatrix: true,
+        parameterDescriptors: [prefixParameterDescriptor, prefixTypeParameterDescriptor, tweakFactorParameterDescriptor]
     })
-    definePrefix(
-        @ProxyParameter(prefixParameterDescriptor) prefix: string,
-        @ProxyParameter(prefixTypeParameterDescriptor) prefixType: Nullishable<PrefixType>,
-        @ProxyParameter(tweakFactorParameterDescriptor) tweakFactor: Nullishable<number>
-    ): Matrix<unknown> {
+    definePrefix(prefix: string, prefixType: Nullishable<PrefixType>, tweakFactor: Nullishable<number>): Matrix<unknown> {
         // Parameters will be validated by IdentifierCreatorProxy.getCreator().
         return [[prefix, prefixType, tweakFactor]];
     }
@@ -474,7 +458,7 @@ abstract class IdentifierCreatorProxy<ThrowError extends boolean, TError extends
 
     readonly #getCreator: (prefixManager: PrefixManager) => TIdentifierCreator;
 
-    protected constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>, getCreator: (prefixManager: PrefixManager) => TIdentifierCreator) {
+    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>, getCreator: (prefixManager: PrefixManager) => TIdentifierCreator) {
         super(appExtension);
 
         this.#getCreator = getCreator;
@@ -542,16 +526,16 @@ const sparseParameterDescriptor: ParameterDescriptor = {
     isRequired: false
 };
 
+@proxy.describeClass(true, {
+    namespace: "GS1"
+})
 abstract class NumericIdentifierCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, TNumericIdentifierType extends NumericIdentifierType, TNumericIdentifierCreator extends NumericIdentifierCreator<TNumericIdentifierType>> extends IdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt, TNumericIdentifierType, NumericIdentifierValidation, TNumericIdentifierCreator> {
-    @ProxyMethod({
+    @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true
+        isMatrix: true,
+        parameterDescriptors: [prefixDefinitionGS1UPCParameterDescriptor, valueParameterDescriptor, sparseParameterDescriptor]
     })
-    create(
-        @ProxyParameter(prefixDefinitionGS1UPCParameterDescriptor) prefixDefinition: Matrix<unknown>,
-        @ProxyParameter(valueParameterDescriptor) matrixValues: Matrix<number | bigint>,
-        @ProxyParameter(sparseParameterDescriptor) sparse: Nullishable<boolean>
-    ): MatrixResultError<string, ThrowError, TError> {
+    create(prefixDefinition: Matrix<unknown>, matrixValues: Matrix<number | bigint>, sparse: Nullishable<boolean>): MatrixResultError<string, ThrowError, TError> {
         const creator = this.getCreator(prefixDefinition);
 
         const sparseOrUndefined = sparse ?? undefined;
@@ -559,29 +543,24 @@ abstract class NumericIdentifierCreatorProxy<ThrowError extends boolean, TError 
         return this.mapMatrix(matrixValues, value => creator.create(value, sparseOrUndefined));
     }
 
-    @ProxyMethod({
+    @proxy.describeMethod({
         infixBefore: "Sequence",
         type: Types.String,
-        isMatrix: true
+        isMatrix: true,
+        parameterDescriptors: [prefixDefinitionGS1UPCParameterDescriptor, startValueParameterDescriptor, countParameterDescriptor, sparseParameterDescriptor]
     })
-    createSequence(
-        @ProxyParameter(prefixDefinitionGS1UPCParameterDescriptor) prefixDefinition: Matrix<unknown>,
-        @ProxyParameter(startValueParameterDescriptor) startValue: number,
-        @ProxyParameter(countParameterDescriptor) count: number,
-        @ProxyParameter(sparseParameterDescriptor) sparse: Nullishable<boolean>
-    ): Matrix<string> {
+    createSequence(prefixDefinition: Matrix<unknown>, startValue: number, count: number, sparse: Nullishable<boolean>): Matrix<string> {
         this.appExtension.validateSequenceCount(count);
 
         return LibProxy.matrixResult(this.getCreator(prefixDefinition).create(new Sequence(startValue, count), sparse ?? undefined));
     }
 
-    @ProxyMethod({
+    @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true
+        isMatrix: true,
+        parameterDescriptors: [prefixDefinitionGS1UPCParameterDescriptor]
     })
-    createAll(
-        @ProxyParameter(prefixDefinitionGS1UPCParameterDescriptor) prefixDefinition: Matrix<unknown>
-    ): Matrix<string> {
+    createAll(prefixDefinition: Matrix<unknown>): Matrix<string> {
         const creator = this.getCreator(prefixDefinition);
 
         this.appExtension.validateSequenceCount(creator.capacity);
@@ -614,17 +593,16 @@ const serialComponentParameterDescriptor: ParameterDescriptor = {
     isRequired: true
 };
 
+@proxy.describeClass(true, {
+    namespace: "GS1"
+})
 abstract class SerializableNumericIdentifierCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonGTINNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt, SerializableNumericIdentifierType, SerializableNumericIdentifierCreator> {
-    @ProxyMethod({
+    @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true
+        isMatrix: true,
+        parameterDescriptors: [prefixDefinitionGS1UPCParameterDescriptor, singleValueParameterDescriptor, serialComponentParameterDescriptor, sparseParameterDescriptor]
     })
-    createSerialized(
-        @ProxyParameter(prefixDefinitionGS1UPCParameterDescriptor) prefixDefinition: Matrix<unknown>,
-        @ProxyParameter(singleValueParameterDescriptor) value: number,
-        @ProxyParameter(serialComponentParameterDescriptor) matrixSerialComponents: Matrix<string>,
-        @ProxyParameter(sparseParameterDescriptor) sparse: Nullishable<boolean>
-    ): MatrixResultError<string, ThrowError, TError> {
+    createSerialized(prefixDefinition: Matrix<unknown>, value: number, matrixSerialComponents: Matrix<string>, sparse: Nullishable<boolean>): MatrixResultError<string, ThrowError, TError> {
         const creator = this.getCreator(prefixDefinition);
 
         const sparseOrUndefined = sparse ?? undefined;
@@ -632,14 +610,12 @@ abstract class SerializableNumericIdentifierCreatorProxy<ThrowError extends bool
         return this.mapMatrix(matrixSerialComponents, serialComponent => creator.createSerialized(value, serialComponent, sparseOrUndefined));
     }
 
-    @ProxyMethod({
+    @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true
+        isMatrix: true,
+        parameterDescriptors: [baseIdentifierParameterDescriptor, serialComponentParameterDescriptor]
     })
-    concatenate(
-        @ProxyParameter(baseIdentifierParameterDescriptor) baseIdentifier: string,
-        @ProxyParameter(serialComponentParameterDescriptor) matrixSerialComponents: Matrix<string>
-    ): MatrixResultError<string, ThrowError, TError> {
+    concatenate(baseIdentifier: string, matrixSerialComponents: Matrix<string>): MatrixResultError<string, ThrowError, TError> {
         const creator = this.getCreator([[baseIdentifier.substring(0, !baseIdentifier.startsWith("0") ? PrefixValidator.GS1_COMPANY_PREFIX_MINIMUM_LENGTH : PrefixValidator.UPC_COMPANY_PREFIX_MINIMUM_LENGTH + 1), PrefixTypes.GS1CompanyPrefix]]);
 
         return this.mapMatrix(matrixSerialComponents, serialComponent => creator.concatenate(baseIdentifier, serialComponent));
@@ -653,22 +629,23 @@ const referenceParameterDescriptor: ParameterDescriptor = {
     isRequired: true
 };
 
+@proxy.describeClass(true, {
+    namespace: "GS1"
+})
 abstract class NonNumericIdentifierCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends IdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt, NonNumericIdentifierType, NonNumericIdentifierValidation, NonNumericIdentifierCreator> {
-    @ProxyMethod({
+    @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true
+        isMatrix: true,
+        parameterDescriptors: [prefixDefinitionGS1UPCParameterDescriptor, referenceParameterDescriptor]
     })
-    create(
-        @ProxyParameter(prefixDefinitionGS1UPCParameterDescriptor) prefixDefinition: Matrix<unknown>,
-        @ProxyParameter(referenceParameterDescriptor) matrixReferences: Matrix<string>
-    ): MatrixResultError<string, ThrowError, TError> {
+    create(prefixDefinition: Matrix<unknown>, matrixReferences: Matrix<string>): MatrixResultError<string, ThrowError, TError> {
         const creator = this.getCreator(prefixDefinition);
 
         return this.mapMatrix(matrixReferences, reference => creator.create(reference));
     }
 }
 
-@ProxyClass({
+@proxy.describeClass(false, {
     namespace: "GS1",
     methodInfix: "GTIN",
     replaceParameterDescriptors: [
@@ -683,17 +660,13 @@ export class GTINCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
         super(appExtension, prefixManager => prefixManager.gtinCreator);
     }
 
-    @ProxyMethod({
+    @proxy.describeMethod({
         type: Types.String,
         isMatrix: true,
-        ignoreInfix: true
+        ignoreInfix: true,
+        parameterDescriptors: [indicatorDigitParameterDescriptor, prefixDefinitionAnyParameterDescriptor, valueParameterDescriptor, sparseParameterDescriptor]
     })
-    createGTIN14(
-        @ProxyParameter(indicatorDigitParameterDescriptor) indicatorDigit: string,
-        @ProxyParameter(prefixDefinitionAnyParameterDescriptor) prefixDefinition: Matrix<unknown>,
-        @ProxyParameter(valueParameterDescriptor) matrixValues: Matrix<number | bigint>,
-        @ProxyParameter(sparseParameterDescriptor) sparse: Nullishable<boolean>
-    ): MatrixResultError<string, ThrowError, TError> {
+    createGTIN14(indicatorDigit: string, prefixDefinition: Matrix<unknown>, matrixValues: Matrix<number | bigint>, sparse: Nullishable<boolean>): MatrixResultError<string, ThrowError, TError> {
         const creator = this.getCreator(prefixDefinition);
 
         const sparseOrUndefined = sparse ?? undefined;
@@ -701,21 +674,18 @@ export class GTINCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
         return this.mapMatrix(matrixValues, value => creator.createGTIN14(indicatorDigit, value, sparseOrUndefined));
     }
 
-    @ProxyMethod({
+    @proxy.describeMethod({
         type: Types.String,
         isMatrix: true,
-        ignoreInfix: true
+        ignoreInfix: true,
+        parameterDescriptors: [rcnFormatParameterDescriptor, rcnItemReferenceParameterDescriptor, rcnPriceOrWeightParameterDescriptor]
     })
-    createVariableMeasureRCN(
-        @ProxyParameter(rcnFormatParameterDescriptor) format: string,
-        @ProxyParameter(rcnItemReferenceParameterDescriptor) itemReference: number,
-        @ProxyParameter(rcnPriceOrWeightParameterDescriptor) matrixPricesOrWeights: Matrix<number>
-    ): MatrixResultError<string, ThrowError, TError> {
+    createVariableMeasureRCN(format: string, itemReference: number, matrixPricesOrWeights: Matrix<number>): MatrixResultError<string, ThrowError, TError> {
         return this.mapMatrix(matrixPricesOrWeights, priceOrWeight => GTINCreator.createVariableMeasureRCN(format, itemReference, priceOrWeight));
     }
 }
 
-@ProxyClass({
+@proxy.describeClass(false, {
     namespace: "GS1",
     methodInfix: "GLN"
 })
@@ -725,7 +695,7 @@ export class GLNCreatorProxy<ThrowError extends boolean, TError extends ErrorExt
     }
 }
 
-@ProxyClass({
+@proxy.describeClass(false, {
     namespace: "GS1",
     methodInfix: "SSCC"
 })
@@ -735,7 +705,7 @@ export class SSCCCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
     }
 }
 
-@ProxyClass({
+@proxy.describeClass(false, {
     namespace: "GS1",
     methodInfix: "GRAI"
 })
@@ -745,7 +715,7 @@ export class GRAICreatorProxy<ThrowError extends boolean, TError extends ErrorEx
     }
 }
 
-@ProxyClass({
+@proxy.describeClass(false, {
     namespace: "GS1",
     methodInfix: "GIAI"
 })
@@ -755,7 +725,7 @@ export class GIAICreatorProxy<ThrowError extends boolean, TError extends ErrorEx
     }
 }
 
-@ProxyClass({
+@proxy.describeClass(false, {
     namespace: "GS1",
     methodInfix: "GSRN"
 })
@@ -765,7 +735,7 @@ export class GSRNCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
     }
 }
 
-@ProxyClass({
+@proxy.describeClass(false, {
     namespace: "GS1",
     methodInfix: "GDTI"
 })
@@ -775,7 +745,7 @@ export class GDTICreatorProxy<ThrowError extends boolean, TError extends ErrorEx
     }
 }
 
-@ProxyClass({
+@proxy.describeClass(false, {
     namespace: "GS1",
     methodInfix: "GINC"
 })
@@ -785,7 +755,7 @@ export class GINCCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
     }
 }
 
-@ProxyClass({
+@proxy.describeClass(false, {
     namespace: "GS1",
     methodInfix: "GSIN"
 })
@@ -795,7 +765,7 @@ export class GSINCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
     }
 }
 
-@ProxyClass({
+@proxy.describeClass(false, {
     namespace: "GS1",
     methodInfix: "GCN"
 })
@@ -805,7 +775,7 @@ export class GCNCreatorProxy<ThrowError extends boolean, TError extends ErrorExt
     }
 }
 
-@ProxyClass({
+@proxy.describeClass(false, {
     namespace: "GS1",
     methodInfix: "CPID"
 })
@@ -815,7 +785,7 @@ export class CPIDCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
     }
 }
 
-@ProxyClass({
+@proxy.describeClass(false, {
     namespace: "GS1",
     methodInfix: "GMN"
 })

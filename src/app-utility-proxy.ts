@@ -1,7 +1,8 @@
 import { isNullish, type NonNullishable, type Nullishable } from "@aidc-toolkit/core";
-import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Types } from "./descriptor.js";
+import { type ParameterDescriptor, Types } from "./descriptor.js";
 import { LibProxy } from "./lib-proxy.js";
 import { i18nextAppExtension } from "./locale/i18n.js";
+import { proxy } from "./proxy.js";
 import type { ErrorExtends, Matrix } from "./type.js";
 
 const spillMatrix: ParameterDescriptor = {
@@ -60,7 +61,7 @@ interface MaximumDimensions {
  * @template TBigInt
  * Type to which big integer is mapped.
  */
-@ProxyClass()
+@proxy.describeClass(false)
 export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt> {
     /**
      * Get the version.
@@ -68,9 +69,10 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
      * @returns
      * Version.
      */
-    @ProxyMethod({
+    @proxy.describeMethod({
         type: Types.String,
-        isMatrix: false
+        isMatrix: false,
+        parameterDescriptors: []
     })
     version(): string {
         return this.appExtension.version;
@@ -135,17 +137,13 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
      * @returns
      * Matrix spilled within maximum width and maximum height.
      */
-    @ProxyMethod({
+    @proxy.describeMethod({
         requiresContext: true,
         type: Types.Any,
-        isMatrix: true
+        isMatrix: true,
+        parameterDescriptors: [spillMatrix, spillMaximumWidthParameterDescriptor, spillMaximumHeightParameterDescriptor]
     })
-    async vSpill(
-        @ProxyParameter(spillMatrix) hMatrixValues: Matrix<unknown>,
-        @ProxyParameter(spillMaximumWidthParameterDescriptor) maximumWidth: Nullishable<number>,
-        @ProxyParameter(spillMaximumHeightParameterDescriptor) maximumHeight: Nullishable<number>,
-        invocationContext: Nullishable<TInvocationContext>
-    ): Promise<Matrix<unknown>> {
+    async vSpill(hMatrixValues: Matrix<unknown>, maximumWidth: Nullishable<number>, maximumHeight: Nullishable<number>, invocationContext: Nullishable<TInvocationContext>): Promise<Matrix<unknown>> {
         let result: Matrix<unknown>;
 
         if (hMatrixValues.length !== 1) {
@@ -214,17 +212,13 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
      * @returns
      * Matrix spilled within maximum height and maximum width.
      */
-    @ProxyMethod({
+    @proxy.describeMethod({
         requiresContext: true,
         type: Types.Any,
-        isMatrix: true
+        isMatrix: true,
+        parameterDescriptors: [spillMatrix, spillMaximumHeightParameterDescriptor, spillMaximumWidthParameterDescriptor]
     })
-    async hSpill(
-        @ProxyParameter(spillMatrix) vMatrixValues: Matrix<unknown>,
-        @ProxyParameter(spillMaximumHeightParameterDescriptor) maximumHeight: Nullishable<number>,
-        @ProxyParameter(spillMaximumWidthParameterDescriptor) maximumWidth: Nullishable<number>,
-        invocationContext: Nullishable<TInvocationContext>
-    ): Promise<Matrix<unknown>> {
+    async hSpill(vMatrixValues: Matrix<unknown>, maximumHeight: Nullishable<number>, maximumWidth: Nullishable<number>, invocationContext: Nullishable<TInvocationContext>): Promise<Matrix<unknown>> {
         let result: Matrix<unknown>;
 
         for (const hArrayValues of vMatrixValues) {

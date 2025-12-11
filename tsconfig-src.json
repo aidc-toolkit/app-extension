@@ -3,9 +3,6 @@
   "include": ["./src/**/*"],
   "compilerOptions": {
     // Emit.
-    "outDir": "dist",
-
-    // Language and environment.
-    "experimentalDecorators": true
+    "outDir": "dist"
   }
 }
