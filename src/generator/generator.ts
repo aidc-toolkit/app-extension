@@ -1,18 +1,11 @@
 import { I18nEnvironments } from "@aidc-toolkit/core";
 import type { ParseKeys } from "i18next";
 import { AppUtilityProxy } from "../app-utility-proxy.js";
-import { expandParameterDescriptor } from "../descriptor.js";
+import type { ClassDescriptor, MethodDescriptor } from "../descriptor.js";
 import * as GS1 from "../gs1/index.js";
 import { appExtensionResources, i18nAppExtensionInit, i18nextAppExtension } from "../locale/i18n.js";
 import { proxy } from "../proxy.js";
 import * as Utility from "../utility/index.js";
-import type {
-    FunctionLocalization,
-    Localization,
-    ParameterLocalization,
-    ProxyFunctionDescriptor,
-    ProxyObjectDescriptor
-} from "./descriptor.js";
 
 /**
  * Dummy method to force proxies to register their decorators.
@@ -24,6 +17,35 @@ function registerProxies(..._proxies: unknown[]): void {
 }
 
 registerProxies(AppUtilityProxy, Utility, GS1);
+/**
+ * Localization.
+ */
+export interface Localization {
+    /**
+     * Name.
+     */
+    name: string;
+
+    /**
+     * Description.
+     */
+    description: string;
+}
+
+/**
+ * Function localization.
+ */
+export interface FunctionLocalization extends Localization {
+    /**
+     * Documentation URL.
+     */
+    documentationURL: string;
+
+    /**
+     * Parameters map.
+     */
+    parametersMap: Map<string, Localization>;
+}
 
 /**
  * Abstract generator.
@@ -55,15 +77,6 @@ export abstract class Generator {
     readonly #functionLocalizationsMapsMap = new Map<string, ReadonlyMap<string, FunctionLocalization>>();
 
     /**
-     * Map of parameter localizations maps by namespace function parameter name.
-     */
-    readonly #parameterLocalizationsMapsMap = new Map<string, ReadonlyMap<string, ParameterLocalization>>();
-
-    /**
-     *
-     */
-
-    /**
      * Constructor.
      *
      * @param includeLocalizations
@@ -91,16 +104,16 @@ export abstract class Generator {
     /**
      * Get function localization.
      *
-     * @param namespaceFunctionName
-     * Namespace function name.
-     *
      * @param locale
      * Locale.
+     *
+     * @param namespaceFunctionName
+     * Namespace function name.
      *
      * @returns
      * Function localization.
      */
-    protected getFunctionLocalization(namespaceFunctionName: string, locale: string): FunctionLocalization {
+    protected getFunctionLocalization(locale: string, namespaceFunctionName: string): FunctionLocalization {
         const functionLocalization = this.#functionLocalizationsMapsMap.get(namespaceFunctionName)?.get(locale);
 
         if (functionLocalization === undefined) {
@@ -113,20 +126,20 @@ export abstract class Generator {
     /**
      * Get parameter localization.
      *
+     * @param locale
+     * Locale.
+     *
      * @param namespaceFunctionName
      * Namespace function name.
      *
      * @param parameterName
      * Parameter name.
      *
-     * @param locale
-     * Locale.
-     *
      * @returns
-     * Function localization.
+     * Parameter localization.
      */
-    protected getParameterLocalization(namespaceFunctionName: string, parameterName: string, locale: string): ParameterLocalization {
-        const parameterLocalization = this.#parameterLocalizationsMapsMap.get(`${namespaceFunctionName}.${parameterName}`)?.get(locale);
+    protected getParameterLocalization(locale: string, namespaceFunctionName: string, parameterName: string): Localization {
+        const parameterLocalization = this.getFunctionLocalization(locale, namespaceFunctionName).parametersMap.get(parameterName);
 
         if (parameterLocalization === undefined) {
             throw new Error(`${locale} localization for function ${namespaceFunctionName} parameter ${parameterName} not found`);
@@ -141,20 +154,26 @@ export abstract class Generator {
     protected abstract initialize(): void;
 
     /**
-     * Create a proxy object.
+     * Create a proxy object for a class.
      *
-     * @param proxyObjectDescriptor
-     * Proxy object descriptor.
+     * @param classDescriptor
+     * Class descriptor.
      */
-    protected abstract createProxyObject(proxyObjectDescriptor: ProxyObjectDescriptor): void;
+    protected abstract createProxyObject(classDescriptor: ClassDescriptor): void;
 
     /**
-     * Create a proxy function.
+     * Create a proxy function for a class and method.
      *
-     * @param proxyFunctionDescriptor
-     * Proxy function descriptor.
+     * @param classDescriptor
+     * Class descriptor.
+     *
+     * @param methodDescriptor
+     * Method descriptor.
+     *
+     * @param functionLocalizationsMap
+     * Localizations map.
      */
-    protected abstract createProxyFunction(proxyFunctionDescriptor: ProxyFunctionDescriptor): void;
+    protected abstract createProxyFunction(classDescriptor: ClassDescriptor, methodDescriptor: MethodDescriptor, functionLocalizationsMap: ReadonlyMap<string, FunctionLocalization>): void;
 
     /**
      * Finalize the generation of the output.
@@ -165,10 +184,13 @@ export abstract class Generator {
     protected abstract finalize(success: boolean): void | Promise<void>;
 
     /**
-     * Generate localizations map.
+     * Generate a localization.
      *
      * @template TLocalization
      * Localization type.
+     *
+     * @param locale
+     * Locale.
      *
      * @param localizedKeyPrefix
      * Localized key prefix.
@@ -177,21 +199,19 @@ export abstract class Generator {
      * Callback to finalize localization.
      *
      * @returns
-     * Localization map.
+     * Localization.
      */
-    #generateLocalizationsMap<TLocalization extends Localization>(localizedKeyPrefix: string, localizationCallback: (locale: string, localization: Localization) => TLocalization): ReadonlyMap<string, TLocalization> {
-        return new Map(this.#locales.map((locale) => {
-            const lngOption = {
-                lng: locale
-            };
+    #generateLocalization<TLocalization extends Localization>(locale: string, localizedKeyPrefix: string, localizationCallback: (locale: string, localization: Localization) => TLocalization): TLocalization {
+        const lngOption = {
+            lng: locale
+        };
 
-            return [locale, localizationCallback(locale, {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Localized key exists.
-                name: i18nextAppExtension.t(`${localizedKeyPrefix}name` as ParseKeys, lngOption),
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Localized key exists.
-                description: i18nextAppExtension.t(`${localizedKeyPrefix}description` as ParseKeys, lngOption)
-            })];
-        }));
+        return localizationCallback(locale, {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Localized key exists.
+            name: i18nextAppExtension.t(`${localizedKeyPrefix}name` as ParseKeys, lngOption),
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Localized key exists.
+            description: i18nextAppExtension.t(`${localizedKeyPrefix}description` as ParseKeys, lngOption)
+        });
     }
 
     /**
@@ -209,92 +229,28 @@ export abstract class Generator {
         this.initialize();
 
         try {
-            for (const [namespaceClassName, classDescriptor] of proxy.classDescriptorsMap.entries()) {
+            for (const [_namespaceClassName, classDescriptor] of proxy.classDescriptorsMap.entries()) {
                 const namespace = classDescriptor.namespace;
-                const namespacePrefix = namespace === undefined ? "" : `${namespace}.`;
-                const className = classDescriptor.name;
-                const methodInfix = classDescriptor.methodInfix;
 
-                // First capture group is:
-                // - one or more uppercase letters followed by zero or more numbers; or
-                // - single uppercase letter followed by zero or more characters except uppercase letters or period.
-                // Second capture group is:
-                // - single uppercase letter followed by zero or more characters except period; or
-                // - zero characters (empty string).
-                // Third capture group, separated by optional period, is:
-                // - single uppercase letter followed by zero or more characters (remainder of string); or
-                // - zero characters (empty string).
-                const classNameMatch = /^([A-Z]+[0-9]*|[A-Z][^A-Z.]*)([A-Z][^.]*|)\.?([A-Z].*|)$/.exec(namespaceClassName);
-
-                if (classNameMatch === null) {
-                    throw new Error(`${namespaceClassName} is not a valid namespace-qualified class name`);
-                }
-
-                const proxyObjectDescriptor: ProxyObjectDescriptor = {
-                    namespace,
-                    className,
-                    namespaceClassName,
-                    classDescriptor,
-                    objectName: `${classNameMatch[1].toLowerCase()}${classNameMatch[2]}${classNameMatch[3]}`
-                };
-
-                this.createProxyObject(proxyObjectDescriptor);
+                this.createProxyObject(classDescriptor);
 
                 for (const methodDescriptor of classDescriptor.methodDescriptors) {
-                    const methodName = methodDescriptor.name;
-                    const infixBefore = methodDescriptor.infixBefore;
+                    const namespaceFunctionName = methodDescriptor.namespaceFunctionName;
 
-                    let functionName: string;
-
-                    if (methodInfix === undefined || methodDescriptor.ignoreInfix === true) {
-                        // No other classes in the hierarchy or no infix required.
-                        functionName = methodName;
-                    } else if (infixBefore === undefined) {
-                        // Other classes in the hierarchy and infix is postfix.
-                        functionName = `${methodName}${methodInfix}`;
-                    } else {
-                        const insertIndex = methodName.indexOf(infixBefore);
-
-                        if (insertIndex === -1) {
-                            throw new Error(`Cannot find "${infixBefore}" in method ${methodName}`);
-                        }
-
-                        // Other classes in the hierarchy and infix is in the middle of the string.
-                        functionName = `${methodName.substring(0, insertIndex)}${methodInfix}${methodName.substring(insertIndex)}`;
-                    }
-
-                    const namespaceFunctionName = `${namespacePrefix}${functionName}`;
-
-                    const functionLocalizationsMap = this.#generateLocalizationsMap<FunctionLocalization>(`Functions.${namespaceFunctionName}.`, (locale, localization) => ({
-                        ...localization,
-                        documentationURL: `${Generator.#DOCUMENTATION_BASE_URL}${locale === this.defaultLocale ? "" : `${locale}/`}${Generator.#DOCUMENTATION_PATH}${namespace === undefined ? "" : `${namespace}/`}${localization.name}.html`
-                    }));
+                    const functionLocalizationsMap = new Map(this.#locales.map(locale =>
+                        [locale, this.#generateLocalization<FunctionLocalization>(locale, `Functions.${namespaceFunctionName}.`, (locale, localization) => ({
+                            ...localization,
+                            documentationURL: `${Generator.#DOCUMENTATION_BASE_URL}${locale === this.defaultLocale ? "" : `${locale}/`}${Generator.#DOCUMENTATION_PATH}${namespace === undefined ? "" : `${namespace}/`}${localization.name}.html`,
+                            parametersMap: new Map(methodDescriptor.parameterDescriptors.map(parameterDescriptor =>
+                                // eslint-disable-next-line max-nested-callbacks -- Callback is empty.
+                                [parameterDescriptor.name, this.#generateLocalization(locale, `Parameters.${parameterDescriptor.name}.`, (_locale, localization) => localization)]
+                            ))
+                        }))]
+                    ));
 
                     this.#functionLocalizationsMapsMap.set(namespaceFunctionName, functionLocalizationsMap);
 
-                    this.createProxyFunction({
-                        ...proxyObjectDescriptor,
-                        functionName,
-                        namespaceFunctionName,
-                        localizationsMap: functionLocalizationsMap,
-                        proxyParameterDescriptors: methodDescriptor.parameterDescriptors.map((parameterDescriptor) => {
-                            const expandedParameterDescriptor = expandParameterDescriptor(parameterDescriptor);
-
-                            const parameterName = expandedParameterDescriptor.name;
-
-                            const parameterLocalizationsMap = this.#generateLocalizationsMap(`Parameters.${parameterName}.`, (_locale, localization) => localization);
-
-                            this.#parameterLocalizationsMapsMap.set(`${namespaceFunctionName}.${parameterName}`, parameterLocalizationsMap);
-
-                            return {
-                                namespace,
-                                parameterName,
-                                localizationsMap: parameterLocalizationsMap,
-                                parameterDescriptor: expandedParameterDescriptor
-                            };
-                        }),
-                        methodDescriptor
-                    });
+                    this.createProxyFunction(classDescriptor, methodDescriptor, functionLocalizationsMap);
                 }
             }
 

@@ -1,6 +1,11 @@
-import type { AbstractConstructor, Constructor, TypedAbstractConstructor, TypedFunction } from "@aidc-toolkit/core";
+import { type AbstractConstructor, type Constructor, omit, type TypedAbstractConstructor } from "@aidc-toolkit/core";
 import type { AppExtension } from "./app-extension.js";
-import { type ClassDescriptor, expandParameterDescriptor, type MethodDescriptor } from "./descriptor.js";
+import type {
+    ClassDescriptor,
+    ExtendsParameterDescriptor,
+    MethodDescriptor,
+    ParameterDescriptor
+} from "./descriptor.js";
 import { LibProxy } from "./lib-proxy.js";
 import type { ErrorExtends } from "./type.js";
 
@@ -30,7 +35,7 @@ type ProxyClassConstructor<
     TConstructor extends TypedAbstractConstructor<TConstructor>
 > = IsAbstract extends true ?
     AbstractConstructor<[appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>, ...args: RemainingParameters<TConstructor>], T> :
-    Constructor<[appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>], T> & typeof LibProxy;
+    Constructor<[appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>], T>;
 
 /**
  * Class decorator type. Defines the parameters passed to a class decorator function and the return type as identical to
@@ -63,8 +68,87 @@ type ClassDecorator<
  * @template TFunction
  * Function type.
  */
-type ClassMethodDecorator<TFunction extends TypedFunction<TFunction>> =
-    (target: TFunction, context: ClassMethodDecoratorContext<ThisParameterType<TFunction>>) => TFunction;
+type ClassMethodDecorator<TThis, TArguments extends unknown[], TReturn> =
+    (target: (this: TThis, ...args: TArguments) => TReturn, context: ClassMethodDecoratorContext<TThis>) => (this: TThis, ...args: TArguments) => TReturn;
+
+/**
+ * Subset of method descriptor used during decoration process.
+ */
+type InterimMethodDescriptor = Omit<MethodDescriptor, "functionName" | "namespaceFunctionName">;
+
+/**
+ * Subset of method descriptor used in call to decorator.
+ */
+type DecoratorMethodDescriptor = Omit<InterimMethodDescriptor, "name" | "parameterDescriptors"> & {
+    parameterDescriptors: Array<ParameterDescriptor | ExtendsParameterDescriptor>;
+};
+
+/**
+ * Subset of class descriptor used during decoration process.
+ */
+type InterimClassDescriptor =
+    Omit<ClassDescriptor, "name" | "namespaceClassName" | "objectName" | "methodDescriptors">;
+
+/**
+ * Subset of class descriptor used in call to decorator.
+ */
+interface DecoratorClassDescriptor extends Omit<InterimClassDescriptor, "replaceParameterDescriptors"> {
+    readonly replaceParameterDescriptors?: ReadonlyArray<Omit<Required<ClassDescriptor>["replaceParameterDescriptors"][number], "replacement"> & {
+        readonly replacement: ParameterDescriptor | ExtendsParameterDescriptor;
+    }>;
+}
+
+/**
+ * Expand a parameter descriptor to its full form with all required attributes.
+ *
+ * @param parameterDescriptor
+ * Parameter descriptor.
+ *
+ * @returns
+ * Parameter descriptor in its full form.
+ */
+export function expandParameterDescriptor(parameterDescriptor: ParameterDescriptor | ExtendsParameterDescriptor): ParameterDescriptor {
+    return !("extendsDescriptor" in parameterDescriptor) ?
+        parameterDescriptor :
+        {
+            ...expandParameterDescriptor(parameterDescriptor.extendsDescriptor),
+            ...parameterDescriptor
+        };
+}
+
+/**
+ * Placeholder for interim descriptors.
+ */
+interface Interim {
+    /**
+     * Interim class descriptor.
+     */
+    readonly classDescriptor: InterimClassDescriptor;
+
+    /**
+     * Interim method descriptors.
+     */
+    readonly methodDescriptors: InterimMethodDescriptor[];
+}
+
+/**
+ * Logger interface to be implemented by returned decorator class.
+ */
+interface Logger {
+    /**
+     * Log a method call.
+     *
+     * @param methodName
+     * Method name.
+     *
+     * @param args
+     * Input arguments.
+     *
+     * @param result
+     * Output result.
+     */
+    log: (methodName: string, args: unknown[], result: unknown) => void;
+}
 
 /**
  * Proxy class.
@@ -82,9 +166,9 @@ export class Proxy {
     readonly #concreteClassDescriptorsMap = new Map<string, ClassDescriptor>();
 
     /**
-     * Pending method descriptors.
+     * Interim object.
      */
-    #pendingMethodDescriptors: MethodDescriptor[] | undefined = undefined;
+    #interim: Interim | undefined = undefined;
 
     /**
      * Describe a proxy class.
@@ -104,7 +188,7 @@ export class Proxy {
      * @param isAbstract
      * True if class is abstract.
      *
-     * @param classDescriptor
+     * @param decoratorClassDescriptor
      * Class descriptor.
      *
      * @returns
@@ -116,10 +200,23 @@ export class Proxy {
         IsAbstract extends boolean,
         TConstructor extends TypedAbstractConstructor<TConstructor>,
         TProxyClassConstructor extends ProxyClassConstructor<ThrowError, TError, TInvocationContext, TBigInt, T, IsAbstract, TConstructor>
-    >(isAbstract: IsAbstract, classDescriptor: Omit<ClassDescriptor, "name" | "isAbstract" | "methodDescriptors"> = {}): ClassDecorator<ThrowError, TError, TInvocationContext, TBigInt, T, IsAbstract, TConstructor, TProxyClassConstructor> {
-        const pendingMethodDescriptors: MethodDescriptor[] = [];
+    >(isAbstract: IsAbstract, decoratorClassDescriptor: DecoratorClassDescriptor = {}): ClassDecorator<ThrowError, TError, TInvocationContext, TBigInt, T, IsAbstract, TConstructor, TProxyClassConstructor> {
+        const interimClassDescriptor: InterimClassDescriptor = decoratorClassDescriptor.replaceParameterDescriptors === undefined ?
+            omit(decoratorClassDescriptor, "replaceParameterDescriptors") :
+            {
+                ...decoratorClassDescriptor,
+                replaceParameterDescriptors: decoratorClassDescriptor.replaceParameterDescriptors.map(replaceParameterDescriptor => ({
+                    ...replaceParameterDescriptor,
+                    replacement: expandParameterDescriptor(replaceParameterDescriptor.replacement)
+                }))
+            };
 
-        this.#pendingMethodDescriptors = pendingMethodDescriptors;
+        const interim: Interim = {
+            classDescriptor: interimClassDescriptor,
+            methodDescriptors: []
+        };
+
+        this.#interim = interim;
 
         return (target: TProxyClassConstructor, context: ClassDecoratorContext<TProxyClassConstructor>) => {
             const name = context.name;
@@ -129,7 +226,7 @@ export class Proxy {
                 throw new Error(`${String(name)} has an invalid name`);
             }
 
-            const namespacePrefix = classDescriptor.namespace === undefined ? "" : `${classDescriptor.namespace}.`;
+            const namespacePrefix = decoratorClassDescriptor.namespace === undefined ? "" : `${decoratorClassDescriptor.namespace}.`;
             const namespaceClassName = `${namespacePrefix}${name}`;
 
             const abstractClassDescriptorsMap = this.#abstractClassDescriptorsMap;
@@ -155,43 +252,121 @@ export class Proxy {
                     concreteClassDescriptorsMap.get(namespaceBaseClassName) ?? concreteClassDescriptorsMap.get(baseClassType.name);
             } while (baseClassType !== LibProxy && baseClassDescriptor === undefined);
 
-            const baseClassMethodDescriptors = baseClassDescriptor !== undefined ? baseClassDescriptor.methodDescriptors.slice() : [];
+            let interimMethodDescriptors: InterimMethodDescriptor[];
 
-            let methodDescriptors: MethodDescriptor[];
+            if (baseClassDescriptor !== undefined) {
+                const baseClassMethodDescriptors = baseClassDescriptor.methodDescriptors;
+                const replaceParameterDescriptors = decoratorClassDescriptor.replaceParameterDescriptors;
 
-            if (classDescriptor.replaceParameterDescriptors !== undefined) {
-                const replacementParameterDescriptorsMap = new Map(classDescriptor.replaceParameterDescriptors.map(replaceParameterDescriptor => [replaceParameterDescriptor.name, replaceParameterDescriptor.replacement]));
+                if (replaceParameterDescriptors !== undefined) {
+                    const replacementParameterDescriptorsMap = new Map(replaceParameterDescriptors.map(replaceParameterDescriptor => [replaceParameterDescriptor.name, expandParameterDescriptor(replaceParameterDescriptor.replacement)]));
 
-                // Method descriptors for class have to be built as copies due to possible mutation of parameter descriptors.
-                methodDescriptors = baseClassMethodDescriptors.map(baseClassMethodDescriptor => ({
-                    ...baseClassMethodDescriptor,
-                    parameterDescriptors: baseClassMethodDescriptor.parameterDescriptors.map(parameterDescriptor => replacementParameterDescriptorsMap.get(expandParameterDescriptor(parameterDescriptor).name) ?? parameterDescriptor)
-                }));
+                    // Interim method descriptors for class have to be built as copies due to possible mutation of parameter descriptors.
+                    interimMethodDescriptors = baseClassMethodDescriptors.map(baseClassMethodDescriptor => ({
+                        ...baseClassMethodDescriptor,
+                        parameterDescriptors: baseClassMethodDescriptor.parameterDescriptors.map(parameterDescriptor => replacementParameterDescriptorsMap.get(parameterDescriptor.name) ?? parameterDescriptor)
+                    }));
+                } else {
+                    interimMethodDescriptors = baseClassMethodDescriptors.slice();
+                }
             } else {
-                methodDescriptors = baseClassMethodDescriptors;
+                interimMethodDescriptors = [];
             }
 
             // Replace base class method descriptors with matching names or append new method descriptor.
-            for (const pendingMethodDescriptor of pendingMethodDescriptors) {
-                const existingIndex = methodDescriptors.findIndex(methodDescriptor => methodDescriptor.name === pendingMethodDescriptor.name);
+            for (const classInterimMethodDescriptor of interim.methodDescriptors) {
+                const existingIndex = interimMethodDescriptors.findIndex(interimMethodDescriptor => interimMethodDescriptor.name === classInterimMethodDescriptor.name);
 
                 if (existingIndex !== -1) {
-                    methodDescriptors[existingIndex] = pendingMethodDescriptor;
+                    interimMethodDescriptors[existingIndex] = classInterimMethodDescriptor;
                 } else {
-                    methodDescriptors.push(pendingMethodDescriptor);
+                    interimMethodDescriptors.push(classInterimMethodDescriptor);
                 }
             }
 
-            (isAbstract ? abstractClassDescriptorsMap : concreteClassDescriptorsMap).set(namespaceClassName, {
+            const methodDescriptors: MethodDescriptor[] = [];
+
+            const methodInfix = decoratorClassDescriptor.methodInfix;
+
+            for (const interimMethodDescriptor of interimMethodDescriptors) {
+                const methodName = interimMethodDescriptor.name;
+                const infixBefore = interimMethodDescriptor.infixBefore;
+
+                let functionName: string;
+
+                if (methodInfix === undefined || interimMethodDescriptor.ignoreInfix === true) {
+                    // No other classes in the hierarchy or no infix required.
+                    functionName = methodName;
+                } else if (infixBefore === undefined) {
+                    // Other classes in the hierarchy and infix is postfix.
+                    functionName = `${methodName}${methodInfix}`;
+                } else {
+                    const insertIndex = methodName.indexOf(infixBefore);
+
+                    if (insertIndex === -1) {
+                        throw new Error(`Cannot find "${infixBefore}" in method ${methodName}`);
+                    }
+
+                    // Other classes in the hierarchy and infix is in the middle of the string.
+                    functionName = `${methodName.substring(0, insertIndex)}${methodInfix}${methodName.substring(insertIndex)}`;
+                }
+
+                const namespaceFunctionName = `${namespacePrefix}${functionName}`;
+
+                const methodDescriptor = {
+                    ...interimMethodDescriptor,
+                    functionName,
+                    namespaceFunctionName
+                };
+
+                methodDescriptors.push(methodDescriptor);
+            }
+
+            // First capture group is:
+            // - one or more uppercase letters followed by zero or more numbers; or
+            // - single uppercase letter followed by zero or more characters except uppercase letters or period.
+            // Second capture group is:
+            // - single uppercase letter followed by zero or more characters except period; or
+            // - zero characters (empty string).
+            // Third capture group, separated by optional period, is:
+            // - single uppercase letter followed by zero or more characters (remainder of string); or
+            // - zero characters (empty string).
+            const classNameMatch = /^([A-Z]+[0-9]*|[A-Z][^A-Z.]*)([A-Z][^.]*|)\.?([A-Z].*|)$/.exec(namespaceClassName);
+
+            if (classNameMatch === null) {
+                throw new Error(`${namespaceClassName} is not a valid namespace-qualified class name`);
+            }
+
+            const classDescriptor: ClassDescriptor = {
                 name,
-                ...classDescriptor,
+                ...interimClassDescriptor,
+                namespaceClassName,
+                objectName: `${classNameMatch[1].toLowerCase()}${classNameMatch[2]}${classNameMatch[3]}`,
                 methodDescriptors
-            });
+            };
 
-            this.#pendingMethodDescriptors = undefined;
+            (isAbstract ? abstractClassDescriptorsMap : concreteClassDescriptorsMap).set(namespaceClassName, classDescriptor);
 
-            // Target is unmodified.
-            return target;
+            const methodDescriptorsMap = new Map<string, MethodDescriptor>();
+
+            for (const methodDescriptor of methodDescriptors) {
+                methodDescriptorsMap.set(methodDescriptor.name, methodDescriptor);
+            }
+
+            this.#interim = undefined;
+
+            return class extends target implements Logger {
+                /**
+                 * @inheritDoc
+                 */
+                log(methodName: string, args: unknown[], result: unknown): void {
+                    // // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type hierarchy is known.
+                    // const appExtension = (this as unknown as T).appExtension;
+
+                    // eslint-disable-next-line no-console -- Temporary.
+                    console.log(name, methodName, args, result);
+                }
+            };
         };
     }
 
@@ -201,41 +376,50 @@ export class Proxy {
      * @template TFunction
      * Function type.
      *
-     * @param methodDescriptor
+     * @param decoratorMethodDescriptor
      * Method descriptor.
      *
      * @returns
      * Function with which to decorate the method.
      */
-    describeMethod<TFunction extends TypedFunction<TFunction>>(methodDescriptor: Omit<MethodDescriptor, "name">): ClassMethodDecorator<TFunction> {
-        return (target: TFunction, context: ClassMethodDecoratorContext<ThisParameterType<TFunction>>) => {
+    describeMethod<TThis, TArguments extends unknown[], TReturn>(decoratorMethodDescriptor: DecoratorMethodDescriptor): ClassMethodDecorator<TThis, TArguments, TReturn> {
+        return (target: (this: TThis, ...args: TArguments) => TReturn, context: ClassMethodDecoratorContext<TThis>): (this: TThis, ...args: TArguments) => TReturn => {
             const name = context.name;
 
             // Validate that method descriptor is applied within an appropriate class and has a valid name.
-            if (this.#pendingMethodDescriptors === undefined || typeof name !== "string" || context.static || context.private) {
+            if (this.#interim === undefined || typeof name !== "string" || context.static || context.private) {
                 throw new Error(`${String(name)} is not defined within a supported class, has an invalid name, is static, or is private`);
             }
 
             let anyOptional = false;
 
-            // Validate that all parameters have descriptors.
-            for (const parameterDescriptor of methodDescriptor.parameterDescriptors) {
-                const expandedParameterDescriptor = expandParameterDescriptor(parameterDescriptor);
+            // Expand all parameter descriptors.
+            const parameterDescriptors = decoratorMethodDescriptor.parameterDescriptors.map((decoratorParameterDescriptor) => {
+                const parameterDescriptor = expandParameterDescriptor(decoratorParameterDescriptor);
 
-                if (!expandedParameterDescriptor.isRequired) {
+                if (!parameterDescriptor.isRequired) {
                     anyOptional = true;
                 } else if (anyOptional) {
-                    throw new Error(`Parameter ${expandedParameterDescriptor.name} descriptor of method ${name} is required but prior parameter descriptor is optional`);
+                    throw new Error(`Parameter ${parameterDescriptor.name} descriptor of method ${name} is required but prior parameter descriptor is optional`);
                 }
-            }
 
-            this.#pendingMethodDescriptors.push({
-                name,
-                ...methodDescriptor
+                return parameterDescriptor;
             });
 
-            // Target is unmodified.
-            return target;
+            this.#interim.methodDescriptors.push({
+                name,
+                ...decoratorMethodDescriptor,
+                parameterDescriptors
+            });
+
+            return function methodProxy(this: TThis, ...args: TArguments): TReturn {
+                const result = target.call(this, ...args);
+
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Class has been modified to add log method.
+                (this as Logger).log(name, args, result);
+
+                return result;
+            };
         };
     }
 

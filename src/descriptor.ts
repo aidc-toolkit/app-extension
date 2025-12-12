@@ -59,9 +59,9 @@ interface TypeDescriptor extends Descriptor {
 }
 
 /**
- * Base parameter descriptor; all attributes required.
+ * Parameter descriptor.
  */
-export interface BaseParameterDescriptor extends TypeDescriptor {
+export interface ParameterDescriptor extends TypeDescriptor {
     /**
      * True if required.
      */
@@ -69,41 +69,18 @@ export interface BaseParameterDescriptor extends TypeDescriptor {
 }
 
 /**
- * Extends parameter descriptor; extends a parameter descriptor and overrides select attributes.
+ * Extends parameter descriptor.
  */
-export interface ExtendsParameterDescriptor extends Partial<BaseParameterDescriptor> {
+export interface ExtendsParameterDescriptor extends Partial<ParameterDescriptor> {
     /**
-     * Base parameter descriptor that this one extends.
+     * Parameter descriptor that this one extends.
      */
-    readonly extendsDescriptor: ParameterDescriptor;
+    readonly extendsDescriptor: ParameterDescriptor | ExtendsParameterDescriptor;
 
     /**
-     * Sort order within base parameter descriptor if applicable.
+     * Sort order within extended parameter descriptor.
      */
     readonly sortOrder?: number;
-}
-
-/**
- * Parameter descriptor, either base or extends.
- */
-export type ParameterDescriptor = BaseParameterDescriptor | ExtendsParameterDescriptor;
-
-/**
- * Expand a parameter descriptor to its full form with all required attributes.
- *
- * @param parameterDescriptor
- * Parameter descriptor.
- *
- * @returns
- * Parameter descriptor in its full form.
- */
-export function expandParameterDescriptor(parameterDescriptor: ParameterDescriptor): BaseParameterDescriptor {
-    return !("extendsDescriptor" in parameterDescriptor) ?
-        parameterDescriptor :
-        {
-            ...expandParameterDescriptor(parameterDescriptor.extendsDescriptor),
-            ...parameterDescriptor
-        };
 }
 
 /**
@@ -130,6 +107,16 @@ export interface MethodDescriptor extends TypeDescriptor {
      * Parameter descriptors.
      */
     readonly parameterDescriptors: readonly ParameterDescriptor[];
+
+    /**
+     * Function name with optional infix.
+     */
+    readonly functionName: string;
+
+    /**
+     * Function name in optional namespace with optional infix.
+     */
+    readonly namespaceFunctionName: string;
 }
 
 /**
@@ -153,6 +140,16 @@ export interface ClassDescriptor extends Descriptor {
         readonly name: string;
         readonly replacement: ParameterDescriptor;
     }>;
+
+    /**
+     * Class name in optional namespace.
+     */
+    readonly namespaceClassName: string;
+
+    /**
+     * Object name.
+     */
+    readonly objectName: string;
 
     /**
      * Method descriptors.

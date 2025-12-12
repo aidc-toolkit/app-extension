@@ -1,4 +1,4 @@
-import { type ParameterDescriptor, Types } from "../descriptor.js";
+import { type ExtendsParameterDescriptor, type ParameterDescriptor, Types } from "../descriptor.js";
 
 export const sParameterDescriptor: ParameterDescriptor = {
     name: "s",
@@ -7,7 +7,7 @@ export const sParameterDescriptor: ParameterDescriptor = {
     isRequired: true
 };
 
-export const validateSParameterDescriptor: ParameterDescriptor = {
+export const validateSParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: sParameterDescriptor,
     name: "validateS"
 };

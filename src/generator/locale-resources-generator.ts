@@ -1,8 +1,12 @@
 import { getLogger, type LocaleResources } from "@aidc-toolkit/core";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import { expandParameterDescriptor, type ParameterDescriptor } from "../descriptor.js";
-import type { ProxyFunctionDescriptor } from "./descriptor.js";
+import type {
+    ClassDescriptor,
+    ExtendsParameterDescriptor,
+    MethodDescriptor,
+    ParameterDescriptor
+} from "../descriptor.js";
 import { Generator } from "./generator.js";
 
 /**
@@ -17,7 +21,17 @@ interface ParametersSequencerEntry {
     /**
      * Parameter descriptor.
      */
-    parameterDescriptor: ParameterDescriptor;
+    parameterDescriptor: ParameterDescriptor | ExtendsParameterDescriptor;
+
+    /**
+     * Parameter name.
+     */
+    parameterName: string;
+
+    /**
+     * Base parameter name.
+     */
+    baseParameterName: string;
 
     /**
      * True if parameter is actually used and not just a base.
@@ -28,6 +42,7 @@ interface ParametersSequencerEntry {
 /**
  * Parameters sequencer for keeping similar (extended) parameters together.
  */
+// TODO Replace with map.
 type ParametersSequencer = Record<string, ParametersSequencerEntry>;
 
 /**
@@ -108,7 +123,7 @@ class LocaleResourcesGenerator extends Generator {
      * @returns
      * Parameters sequencer entry.
      */
-    #saveParameterSequence(parameterDescriptor: ParameterDescriptor, isUsed: boolean): ParametersSequencerEntry {
+    #saveParameterSequence(parameterDescriptor: ParameterDescriptor | ExtendsParameterDescriptor, isUsed: boolean): ParametersSequencerEntry {
         let parametersSequencerEntry: ParametersSequencerEntry;
 
         if (!("extendsDescriptor" in parameterDescriptor)) {
@@ -119,6 +134,8 @@ class LocaleResourcesGenerator extends Generator {
                 parametersSequencerEntry = {
                     parametersSequencerOrNull: null,
                     parameterDescriptor,
+                    parameterName,
+                    baseParameterName: parameterName,
                     isUsed
                 };
 
@@ -129,10 +146,18 @@ class LocaleResourcesGenerator extends Generator {
         } else {
             const baseParametersSequencerEntry = this.#saveParameterSequence(parameterDescriptor.extendsDescriptor, false);
 
-            const expandedParameterDescriptor = expandParameterDescriptor(parameterDescriptor);
-            const parameterName = expandedParameterDescriptor.name;
+            let parameterName: string;
+            let baseParameterName: string | null;
 
-            if (parameterName !== expandParameterDescriptor(parameterDescriptor.extendsDescriptor).name) {
+            if (parameterDescriptor.name !== undefined) {
+                parameterName = parameterDescriptor.name;
+                baseParameterName = baseParametersSequencerEntry.parameterName;
+            } else {
+                parameterName = baseParametersSequencerEntry.parameterName;
+                baseParameterName = baseParametersSequencerEntry.baseParameterName;
+            }
+
+            if (parameterName !== baseParameterName) {
                 // Make sure that base parameters sequencer entry refers to a record type.
                 baseParametersSequencerEntry.parametersSequencerOrNull ??= {};
 
@@ -140,6 +165,8 @@ class LocaleResourcesGenerator extends Generator {
                     parametersSequencerEntry = {
                         parametersSequencerOrNull: null,
                         parameterDescriptor,
+                        parameterName,
+                        baseParameterName,
                         isUsed
                     };
 
@@ -159,19 +186,15 @@ class LocaleResourcesGenerator extends Generator {
     /**
      * @inheritDoc
      */
-    protected createProxyFunction(proxyFunctionDescriptor: ProxyFunctionDescriptor): void {
-        const {
-            namespace,
-            functionName,
-            methodDescriptor
-        } = proxyFunctionDescriptor;
-
+    protected createProxyFunction(classDescriptor: ClassDescriptor, methodDescriptor: MethodDescriptor): void {
         // Add any parameters that are not already known.
         for (const parameterDescriptor of methodDescriptor.parameterDescriptors) {
             this.#saveParameterSequence(parameterDescriptor, true);
         }
 
         let functionsLocaleResources = this.#functionsLocaleResources;
+
+        const namespace = classDescriptor.namespace;
 
         if (namespace !== undefined) {
             if (!(namespace in functionsLocaleResources)) {
@@ -186,6 +209,8 @@ class LocaleResourcesGenerator extends Generator {
                 functionsLocaleResources = functionsLocaleResources[namespace] as LocaleResources;
             }
         }
+
+        const functionName = methodDescriptor.functionName;
 
         if (functionName in functionsLocaleResources) {
             throw new Error(`Duplicate function ${functionName}`);

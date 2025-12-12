@@ -1,6 +1,6 @@
 import type { Nullishable } from "@aidc-toolkit/core";
 import { mapIterable, Sequence, Transformer } from "@aidc-toolkit/utility";
-import { type ParameterDescriptor, Types } from "../descriptor.js";
+import { type ExtendsParameterDescriptor, type ParameterDescriptor, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
 import { proxy } from "../proxy.js";
 import type { ErrorExtends, Matrix, MatrixResultError, ResultError } from "../type.js";
@@ -18,7 +18,7 @@ const domainParameterDescriptor: ParameterDescriptor = {
     isRequired: true
 };
 
-const transformedValueParameterDescriptor: ParameterDescriptor = {
+const transformedValueParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: valueParameterDescriptor,
     name: "transformedValue"
 };

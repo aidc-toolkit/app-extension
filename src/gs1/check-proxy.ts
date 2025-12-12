@@ -6,7 +6,7 @@ import {
     isValidPriceOrWeightCheckDigit,
     priceOrWeightCheckDigit
 } from "@aidc-toolkit/gs1";
-import { type ParameterDescriptor, Types } from "../descriptor.js";
+import { type ExtendsParameterDescriptor, type ParameterDescriptor, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
 import { proxy } from "../proxy.js";
 import type { ErrorExtends, Matrix, MatrixResultError, ResultError } from "../type.js";
@@ -18,36 +18,36 @@ const checkSParameterDescriptor: ParameterDescriptor = {
     isRequired: true
 };
 
-const numericSParameterDescriptor: ParameterDescriptor = {
+const numericSParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: checkSParameterDescriptor,
     name: "numericS"
 };
 
-const numericSFourOrFiveDigitsParameterDescriptor: ParameterDescriptor = {
+const numericSFourOrFiveDigitsParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: numericSParameterDescriptor,
     sortOrder: 0,
     name: "numericSFourOrFiveDigits"
 };
 
-const numericSWithCheckDigitParameterDescriptor: ParameterDescriptor = {
+const numericSWithCheckDigitParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: numericSParameterDescriptor,
     sortOrder: 1,
     name: "numericSWithCheckDigit"
 };
 
-const checkDigitParameterDescriptor: ParameterDescriptor = {
+const checkDigitParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: numericSParameterDescriptor,
     sortOrder: 2,
     name: "checkDigit",
     isMatrix: false
 };
 
-const ai82SParameterDescriptor: ParameterDescriptor = {
+const ai82SParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: checkSParameterDescriptor,
     name: "ai82S"
 };
 
-const ai82SWithCheckCharacterPairParameterDescriptor: ParameterDescriptor = {
+const ai82SWithCheckCharacterPairParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: ai82SParameterDescriptor,
     name: "ai82SWithCheckCharacterPair"
 };

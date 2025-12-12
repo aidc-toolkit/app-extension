@@ -1,7 +1,7 @@
 import type { Nullishable } from "@aidc-toolkit/core";
 import { GTINLengths, type GTINLevel, GTINValidator, IdentifierValidators } from "@aidc-toolkit/gs1";
 import type { AppExtension } from "../app-extension.js";
-import { type ParameterDescriptor, Types } from "../descriptor.js";
+import { type ExtendsParameterDescriptor, type ParameterDescriptor, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
 import { proxy } from "../proxy.js";
 import type { ErrorExtends, Matrix, MatrixResultError } from "../type.js";
@@ -38,27 +38,27 @@ export class GTIN8ValidatorProxy<ThrowError extends boolean, TError extends Erro
     }
 }
 
-const zeroSuppressibleGTIN12ParameterDescriptor: ParameterDescriptor = {
+const zeroSuppressibleGTIN12ParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: identifierParameterDescriptor,
     name: "zeroSuppressibleGTIN12"
 };
 
-const zeroSuppressedGTIN12ParameterDescriptor: ParameterDescriptor = {
+const zeroSuppressedGTIN12ParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: identifierParameterDescriptor,
     name: "zeroSuppressedGTIN12"
 };
 
-const convertGTINParameterDescriptor: ParameterDescriptor = {
+const convertGTINParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: identifierParameterDescriptor,
     name: "convertGTIN"
 };
 
-const normalizeGTINParameterDescriptor: ParameterDescriptor = {
+const normalizeGTINParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: identifierParameterDescriptor,
     name: "normalizeGTIN"
 };
 
-const validateGTINParameterDescriptor: ParameterDescriptor = {
+const validateGTINParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: identifierParameterDescriptor,
     name: "validateGTIN"
 };
@@ -70,7 +70,7 @@ const gtinLevelParameterDescriptor: ParameterDescriptor = {
     isRequired: false
 };
 
-const validateGTIN14ParameterDescriptor: ParameterDescriptor = {
+const validateGTIN14ParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: identifierParameterDescriptor,
     name: "validateGTIN14"
 };

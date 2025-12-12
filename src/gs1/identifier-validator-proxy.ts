@@ -11,7 +11,7 @@ import type {
     SerializableNumericIdentifierType
 } from "@aidc-toolkit/gs1";
 import type { AppExtension } from "../app-extension.js";
-import { type ParameterDescriptor, Types } from "../descriptor.js";
+import { type ExtendsParameterDescriptor, type ParameterDescriptor, Types } from "../descriptor.js";
 import { proxy } from "../proxy.js";
 import type { ErrorExtends, Matrix, MatrixResultError } from "../type.js";
 import { exclusionAllNumericParameterDescriptor } from "../utility/character-set-descriptor.js";
@@ -24,7 +24,7 @@ export const identifierParameterDescriptor: ParameterDescriptor = {
     isRequired: true
 };
 
-const validateIdentifierParameterDescriptor: ParameterDescriptor = {
+const validateIdentifierParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: identifierParameterDescriptor,
     sortOrder: 0,
     name: "validateIdentifier"

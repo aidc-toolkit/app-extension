@@ -1,4 +1,4 @@
-import { type ParameterDescriptor, Types } from "../descriptor.js";
+import { type ExtendsParameterDescriptor, type ParameterDescriptor, Types } from "../descriptor.js";
 
 const prefixDefinitionParameterDescriptor: ParameterDescriptor = {
     name: "prefixDefinition",
@@ -7,12 +7,12 @@ const prefixDefinitionParameterDescriptor: ParameterDescriptor = {
     isRequired: true
 };
 
-export const prefixDefinitionGS1UPCParameterDescriptor: ParameterDescriptor = {
+export const prefixDefinitionGS1UPCParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: prefixDefinitionParameterDescriptor,
     name: "prefixDefinitionGS1UPC"
 };
 
-export const prefixDefinitionAnyParameterDescriptor: ParameterDescriptor = {
+export const prefixDefinitionAnyParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: prefixDefinitionParameterDescriptor,
     name: "prefixDefinitionAny"
 };

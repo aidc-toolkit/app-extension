@@ -1,7 +1,6 @@
 import { AI39_CREATOR, AI64_VALIDATOR, AI82_CREATOR } from "@aidc-toolkit/gs1";
 import type { AppExtension } from "../app-extension.js";
-import { expandParameterDescriptor } from "../descriptor.js";
-import { proxy } from "../proxy.js";
+import { expandParameterDescriptor, proxy } from "../proxy.js";
 import type { ErrorExtends } from "../type.js";
 import {
     exclusionAllNumericParameterDescriptor,

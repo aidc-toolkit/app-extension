@@ -37,7 +37,7 @@ export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorE
     /**
      * Get the application extension.
      */
-    protected get appExtension(): AppExtension<ThrowError, TError, TInvocationContext, TBigInt> {
+    get appExtension(): AppExtension<ThrowError, TError, TInvocationContext, TBigInt> {
         return this.#appExtension;
     }
 

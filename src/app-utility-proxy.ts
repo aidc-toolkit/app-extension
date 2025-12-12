@@ -1,5 +1,5 @@
 import { isNullish, type NonNullishable, type Nullishable } from "@aidc-toolkit/core";
-import { type ParameterDescriptor, Types } from "./descriptor.js";
+import { type ExtendsParameterDescriptor, type ParameterDescriptor, Types } from "./descriptor.js";
 import { LibProxy } from "./lib-proxy.js";
 import { i18nextAppExtension } from "./locale/i18n.js";
 import { proxy } from "./proxy.js";
@@ -19,13 +19,13 @@ const spillMaximumParameterDescriptor: ParameterDescriptor = {
     isRequired: false
 };
 
-const spillMaximumWidthParameterDescriptor: ParameterDescriptor = {
+const spillMaximumWidthParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: spillMaximumParameterDescriptor,
     sortOrder: 0,
     name: "spillMaximumWidth"
 };
 
-const spillMaximumHeightParameterDescriptor: ParameterDescriptor = {
+const spillMaximumHeightParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: spillMaximumParameterDescriptor,
     sortOrder: 1,
     name: "spillMaximumHeight"

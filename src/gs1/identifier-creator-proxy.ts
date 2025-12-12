@@ -21,7 +21,7 @@ import {
 } from "@aidc-toolkit/gs1";
 import { Sequence } from "@aidc-toolkit/utility";
 import type { AppExtension } from "../app-extension.js";
-import { type ParameterDescriptor, Types } from "../descriptor.js";
+import { type ExtendsParameterDescriptor, type ParameterDescriptor, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
 import { i18nextAppExtension } from "../locale/i18n.js";
 import { proxy } from "../proxy.js";
@@ -156,12 +156,12 @@ abstract class NonGTINNumericIdentifierCreatorProxy<ThrowError extends boolean, 
 export abstract class NonSerializableNumericIdentifierCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, TNonSerializableNumericIdentifierType extends NonSerializableNumericIdentifierType, TNonGTINNumericIdentifierCreator extends NonGTINNumericIdentifierCreator> extends NonGTINNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt, TNonSerializableNumericIdentifierType, TNonGTINNumericIdentifierCreator> {
 }
 
-const singleValueParameterDescriptor: ParameterDescriptor = {
+const singleValueParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: valueParameterDescriptor,
     isMatrix: false
 };
 
-const baseIdentifierParameterDescriptor: ParameterDescriptor = {
+const baseIdentifierParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: identifierParameterDescriptor,
     name: "baseIdentifier",
     isMatrix: false

@@ -11,9 +11,13 @@ import {
     Sequence
 } from "@aidc-toolkit/utility";
 import type { AppExtension } from "../app-extension.js";
-import { expandParameterDescriptor, type ParameterDescriptor, Types } from "../descriptor.js";
+import {
+    type ExtendsParameterDescriptor,
+    type ParameterDescriptor,
+    Types
+} from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
-import { proxy } from "../proxy.js";
+import { expandParameterDescriptor, proxy } from "../proxy.js";
 import type { ErrorExtends, Matrix, MatrixResultError, ResultError } from "../type.js";
 import {
     exclusionAnyParameterDescriptor,
@@ -36,7 +40,7 @@ const lengthParameterDescriptor: ParameterDescriptor = {
     isRequired: true
 };
 
-const valueForSParameterDescriptor: ParameterDescriptor = {
+const valueForSParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: sParameterDescriptor,
     name: "valueForS"
 };
