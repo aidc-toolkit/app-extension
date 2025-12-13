@@ -1,4 +1,12 @@
-import { type AbstractConstructor, type Constructor, omit, type TypedAbstractConstructor } from "@aidc-toolkit/core";
+import {
+    type AbstractConstructor,
+    type Constructor,
+    getLogger,
+    LogLevels,
+    omit,
+    type TypedAbstractConstructor
+} from "@aidc-toolkit/core";
+import type { Logger } from "tslog";
 import type { AppExtension } from "./app-extension.js";
 import type {
     ClassDescriptor,
@@ -132,9 +140,9 @@ interface Interim {
 }
 
 /**
- * Logger interface to be implemented by returned decorator class.
+ * Target logger interface to be implemented by returned decorator class.
  */
-interface Logger {
+interface TargetLogger {
     /**
      * Log a method call.
      *
@@ -155,6 +163,11 @@ interface Logger {
  */
 export class Proxy {
     /**
+     * Logger.
+     */
+    readonly #logger: Logger<unknown> = getLogger(LogLevels.Info);
+
+    /**
      * Abstract class descriptors map, keyed on declaration class name. Abstract classes are not used directly by target
      * applications.
      */
@@ -169,6 +182,49 @@ export class Proxy {
      * Interim object.
      */
     #interim: Interim | undefined = undefined;
+
+    /**
+     * Get the proper JSON representation of a value.
+     *
+     * @param value
+     * Value.
+     *
+     * @returns
+     * Replacement value.
+     */
+    static #jsonValue(value: unknown): unknown {
+        let replacementValue: unknown;
+
+        switch (typeof value) {
+            case "string":
+            case "number":
+            case "boolean":
+            case "undefined":
+                replacementValue = value;
+                break;
+
+            case "bigint":
+                // Big integers not supported in JSON.
+                replacementValue = value >= Number.MIN_SAFE_INTEGER && value <= Number.MAX_SAFE_INTEGER ? Number(value) : value.toString(10);
+                break;
+
+            case "object":
+                if (value === null) {
+                    replacementValue = value;
+                } else if (Array.isArray(value)) {
+                    replacementValue = value.map(entry => Proxy.#jsonValue(entry));
+                } else {
+                    replacementValue = Object.fromEntries(Object.entries(value).map(([k, v]) => [k, Proxy.#jsonValue(v)]));
+                }
+                break;
+
+            case "symbol":
+            case "function":
+                throw new Error(`Unsupported ${typeof value} value type`);
+        }
+
+        return replacementValue;
+    }
 
     /**
      * Describe a proxy class.
@@ -218,7 +274,7 @@ export class Proxy {
 
         this.#interim = interim;
 
-        return (target: TProxyClassConstructor, context: ClassDecoratorContext<TProxyClassConstructor>) => {
+        return (Target: TProxyClassConstructor, context: ClassDecoratorContext<TProxyClassConstructor>) => {
             const name = context.name;
 
             // Validate that class descriptor is applied within an appropriate class.
@@ -237,7 +293,7 @@ export class Proxy {
             }
 
             // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Class hierarchy is known.
-            let baseClassType: typeof LibProxy = target as unknown as typeof LibProxy;
+            let baseClassType: typeof LibProxy = Target as unknown as typeof LibProxy;
             let baseClassDescriptor: ClassDescriptor | undefined;
 
             do {
@@ -355,7 +411,9 @@ export class Proxy {
 
             this.#interim = undefined;
 
-            return class extends target implements Logger {
+            const logger = this.#logger;
+
+            return class extends Target implements TargetLogger {
                 /**
                  * @inheritDoc
                  */
@@ -363,8 +421,20 @@ export class Proxy {
                     // // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type hierarchy is known.
                     // const appExtension = (this as unknown as T).appExtension;
 
-                    // eslint-disable-next-line no-console -- Temporary.
-                    console.log(name, methodName, args, result);
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Method name is known to be valid at this point.
+                    const methodDescriptor = methodDescriptorsMap.get(methodName)!;
+
+                    logger.info(JSON.stringify({
+                        namespace: decoratorClassDescriptor.namespace,
+                        className: name,
+                        methodName,
+                        functionName: methodDescriptor.functionName,
+                        parameters: methodDescriptor.parameterDescriptors.map((parameterDescriptor, index) => ({
+                            name: parameterDescriptor.name,
+                            value: args[index]
+                        })),
+                        result: Proxy.#jsonValue(result)
+                    }, null, 2));
                 }
             };
         };
@@ -416,7 +486,7 @@ export class Proxy {
                 const result = target.call(this, ...args);
 
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Class has been modified to add log method.
-                (this as Logger).log(name, args, result);
+                (this as TargetLogger).log(name, args, result);
 
                 return result;
             };
