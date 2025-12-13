@@ -167,7 +167,7 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
             // Array that has a length of a power of 10 is treated specially.
             if (Number.isInteger(Math.log10(hLength))) {
                 // Try spill width that is a power of 10.
-                const spillWidth10 = Math.pow(10, Math.floor(Math.log10(spillWidth)));
+                const spillWidth10 = 10 ** Math.floor(Math.log10(spillWidth));
 
                 // Keep default if not enough space for power of 10 matrix.
                 if (hLength / spillWidth10 <= maximumDimensions.height) {
@@ -244,7 +244,7 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
             // Array that has a length of a power of 10 is treated specially.
             if (Number.isInteger(Math.log10(vLength))) {
                 // Try spill height that is a power of 10.
-                const spillHeight10 = Math.pow(10, Math.floor(Math.log10(spillHeight)));
+                const spillHeight10 = 10 ** Math.floor(Math.log10(spillHeight));
 
                 // Keep default if not enough space for power of 10 matrix.
                 if (vLength / spillHeight10 <= maximumDimensions.width) {
