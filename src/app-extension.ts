@@ -96,7 +96,7 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * @returns
      * Maximum width supported by the application.
      */
-    protected abstract getMaximumWidth(): Promise<number>;
+    protected abstract getMaximumWidth(): number | Promise<number>;
 
     /**
      * Get the maximum height supported by the application.
@@ -116,7 +116,7 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * @returns
      * Maximum height supported by the application.
      */
-    protected abstract getMaximumHeight(): Promise<number>;
+    protected abstract getMaximumHeight(): number | Promise<number>;
 
     /**
      * Get the sheet address from an invocation context.
@@ -127,7 +127,7 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * @returns
      * Sheet address.
      */
-    abstract getSheetAddress(invocationContext: TInvocationContext): Promise<SheetAddress>;
+    abstract getSheetAddress(invocationContext: TInvocationContext): SheetAddress | Promise<SheetAddress>;
 
     /**
      * Get a parameter range from an invocation context.
@@ -141,7 +141,7 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * @returns
      * Sheet range or null if parameter is not a range.
      */
-    abstract getParameterSheetRange(invocationContext: TInvocationContext, parameterNumber: number): Promise<SheetRange | null>;
+    abstract getParameterSheetRange(invocationContext: TInvocationContext, parameterNumber: number): SheetRange | null | Promise<SheetRange | null>;
 
     /**
      * Validate a sequence count against the maximum supported by application.
