@@ -381,15 +381,17 @@ export class Proxy {
             // First capture group is:
             // - one or more uppercase letters followed by zero or more numbers; or
             // - single uppercase letter followed by zero or more characters except uppercase letters or period.
+            //
             // Second capture group is:
             // - single uppercase letter followed by zero or more characters except period; or
             // - zero characters (empty string).
+            //
             // Third capture group, separated by optional period, is:
             // - single uppercase letter followed by zero or more characters (remainder of string); or
             // - zero characters (empty string).
-            const classNameMatch = /^([A-Z]+[0-9]*|[A-Z][^A-Z.]*)([A-Z][^.]*|)\.?([A-Z].*|)$/.exec(namespaceClassName);
+            const objectNameGroups = /^(?<namespaceFirstWord>[A-Z]+[0-9]*|[A-Z][^A-Z.]*)(?<namespaceRemaining>[A-Z][^.]*|)\.?(?<className>[A-Z].*|)$/.exec(namespaceClassName)?.groups;
 
-            if (classNameMatch === null) {
+            if (objectNameGroups === undefined) {
                 throw new Error(`${namespaceClassName} is not a valid namespace-qualified class name`);
             }
 
@@ -397,7 +399,7 @@ export class Proxy {
                 name,
                 ...interimClassDescriptor,
                 namespaceClassName,
-                objectName: `${classNameMatch[1].toLowerCase()}${classNameMatch[2]}${classNameMatch[3]}`,
+                objectName: `${objectNameGroups["namespaceFirstWord"].toLowerCase()}${objectNameGroups["namespaceRemaining"]}${objectNameGroups["className"]}`,
                 methodDescriptors
             };
 
