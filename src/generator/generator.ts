@@ -195,20 +195,23 @@ export abstract class Generator {
      * @param localizedKeyPrefix
      * Localized key prefix.
      *
+     * @param namespacePrefix
+     * Namespace prefix to be appended to name.
+     *
      * @param localizationCallback
      * Callback to finalize localization.
      *
      * @returns
      * Localization.
      */
-    #generateLocalization<TLocalization extends Localization>(locale: string, localizedKeyPrefix: string, localizationCallback: (locale: string, localization: Localization) => TLocalization): TLocalization {
+    #generateLocalization<TLocalization extends Localization>(locale: string, localizedKeyPrefix: string, namespacePrefix: string, localizationCallback: (locale: string, localization: Localization) => TLocalization): TLocalization {
         const lngOption = {
             lng: locale
         };
 
         return localizationCallback(locale, {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Localized key exists.
-            name: i18nextAppExtension.t(`${localizedKeyPrefix}name` as ParseKeys, lngOption),
+            name: `${namespacePrefix}${i18nextAppExtension.t(`${localizedKeyPrefix}name` as ParseKeys, lngOption)}`,
             // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Localized key exists.
             description: i18nextAppExtension.t(`${localizedKeyPrefix}description` as ParseKeys, lngOption)
         });
@@ -231,19 +234,20 @@ export abstract class Generator {
         try {
             for (const [_namespaceClassName, classDescriptor] of proxy.classDescriptorsMap.entries()) {
                 const namespace = classDescriptor.namespace;
+                const namespacePrefix = namespace === undefined ? "" : `${namespace}.`;
+                const namespacePath = namespace === undefined ? "" : `${namespace}/`;
 
                 this.createProxyObject(classDescriptor);
 
                 for (const methodDescriptor of classDescriptor.methodDescriptors) {
                     const namespaceFunctionName = methodDescriptor.namespaceFunctionName;
-
                     const functionLocalizationsMap = new Map(this.#locales.map(locale =>
-                        [locale, this.#generateLocalization<FunctionLocalization>(locale, `Functions.${namespaceFunctionName}.`, (locale, localization) => ({
+                        [locale, this.#generateLocalization<FunctionLocalization>(locale, `Functions.${namespaceFunctionName}.`, namespacePrefix, (locale, localization) => ({
                             ...localization,
-                            documentationURL: `${Generator.#DOCUMENTATION_BASE_URL}${locale === this.defaultLocale ? "" : `${locale}/`}${Generator.#DOCUMENTATION_PATH}${namespace === undefined ? "" : `${namespace}/`}${localization.name}.html`,
+                            documentationURL: `${Generator.#DOCUMENTATION_BASE_URL}${locale === this.defaultLocale ? "" : `${locale}/`}${Generator.#DOCUMENTATION_PATH}${namespacePath}${localization.name}.html`,
                             parametersMap: new Map(methodDescriptor.parameterDescriptors.map(parameterDescriptor =>
                                 // eslint-disable-next-line max-nested-callbacks -- Callback is empty.
-                                [parameterDescriptor.name, this.#generateLocalization(locale, `Parameters.${parameterDescriptor.name}.`, (_locale, localization) => localization)]
+                                [parameterDescriptor.name, this.#generateLocalization(locale, `Parameters.${parameterDescriptor.name}.`, "", (_locale, localization) => localization)]
                             ))
                         }))]
                     ));
