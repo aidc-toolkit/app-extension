@@ -2,6 +2,7 @@ import {
     type AbstractConstructor,
     type Constructor,
     getLogger,
+    type LogLevel,
     LogLevels,
     omit,
     type TypedAbstractConstructor
@@ -146,6 +147,9 @@ interface TargetLogger {
     /**
      * Log a method call.
      *
+     * @param logLevel
+     * Log level.
+     *
      * @param methodName
      * Method name.
      *
@@ -155,7 +159,7 @@ interface TargetLogger {
      * @param result
      * Output result.
      */
-    log: (methodName: string, args: unknown[], result: unknown) => void;
+    log: (logLevel: LogLevel, methodName: string, args: unknown[], result: unknown) => void;
 }
 
 /**
@@ -165,6 +169,8 @@ export class Proxy {
     /**
      * Logger.
      */
+    // TODO Add configuration parameter to output JSON.
+    // TODO Change this to LogLevels.Trace when configuration available.
     readonly #logger: Logger<unknown> = getLogger(LogLevels.Info);
 
     /**
@@ -419,14 +425,14 @@ export class Proxy {
                 /**
                  * @inheritDoc
                  */
-                log(methodName: string, args: unknown[], result: unknown): void {
+                log(logLevel: LogLevel, methodName: string, args: unknown[], result: unknown): void {
                     // // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type hierarchy is known.
                     // const appExtension = (this as unknown as T).appExtension;
 
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Method name is known to be valid at this point.
                     const methodDescriptor = methodDescriptorsMap.get(methodName)!;
 
-                    logger.info(JSON.stringify({
+                    logger.log(logLevel, "", JSON.stringify({
                         namespace: decoratorClassDescriptor.namespace,
                         className: name,
                         methodName,
@@ -485,10 +491,21 @@ export class Proxy {
             });
 
             return function methodProxy(this: TThis, ...args: TArguments): TReturn {
-                const result = target.call(this, ...args);
-
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Class has been modified to add log method.
-                (this as TargetLogger).log(name, args, result);
+                const targetLogger = this as TargetLogger;
+
+                let result: TReturn;
+
+                try {
+                    result = target.call(this, ...args);
+
+                    // TODO Change this to LogLevels.Trace when configuration available.
+                    targetLogger.log(LogLevels.Info, name, args, result);
+                } catch (e: unknown) {
+                    targetLogger.log(LogLevels.Error, name, args, e instanceof Error ? `${e.name}: ${e.message}` : `Unknown exception: ${String(e)}`);
+
+                    throw e;
+                }
 
                 return result;
             };
