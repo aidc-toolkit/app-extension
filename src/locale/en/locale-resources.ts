@@ -147,6 +147,10 @@ export default {
             name: "baseIdentifier",
             description: "Base identifier."
         },
+        hyperlinkIdentifier: {
+            name: "identifier",
+            description: "Identifier for which to create hyperlink."
+        },
         indicatorDigit: {
             name: "indicatorDigit",
             description: "Indicator digit."

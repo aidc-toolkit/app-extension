@@ -31,7 +31,7 @@ import {
     startValueParameterDescriptor,
     valueParameterDescriptor
 } from "../utility/transformer-descriptor.js";
-import { identifierParameterDescriptor } from "./identifier-validator-proxy.js";
+import { identifierParameterDescriptor } from "./identifier-descriptor.js";
 import { prefixDefinitionGS1UPCParameterDescriptor } from "./prefix-definition-descriptor.js";
 
 abstract class IdentifierCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt, TIdentifierType extends IdentifierType, TIdentifierValidation extends IdentifierValidation, TIdentifierCreator extends IdentifierCreator<TIdentifierType, TIdentifierValidation>> extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt> {

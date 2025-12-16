@@ -11,18 +11,12 @@ import type {
     SerializableNumericIdentifierType
 } from "@aidc-toolkit/gs1";
 import type { AppExtension } from "../app-extension.js";
-import { type ExtendsParameterDescriptor, type ParameterDescriptor, Types } from "../descriptor.js";
+import { type ExtendsParameterDescriptor, Types } from "../descriptor.js";
 import { proxy } from "../proxy.js";
 import type { ErrorExtends, Matrix, MatrixResultError } from "../type.js";
 import { exclusionAllNumericParameterDescriptor } from "../utility/character-set-descriptor.js";
 import { StringProxy } from "../utility/string-proxy.js";
-
-export const identifierParameterDescriptor: ParameterDescriptor = {
-    name: "identifier",
-    type: Types.String,
-    isMatrix: true,
-    isRequired: true
-};
+import { identifierParameterDescriptor } from "./identifier-descriptor.js";
 
 const validateIdentifierParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: identifierParameterDescriptor,

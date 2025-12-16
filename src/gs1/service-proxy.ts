@@ -1,23 +1,15 @@
 import { isNullish, type Nullishable } from "@aidc-toolkit/core";
 import { type IdentifierType, IdentifierTypes, verifiedByGS1 } from "@aidc-toolkit/gs1";
-import { type ParameterDescriptor, Types } from "../descriptor.js";
+import { type ExtendsParameterDescriptor, type ParameterDescriptor, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
 import { i18nextAppExtension } from "../locale/i18n.js";
 import { proxy } from "../proxy.js";
 import type { ErrorExtends, Matrix, MatrixResultError } from "../type.js";
+import { identifierParameterDescriptor, identifierTypeParameterDescriptor } from "./identifier-descriptor.js";
 
-const identifierTypeParameterDescriptor: ParameterDescriptor = {
-    name: "identifierType",
-    type: Types.String,
-    isMatrix: false,
-    isRequired: true
-};
-
-const identifierParameterDescriptor: ParameterDescriptor = {
-    name: "identifier",
-    type: Types.String,
-    isMatrix: true,
-    isRequired: true
+const hyperlinkIdentifierParameterDescriptor: ExtendsParameterDescriptor = {
+    extendsDescriptor: identifierParameterDescriptor,
+    name: "hyperlinkIdentifier"
 };
 
 const hyperlinkTextParameterDescriptor: ParameterDescriptor = {
@@ -55,7 +47,7 @@ export class ServiceProxy<ThrowError extends boolean, TError extends ErrorExtend
         requiresContext: true,
         parameterDescriptors: [
             identifierTypeParameterDescriptor,
-            identifierParameterDescriptor,
+            hyperlinkIdentifierParameterDescriptor,
             hyperlinkTextParameterDescriptor,
             hyperlinkDetailsParameterDescriptor
         ]

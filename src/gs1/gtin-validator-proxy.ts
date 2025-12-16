@@ -6,7 +6,8 @@ import { LibProxy } from "../lib-proxy.js";
 import { proxy } from "../proxy.js";
 import type { ErrorExtends, Matrix, MatrixResultError } from "../type.js";
 import { indicatorDigitParameterDescriptor, rcnFormatParameterDescriptor } from "./gtin-descriptor.js";
-import { GTINValidatorProxy, identifierParameterDescriptor } from "./identifier-validator-proxy.js";
+import { identifierParameterDescriptor } from "./identifier-descriptor.js";
+import { GTINValidatorProxy } from "./identifier-validator-proxy.js";
 
 @proxy.describeClass(false, {
     namespace: "GS1",

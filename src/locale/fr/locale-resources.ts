@@ -147,6 +147,10 @@ export default {
             name: "cleDIdentificationDeBase",
             description: "Clé d'identification de base."
         },
+        hyperlinkIdentifier: {
+            name: "identifiant",
+            description: "Identifiant pour lequel créer un lien hypertexte."
+        },
         indicatorDigit: {
             name: "indicatorDigit",
             description: "Chiffre indicateur."
