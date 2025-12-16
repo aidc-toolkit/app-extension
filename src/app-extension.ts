@@ -1,6 +1,7 @@
 import type { TypedAsyncFunction, TypedFunction, TypedSyncFunction } from "@aidc-toolkit/core";
+import type { Hyperlink } from "@aidc-toolkit/utility";
 import { i18nextAppExtension } from "./locale/i18n.js";
-import type { ErrorExtends, ResultError, SheetAddress, SheetRange } from "./type.js";
+import type { ErrorExtends, MatrixResultError, ResultError, SheetAddress, SheetRange } from "./type.js";
 
 /**
  * Application extension.
@@ -170,6 +171,20 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * Mapped big integer value.
      */
     abstract mapBigInt(value: bigint): ResultError<TBigInt, ThrowError, TError>;
+
+    /**
+     * Map hyperlink results to a form suitable for the application.
+     *
+     * @param invocationContext
+     * Invocation context.
+     *
+     * @param matrixHyperlinkResults
+     * Matrix of hyperlink results from function call.
+     *
+     * @returns
+     * Matrix of results in a form suitable for the application.
+     */
+    abstract mapHyperlinkResults(invocationContext: TInvocationContext, matrixHyperlinkResults: MatrixResultError<Hyperlink, ThrowError, TError>): MatrixResultError<unknown, ThrowError, TError> | Promise<MatrixResultError<unknown, ThrowError, TError>>;
 
     /**
      * Map a range error (thrown by the library) to an application-specific error. If errors are reported through the
