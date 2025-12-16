@@ -5,7 +5,7 @@ import { i18nextAppExtension } from "./locale/i18n.js";
 import { proxy } from "./proxy.js";
 import type { ErrorExtends, Matrix } from "./type.js";
 
-const spillMatrix: ParameterDescriptor = {
+const spillMatrixParameterDescriptor: ParameterDescriptor = {
     name: "spillMatrix",
     type: Types.Any,
     isMatrix: true,
@@ -141,7 +141,7 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
         requiresContext: true,
         type: Types.Any,
         isMatrix: true,
-        parameterDescriptors: [spillMatrix, spillMaximumWidthParameterDescriptor, spillMaximumHeightParameterDescriptor]
+        parameterDescriptors: [spillMatrixParameterDescriptor, spillMaximumWidthParameterDescriptor, spillMaximumHeightParameterDescriptor]
     })
     async vSpill(hMatrixValues: Matrix<unknown>, maximumWidth: Nullishable<number>, maximumHeight: Nullishable<number>, invocationContext: Nullishable<TInvocationContext>): Promise<Matrix<unknown>> {
         let result: Matrix<unknown>;
@@ -216,7 +216,7 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
         requiresContext: true,
         type: Types.Any,
         isMatrix: true,
-        parameterDescriptors: [spillMatrix, spillMaximumHeightParameterDescriptor, spillMaximumWidthParameterDescriptor]
+        parameterDescriptors: [spillMatrixParameterDescriptor, spillMaximumHeightParameterDescriptor, spillMaximumWidthParameterDescriptor]
     })
     async hSpill(vMatrixValues: Matrix<unknown>, maximumHeight: Nullishable<number>, maximumWidth: Nullishable<number>, invocationContext: Nullishable<TInvocationContext>): Promise<Matrix<unknown>> {
         let result: Matrix<unknown>;
