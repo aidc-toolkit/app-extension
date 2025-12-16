@@ -15,6 +15,9 @@ export default {
         invalidPrefixType: "Invalid prefix type",
         tweakFactorMustBeNumber: "Tweak factor must be a number"
     },
+    ServiceProxy: {
+        invalidIdentifierType: "Invalid identifier type \"{{identifierType}}\""
+    },
     Parameters: {
         spillMatrix: {
             name: "matrix",
@@ -199,6 +202,18 @@ export default {
         reference: {
             name: "reference",
             description: "Reference portion of identifier."
+        },
+        identifierType: {
+            name: "identifierType",
+            description: "Identifier type (GTIN, GLN, SSCC, ...)."
+        },
+        hyperlinkText: {
+            name: "text",
+            description: "Text for hyperlink. If not provided, the identifier is used."
+        },
+        hyperlinkDetails: {
+            name: "details",
+            description: "Details to display when hovering over hyperlink."
         }
     },
     Functions: {
@@ -618,6 +633,10 @@ export default {
             createGMN: {
                 name: "createGMN",
                 description: "Create a GMN."
+            },
+            verifiedByGS1: {
+                name: "verifiedByGS1",
+                description: "Create a Verified by GS1 hyperlink."
             }
         }
     }

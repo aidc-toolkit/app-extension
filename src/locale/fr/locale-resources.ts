@@ -15,6 +15,9 @@ export default {
         invalidPrefixType: "Type de préfixe invalide",
         tweakFactorMustBeNumber: "Le facteur de réglage doit être un nombre"
     },
+    ServiceProxy: {
+        invalidIdentifierType: "Type d'identifiant invalide «{{identifierType}}»"
+    },
     Parameters: {
         spillMatrix: {
             name: "matrice",
@@ -199,6 +202,18 @@ export default {
         reference: {
             name: "reference",
             description: "Partie de référence de la clé d'identification."
+        },
+        identifierType: {
+            name: "typeDIdentifiant",
+            description: "Type d'identifiant (GTIN, GLN, SSCC, ...)."
+        },
+        hyperlinkText: {
+            name: "texte",
+            description: "Texte du lien hypertexte. À défaut, l'identifiant est utilisé."
+        },
+        hyperlinkDetails: {
+            name: "details",
+            description: "Détails à afficher au survol du lien hypertexte."
         }
     },
     Functions: {
@@ -618,6 +633,10 @@ export default {
             createGMN: {
                 name: "creerGMN",
                 description: "Créer un GMN."
+            },
+            verifiedByGS1: {
+                name: "verifiedByGS1",
+                description: "Créer un lien hypertexte «Vérifié par GS1»."
             }
         }
     }
