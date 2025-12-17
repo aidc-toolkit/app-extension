@@ -3,9 +3,7 @@ export default {
         sequenceCountMustBeLessThanOrEqualTo: "Sequence count {{sequenceCount, number}} must be less than or equal to {{maximumSequenceCount, number}}"
     },
     Proxy: {
-        vSpillMustBeHorizontalArray: "Input must be a horizontal array",
-        hSpillMustBeVerticalArray: "Input must be a vertical array",
-        matrixMustBeArray: "Input must be a one-dimensional array"
+        matrixMustBeArray: "Input matrix must be one-dimensional"
     },
     IdentifierCreatorProxy: {
         prefixDefinitionMustBeOneDimensional: "Prefix definition must be a one-dimensional matrix",
@@ -25,11 +23,11 @@ export default {
         },
         spillMaximumWidth: {
             name: "maximumWidth",
-            description: "Maximum width into which to spill the matrix. If not provided, the remaining width is used."
+            description: "Maximum width into which to spill the matrix. If not provided, the remaining sheet width is used."
         },
         spillMaximumHeight: {
             name: "maximumHeight",
-            description: "Maximum height into which to spill the matrix. If not provided, the remaining height is used."
+            description: "Maximum height into which to spill the matrix. If not provided, the remaining sheet height is used."
         },
         domain: {
             name: "domain",
@@ -225,13 +223,9 @@ export default {
             name: "version",
             description: "Get the version of the AIDC Toolkit."
         },
-        vSpill: {
-            name: "vSpill",
-            description: "Spill a horizontal array vertically to fit within a given maximum width and height."
-        },
-        hSpill: {
-            name: "hSpill",
-            description: "Spill a vertical array horizontally to fit within a given maximum height and width."
+        spill: {
+            name: "spill",
+            description: "Spill a one-dimensional matrix to fit a rectangle within a given maximum height and width."
         },
         forwardTransform: {
             name: "forwardTransform",

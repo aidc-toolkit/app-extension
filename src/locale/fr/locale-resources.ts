@@ -3,9 +3,7 @@ export default {
         sequenceCountMustBeLessThanOrEqualTo: "Le nombre de séquences {{sequenceCount, number}} doit être inférieur ou égal à {{maximumSequenceCount, number}}"
     },
     Proxy: {
-        vSpillMustBeHorizontalArray: "L'entrée doit être un tableau horizontal",
-        hSpillMustBeVerticalArray: "L'entrée doit être un tableau vertical",
-        matrixMustBeArray: "L'entrée doit être un tableau unidimensionnel"
+        matrixMustBeArray: "La matrice d'entrée doit être unidimensionnelle"
     },
     IdentifierCreatorProxy: {
         prefixDefinitionMustBeOneDimensional: "La définition du préfixe doit être une matrice unidimensionnelle",
@@ -25,11 +23,11 @@ export default {
         },
         spillMaximumWidth: {
             name: "largeurMaximale",
-            description: "Largeur maximale dans laquelle déverser la matrice. Si non fournie, la largeur restante est utilisée."
+            description: "Largeur maximale dans laquelle déverser la matrice. Si non fournie, la largeur restante de la feuille est utilisée."
         },
         spillMaximumHeight: {
             name: "hauteurMaximale",
-            description: "Hauteur maximale dans laquelle déverser la matrice. Si non fournie, la hauteur restante est utilisée."
+            description: "Hauteur maximale dans laquelle déverser la matrice. Si non fournie, la hauteur restante de la feuille est utilisée."
         },
         domain: {
             name: "domaine",
@@ -225,13 +223,9 @@ export default {
             name: "version",
             description: "Obtener la version de la boîte à outils AIDC."
         },
-        vSpill: {
-            name: "vDeverser",
-            description: "Déverser un tableau horizontal verticalement pour l'adapter à une largeur et une hauteur maximales données."
-        },
-        hSpill: {
-            name: "hDeverser",
-            description: "Déverser un tableau vertical horizontalement pour l'adapter à une hauteur et une largeur maximales données."
+        spill: {
+            name: "deverser",
+            description: "Déverser une matrice unidimensionnelle pour l'adapter à un rectangle dont la hauteur et la largeur maximales sont données."
         },
         forwardTransform: {
             name: "transformerAvant",

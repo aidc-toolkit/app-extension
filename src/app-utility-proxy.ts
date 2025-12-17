@@ -120,85 +120,10 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
     }
 
     /**
-     * Spill a horizontal matrix vertically to fit within a maximum width and height.
+     * Spill a one-dimensional matrix to fit a rectangle within a given maximum height and width.
      *
-     * @param hMatrixValues
-     * Horizontal matrix values. Matrix has length 1 and contains a single array with the values.
-     *
-     * @param maximumWidth
-     * Maximum width.
-     *
-     * @param maximumHeight
-     * Maximum height.
-     *
-     * @param invocationContext
-     * Invocation context.
-     *
-     * @returns
-     * Matrix spilled within maximum width and maximum height.
-     */
-    @proxy.describeMethod({
-        requiresContext: true,
-        type: Types.Any,
-        isMatrix: true,
-        parameterDescriptors: [spillMatrixParameterDescriptor, spillMaximumWidthParameterDescriptor, spillMaximumHeightParameterDescriptor]
-    })
-    async vSpill(hMatrixValues: Matrix<unknown>, maximumWidth: Nullishable<number>, maximumHeight: Nullishable<number>, invocationContext: Nullishable<TInvocationContext>): Promise<Matrix<unknown>> {
-        let result: Matrix<unknown>;
-
-        if (hMatrixValues.length !== 1) {
-            throw new RangeError(i18nextAppExtension.t("Proxy.vSpillMustBeHorizontalArray"));
-        }
-
-        const maximumDimensions = await this.#defaultMaximums({
-            width: maximumWidth,
-            height: maximumHeight
-        }, invocationContext);
-
-        const hArrayValues = hMatrixValues[0];
-        const hLength = hArrayValues.length;
-        const maximumArea = maximumDimensions.width * maximumDimensions.height;
-
-        // Lengths 0 and 1 are valid and require no special processing.
-        if (hLength > 1 && hLength <= maximumArea) {
-            // Make spill as square as possible.
-            let spillWidth = Math.min(Math.ceil(Math.sqrt(maximumArea)), maximumDimensions.width);
-
-            // Array that has a length of a power of 10 is treated specially.
-            if (Number.isInteger(Math.log10(hLength))) {
-                // Try spill width that is a power of 10.
-                const spillWidth10 = 10 ** Math.floor(Math.log10(spillWidth));
-
-                // Keep default if not enough space for power of 10 matrix.
-                if (hLength / spillWidth10 <= maximumDimensions.height) {
-                    spillWidth = spillWidth10;
-                }
-            }
-
-            result = [];
-
-            let hStartIndex = 0;
-
-            do {
-                const hEndIndex = hStartIndex + spillWidth;
-
-                result.push(hArrayValues.slice(hStartIndex, hEndIndex));
-
-                hStartIndex = hEndIndex;
-            } while (hStartIndex < hLength);
-        } else {
-            // Return matrix unmodified and let application handle spill error if any.
-            result = hMatrixValues;
-        }
-
-        return result;
-    }
-
-    /**
-     * Spill a vertical matrix horizontally to fit within a maximum width and height.
-     *
-     * @param vMatrixValues
-     * Vertical matrix values. Matrix contains arrays of length 1 with the values.
+     * @param matrixValues
+     * Matrix values. Matrix is length 1 or contains arrays of length 1 with the values.
      *
      * @param maximumHeight
      * Maximum height.
@@ -218,14 +143,15 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
         isMatrix: true,
         parameterDescriptors: [spillMatrixParameterDescriptor, spillMaximumHeightParameterDescriptor, spillMaximumWidthParameterDescriptor]
     })
-    async hSpill(vMatrixValues: Matrix<unknown>, maximumHeight: Nullishable<number>, maximumWidth: Nullishable<number>, invocationContext: Nullishable<TInvocationContext>): Promise<Matrix<unknown>> {
+    async spill(matrixValues: Matrix<unknown>, maximumHeight: Nullishable<number>, maximumWidth: Nullishable<number>, invocationContext: Nullishable<TInvocationContext>): Promise<Matrix<unknown>> {
         let result: Matrix<unknown>;
 
-        for (const hArrayValues of vMatrixValues) {
-            // This test should be necessary only once but account for zero-size matrix and misuse of method.
-            if (hArrayValues.length !== 1) {
-                throw new RangeError(i18nextAppExtension.t("Proxy.hSpillMustBeVerticalArray"));
-            }
+        // Assume matrix is uniformly two-dimensional.
+        const height = matrixValues.length;
+        const width = height !== 0 ? matrixValues[0].length : 0;
+
+        if (height > 1 && width > 1) {
+            throw new RangeError(i18nextAppExtension.t("Proxy.matrixMustBeArray"));
         }
 
         const maximumDimensions = await this.#defaultMaximums({
@@ -233,39 +159,84 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
             height: maximumHeight
         }, invocationContext);
 
-        const vLength = vMatrixValues.length;
-        const maximumArea = maximumDimensions.width * maximumDimensions.height;
+        const isHorizontal = height === 1;
+        const length = isHorizontal ? width : height;
+        const maximumParallel = isHorizontal ? maximumDimensions.width : maximumDimensions.height;
+        const maximumPerpendicular = isHorizontal ? maximumDimensions.height : maximumDimensions.width;
+        const maximumArea = maximumParallel * maximumPerpendicular;
 
         // Lengths 0 and 1 are valid and require no special processing.
-        if (vLength > 1 && vLength <= maximumArea) {
-            // Make spill as square as possible.
-            let spillHeight = Math.min(Math.ceil(Math.sqrt(maximumArea)), maximumDimensions.height);
+        if (length > 1 && length <= maximumArea) {
+            const lengthSquareRoot = Math.sqrt(length);
+
+            let spillParallel: number | undefined = undefined;
 
             // Array that has a length of a power of 10 is treated specially.
-            if (Number.isInteger(Math.log10(vLength))) {
-                // Try spill height that is a power of 10.
-                const spillHeight10 = 10 ** Math.floor(Math.log10(spillHeight));
+            if (Number.isInteger(Math.log10(length))) {
+                // Try spill that is a power of 10, favouring the parallel direction.
+                let spillParallel10 = 10 ** Math.ceil(Math.log10(lengthSquareRoot));
 
-                // Keep default if not enough space for power of 10 matrix.
-                if (vLength / spillHeight10 <= maximumDimensions.width) {
-                    spillHeight = spillHeight10;
+                // Favour the perpendicular direction if not enough parallel space.
+                if (spillParallel10 > maximumParallel) {
+                    spillParallel10 /= 10;
+                }
+
+                // Take result as the spill parallel if it fits.
+                if (spillParallel10 <= maximumParallel && length / spillParallel10 <= maximumPerpendicular) {
+                    spillParallel = spillParallel10;
                 }
             }
+
+            // Make spill as square as possible, favouring the parallel direction.
+            spillParallel ??= Math.max(Math.min(Math.ceil(lengthSquareRoot), maximumParallel), Math.floor(length / maximumPerpendicular));
+
+            const spillPerpendicular = Math.ceil(length / spillParallel);
 
             result = [];
 
-            for (let rowIndex = 0; rowIndex < spillHeight; rowIndex++) {
-                const row = new Array<unknown>();
+            if (isHorizontal) {
+                let startIndex = 0;
 
-                for (let cellIndex = rowIndex; cellIndex < vLength; cellIndex++) {
-                    row.push(vMatrixValues[cellIndex][0]);
+                do {
+                    const endIndex = startIndex + spillParallel;
+
+                    // Each row is a slice of the original single row.
+                    const row = matrixValues[0].slice(startIndex, endIndex);
+
+                    // Row length will be anywhere from 1 to spillParallel.
+                    if (row.length < spillParallel) {
+                        const rowLength = row.length;
+
+                        row.length = spillParallel;
+
+                        // Fill empty cells with empty string.
+                        row.fill("", rowLength, spillParallel);
+                    }
+
+                    result.push(row);
+
+                    startIndex = endIndex;
+                } while (startIndex < length);
+            } else {
+                for (let rowIndex = 0; rowIndex < spillParallel; rowIndex++) {
+                    const row: unknown[] = [];
+
+                    // Each column is a slice of the original single column.
+                    for (let valueIndex = rowIndex; valueIndex < length; valueIndex += spillParallel) {
+                        row.push(matrixValues[valueIndex][0]);
+                    }
+
+                    // Row length will always be spillPerpendicular or spillPerpendicular - 1.
+                    if (row.length < spillPerpendicular) {
+                        row[spillPerpendicular - 1] = "";
+                    }
+
+                    result.push(row);
                 }
-
-                result.push(row);
             }
         } else {
             // Return matrix unmodified and let application handle spill error if any.
-            result = vMatrixValues;
+            result = matrixValues;
         }
 
         return result;
