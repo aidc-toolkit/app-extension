@@ -35,16 +35,6 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
     readonly #throwError: ThrowError;
 
     /**
-     * Maximum width supported by application.
-     */
-    #maximumWidth?: number;
-
-    /**
-     * Maximum height supported by application.
-     */
-    #maximumHeight?: number;
-
-    /**
      * Constructor.
      *
      * @param version
@@ -81,43 +71,13 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
 
     /**
      * Get the maximum width supported by the application.
-     *
-     * @returns
-     * Maximum width supported by the application.
      */
-    async maximumWidth(): Promise<number> {
-        this.#maximumWidth ??= await this.getMaximumWidth();
-
-        return this.#maximumWidth;
-    }
-
-    /**
-     * Get the maximum width supported by the application.
-     *
-     * @returns
-     * Maximum width supported by the application.
-     */
-    protected abstract getMaximumWidth(): number | Promise<number>;
+    abstract get maximumWidth(): number;
 
     /**
      * Get the maximum height supported by the application.
-     *
-     * @returns
-     * Maximum height supported by the application.
      */
-    async maximumHeight(): Promise<number> {
-        this.#maximumHeight ??= await this.getMaximumHeight();
-
-        return this.#maximumHeight;
-    }
-
-    /**
-     * Get the maximum height supported by the application.
-     *
-     * @returns
-     * Maximum height supported by the application.
-     */
-    protected abstract getMaximumHeight(): number | Promise<number>;
+    abstract get maximumHeight(): number;
 
     /**
      * Get the sheet address from an invocation context.

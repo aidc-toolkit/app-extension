@@ -106,8 +106,8 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
         if (isNullish(maximumWidth) || isNullish(maximumHeight)) {
             const sheetAddress = await this.appExtension.getSheetAddress(invocationContext);
 
-            definedMaximumWidth = maximumWidth ?? await this.appExtension.maximumWidth() - sheetAddress.columnIndex;
-            definedMaximumHeight = maximumHeight ?? await this.appExtension.maximumHeight() - sheetAddress.rowIndex;
+            definedMaximumWidth = maximumWidth ?? this.appExtension.maximumWidth - sheetAddress.columnIndex;
+            definedMaximumHeight = maximumHeight ?? this.appExtension.maximumHeight - sheetAddress.rowIndex;
         } else {
             definedMaximumWidth = maximumWidth;
             definedMaximumHeight = maximumHeight;
