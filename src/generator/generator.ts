@@ -1,4 +1,4 @@
-import { I18nEnvironments } from "@aidc-toolkit/core";
+import { I18nEnvironments, type Promisable } from "@aidc-toolkit/core";
 import type { ParseKeys } from "i18next";
 import { AppUtilityProxy } from "../app-utility-proxy.js";
 import type { ClassDescriptor, MethodDescriptor } from "../descriptor.js";
@@ -181,7 +181,7 @@ export abstract class Generator {
      * @param success
      * True if successful.
      */
-    protected abstract finalize(success: boolean): void | Promise<void>;
+    protected abstract finalize(success: boolean): Promisable<void>;
 
     /**
      * Generate a localization.

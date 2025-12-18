@@ -15,12 +15,17 @@
  * limitations under the License.
  */
 export * from "./locale/i18n.js";
+
 export type * from "./type.js";
+export type * from "./app-data.js";
+
 export * from "./app-extension.js";
 export * from "./lib-proxy.js";
+
 export * from "./descriptor.js";
 export * from "./app-utility-proxy.js";
 export * from "./utility/index.js";
 export * as GS1 from "./gs1/index.js";
+
 export * from "./generator/index.js";
 export { expandParameterDescriptor } from "./proxy.js";
