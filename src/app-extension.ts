@@ -1,5 +1,4 @@
-import type { Promisable, TypedAsyncFunction, TypedFunction, TypedSyncFunction } from "@aidc-toolkit/core";
-import type { Hyperlink } from "@aidc-toolkit/utility";
+import type { Hyperlink, Promisable, TypedAsyncFunction, TypedFunction, TypedSyncFunction } from "@aidc-toolkit/core";
 import type { AppData } from "./app-data.js";
 import { i18nextAppExtension } from "./locale/i18n.js";
 import type { ErrorExtends, MatrixResultError, ResultError, SheetAddress, SheetRange } from "./type.js";
