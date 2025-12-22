@@ -11,7 +11,7 @@ import { CharacterSetCreatorProxy, CharacterSetValidatorProxy } from "../utility
 @proxy.describeClass(false, {
     namespace: "GS1",
     methodInfix: "AI82",
-    replaceParameterDescriptors: [
+    replacementParameterDescriptors: [
         {
             name: expandParameterDescriptor(exclusionNoneParameterDescriptor).name,
             replacement: exclusionAllNumericParameterDescriptor
@@ -27,7 +27,7 @@ export class AI82Proxy<ThrowError extends boolean, TError extends ErrorExtends<T
 @proxy.describeClass(false, {
     namespace: "GS1",
     methodInfix: "AI39",
-    replaceParameterDescriptors: [
+    replacementParameterDescriptors: [
         {
             name: expandParameterDescriptor(exclusionNoneParameterDescriptor).name,
             replacement: exclusionAllNumericParameterDescriptor

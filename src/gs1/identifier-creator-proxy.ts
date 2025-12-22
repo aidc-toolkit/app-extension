@@ -25,7 +25,7 @@ import { type ExtendsParameterDescriptor, type ParameterDescriptor, Types } from
 import { LibProxy } from "../lib-proxy.js";
 import { i18nextAppExtension } from "../locale/i18n.js";
 import { proxy } from "../proxy.js";
-import type { ErrorExtends, Matrix, MatrixResultError } from "../type.js";
+import type { ErrorExtends, Matrix, MatrixResultError, ResultError } from "../type.js";
 import {
     countParameterDescriptor,
     startValueParameterDescriptor,
@@ -117,11 +117,13 @@ export abstract class NumericIdentifierCreatorProxy<ThrowError extends boolean, 
         parameterDescriptors: [prefixDefinitionGS1UPCParameterDescriptor, valueParameterDescriptor, sparseParameterDescriptor]
     })
     create(prefixDefinition: Matrix<unknown>, matrixValues: Matrix<number | bigint>, sparse: Nullishable<boolean>): MatrixResultError<string, ThrowError, TError> {
-        const creator = this.getCreator(prefixDefinition);
-
         const sparseOrUndefined = sparse ?? undefined;
 
-        return this.mapMatrix(matrixValues, value => creator.create(value, sparseOrUndefined));
+        return this.setupMapMatrix(() =>
+            this.getCreator(prefixDefinition),
+        matrixValues, (creator, value) =>
+            creator.create(value, sparseOrUndefined)
+        );
     }
 
     @proxy.describeMethod({
@@ -130,10 +132,12 @@ export abstract class NumericIdentifierCreatorProxy<ThrowError extends boolean, 
         isMatrix: true,
         parameterDescriptors: [prefixDefinitionGS1UPCParameterDescriptor, startValueParameterDescriptor, countParameterDescriptor, sparseParameterDescriptor]
     })
-    createSequence(prefixDefinition: Matrix<unknown>, startValue: number, count: number, sparse: Nullishable<boolean>): Matrix<string> {
-        this.appExtension.validateSequenceCount(count);
+    createSequence(prefixDefinition: Matrix<unknown>, startValue: number, count: number, sparse: Nullishable<boolean>): ResultError<Matrix<string>, ThrowError, TError> {
+        return this.singleResult(() => {
+            this.appExtension.validateSequenceCount(count);
 
-        return LibProxy.matrixResult(this.getCreator(prefixDefinition).create(new Sequence(startValue, count), sparse ?? undefined));
+            return LibProxy.matrixResult(this.getCreator(prefixDefinition).create(new Sequence(startValue, count), sparse ?? undefined));
+        });
     }
 
     @proxy.describeMethod({
@@ -141,12 +145,14 @@ export abstract class NumericIdentifierCreatorProxy<ThrowError extends boolean, 
         isMatrix: true,
         parameterDescriptors: [prefixDefinitionGS1UPCParameterDescriptor]
     })
-    createAll(prefixDefinition: Matrix<unknown>): Matrix<string> {
-        const creator = this.getCreator(prefixDefinition);
+    createAll(prefixDefinition: Matrix<unknown>): ResultError<Matrix<string>, ThrowError, TError> {
+        return this.singleResult(() => {
+            const creator = this.getCreator(prefixDefinition);
 
-        this.appExtension.validateSequenceCount(creator.capacity);
+            this.appExtension.validateSequenceCount(creator.capacity);
 
-        return LibProxy.matrixResult(creator.createAll());
+            return LibProxy.matrixResult(creator.createAll());
+        });
     }
 }
 
@@ -184,11 +190,13 @@ export abstract class SerializableNumericIdentifierCreatorProxy<ThrowError exten
         parameterDescriptors: [prefixDefinitionGS1UPCParameterDescriptor, singleValueParameterDescriptor, serialComponentParameterDescriptor, sparseParameterDescriptor]
     })
     createSerialized(prefixDefinition: Matrix<unknown>, value: number, matrixSerialComponents: Matrix<string>, sparse: Nullishable<boolean>): MatrixResultError<string, ThrowError, TError> {
-        const creator = this.getCreator(prefixDefinition);
-
         const sparseOrUndefined = sparse ?? undefined;
 
-        return this.mapMatrix(matrixSerialComponents, serialComponent => creator.createSerialized(value, serialComponent, sparseOrUndefined));
+        return this.setupMapMatrix(() =>
+            this.getCreator(prefixDefinition),
+        matrixSerialComponents, (creator, serialComponent) =>
+            creator.createSerialized(value, serialComponent, sparseOrUndefined)
+        );
     }
 
     @proxy.describeMethod({
@@ -197,9 +205,11 @@ export abstract class SerializableNumericIdentifierCreatorProxy<ThrowError exten
         parameterDescriptors: [baseIdentifierParameterDescriptor, serialComponentParameterDescriptor]
     })
     concatenate(baseIdentifier: string, matrixSerialComponents: Matrix<string>): MatrixResultError<string, ThrowError, TError> {
-        const creator = this.getCreator([[baseIdentifier.substring(0, !baseIdentifier.startsWith("0") ? PrefixValidator.GS1_COMPANY_PREFIX_MINIMUM_LENGTH : PrefixValidator.UPC_COMPANY_PREFIX_MINIMUM_LENGTH + 1), PrefixTypes.GS1CompanyPrefix]]);
-
-        return this.mapMatrix(matrixSerialComponents, serialComponent => creator.concatenate(baseIdentifier, serialComponent));
+        return this.setupMapMatrix(() =>
+            this.getCreator([[baseIdentifier.substring(0, !baseIdentifier.startsWith("0") ? PrefixValidator.GS1_COMPANY_PREFIX_MINIMUM_LENGTH : PrefixValidator.UPC_COMPANY_PREFIX_MINIMUM_LENGTH + 1), PrefixTypes.GS1CompanyPrefix]]),
+        matrixSerialComponents, (creator, serialComponent) =>
+            creator.concatenate(baseIdentifier, serialComponent)
+        );
     }
 }
 
@@ -220,8 +230,10 @@ export abstract class NonNumericIdentifierCreatorProxy<ThrowError extends boolea
         parameterDescriptors: [prefixDefinitionGS1UPCParameterDescriptor, referenceParameterDescriptor]
     })
     create(prefixDefinition: Matrix<unknown>, matrixReferences: Matrix<string>): MatrixResultError<string, ThrowError, TError> {
-        const creator = this.getCreator(prefixDefinition);
-
-        return this.mapMatrix(matrixReferences, reference => creator.create(reference));
+        return this.setupMapMatrix(() =>
+            this.getCreator(prefixDefinition),
+        matrixReferences, (creator, reference) =>
+            creator.create(reference)
+        );
     }
 }

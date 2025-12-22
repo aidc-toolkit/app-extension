@@ -92,7 +92,7 @@ export class CheckProxy<ThrowError extends boolean, TError extends ErrorExtends<
         }, checkDigitParameterDescriptor]
     })
     isValidPriceOrWeightCheckDigit(s: string, checkDigit: string): ResultError<boolean, ThrowError, TError> {
-        return isValidPriceOrWeightCheckDigit(s, checkDigit);
+        return this.singleResult(() => isValidPriceOrWeightCheckDigit(s, checkDigit));
     }
 
     @proxy.describeMethod({

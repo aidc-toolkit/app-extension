@@ -1,4 +1,4 @@
-import type { Hyperlink, Promisable, TypedAsyncFunction, TypedFunction, TypedSyncFunction } from "@aidc-toolkit/core";
+import type { Hyperlink, Promisable } from "@aidc-toolkit/core";
 import type { AppData } from "./app-data.js";
 import { i18nextAppExtension } from "./locale/i18n.js";
 import type { ErrorExtends, MatrixResultError, ResultError, SheetAddress, SheetRange } from "./type.js";
@@ -148,6 +148,20 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
     abstract setFileProperty(name: string, value: string | null): Promisable<void>;
 
     /**
+     * Decode a string representing a binary array.
+     *
+     * @param data
+     * String.
+     *
+     * @returns
+     * Binary array.
+     */
+    static #decodeBinary(data: string): Uint8Array {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Index 0 is always valid.
+        return new Uint8Array(atob(data).split("").map(char => char.codePointAt(0)!));
+    }
+
+    /**
      * Decode application data from an encoded string.
      *
      * @param stringData
@@ -174,20 +188,37 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
                 appData = {
                     type: "object",
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type is determined by application mapping.
-                    data: JSON.parse(data) as object
+                    data: JSON.parse(data, (_key, value: unknown) =>
+                        // Decode strings representing binary arrays and pass through other values unmodified.
+                        typeof value === "string" && value.startsWith("binary:") ?
+                            AppExtension.#decodeBinary(value) :
+                            value
+                    ) as object
                 };
                 break;
 
             case "binary":
                 appData = {
                     type: "binary",
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Index 0 is always valid.
-                    data: new Uint8Array(atob(data).split("").map(char => char.codePointAt(0)!))
+                    data: AppExtension.#decodeBinary(data)
                 };
                 break;
         }
 
         return appData;
+    }
+
+    /**
+     * Encode a binary array as a string for storage.
+     *
+     * @param data
+     * Binary array.
+     *
+     * @returns
+     * String.
+     */
+    static #encodeBinary(data: Uint8Array): string {
+        return btoa(String.fromCodePoint(...data));
     }
 
     /**
@@ -210,11 +241,17 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
                 break;
 
             case "object":
-                stringData = `object:${JSON.stringify(appData.data)}`;
+                stringData = `object:${JSON.stringify(appData.data, (_key, value: unknown) =>
+                    // Encode binary arrays as strings and pass through other values unmodified.
+                    typeof value === "object" && value !== null && value instanceof Uint8Array ?
+                        // There's a very small risk that a string will be passed in this format.
+                        AppExtension.#encodeBinary(value) :
+                        value
+                )}`;
                 break;
 
             case "binary":
-                stringData = `binary:${btoa(String.fromCodePoint(...appData.data))}`;
+                stringData = AppExtension.#encodeBinary(appData.data);
                 break;
         }
 
@@ -323,60 +360,4 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * Message to include in the error.
      */
     abstract handleError(message: string): never;
-
-    /**
-     * Bind a synchronous method and wrap it in a try/catch for comprehensive error handling.
-     *
-     * @template TMethod
-     * Method type.
-     *
-     * @param thisArg
-     * The value to be passed as the `this` parameter to the method.
-     *
-     * @param method
-     * Method to call.
-     *
-     * @returns
-     * Function wrapped around the method.
-     */
-    bindSync<TMethod extends TypedSyncFunction<TMethod>>(thisArg: ThisParameterType<TMethod>, method: TMethod): TypedFunction<TMethod> {
-        const boundMethod = method.bind(thisArg);
-
-        return (...args: Parameters<TMethod>): ReturnType<TMethod> => {
-            try {
-                return boundMethod(...args);
-            } catch (e: unknown) {
-                // eslint-disable-next-line no-console -- Necessary for diagnostics.
-                console.error(e);
-
-                this.handleError(e instanceof Error ? e.message : String(e));
-            }
-        };
-    }
-
-    /**
-     * Bind an asynchronous method and wrap it in a try/catch for comprehensive error handling.
-     *
-     * @template TMethod
-     * Method type.
-     *
-     * @param thisArg
-     * The value to be passed as the `this` parameter to the method.
-     *
-     * @param method
-     * Method to call.
-     *
-     * @returns
-     * Function wrapped around the method.
-     */
-    bindAsync<TMethod extends TypedAsyncFunction<TMethod>>(thisArg: ThisParameterType<TMethod>, method: TMethod): TypedAsyncFunction<TMethod> {
-        const boundMethod = method.bind(thisArg);
-
-        return async (...args: Parameters<TMethod>) => await boundMethod(...args).catch((e: unknown) => {
-            // eslint-disable-next-line no-console -- Necessary for diagnostics.
-            console.error(e);
-
-            this.handleError(e instanceof Error ? e.message : String(e));
-        });
-    }
 }

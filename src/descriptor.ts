@@ -53,7 +53,7 @@ interface TypeDescriptor extends Descriptor {
     readonly type: Type;
 
     /**
-     * True if type is a matrix (method accepts or returns a two-dimensional array).
+     * True if type is a matrix (method accepts or returns, or parameter is, a two-dimensional array).
      */
     readonly isMatrix: boolean;
 }
@@ -81,6 +81,21 @@ export interface ExtendsParameterDescriptor extends Partial<ParameterDescriptor>
      * Sort order within extended parameter descriptor.
      */
     readonly sortOrder?: number;
+}
+
+/**
+ * Replacement parameter descriptor.
+ */
+export interface ReplacementParameterDescriptor {
+    /**
+     * Name to replace.
+     */
+    readonly name: string;
+
+    /**
+     * Replacement parameter descriptor.
+     */
+    readonly replacement: ParameterDescriptor;
 }
 
 /**
@@ -134,12 +149,9 @@ export interface ClassDescriptor extends Descriptor {
     readonly methodInfix?: string | undefined;
 
     /**
-     * Replace parameter descriptors for class hierarchies where enumeration parameter descriptors can change.
+     * Replacement parameter descriptors  for class hierarchies where parameter types can narrow
      */
-    readonly replaceParameterDescriptors?: ReadonlyArray<{
-        readonly name: string;
-        readonly replacement: ParameterDescriptor;
-    }>;
+    readonly replacementParameterDescriptors?: ReplacementParameterDescriptor[];
 
     /**
      * Class name in optional namespace.

@@ -13,7 +13,7 @@ import type {
     ClassDescriptor,
     ExtendsParameterDescriptor,
     MethodDescriptor,
-    ParameterDescriptor
+    ParameterDescriptor, ReplacementParameterDescriptor
 } from "./descriptor.js";
 import { LibProxy } from "./lib-proxy.js";
 import type { ErrorExtends } from "./type.js";
@@ -21,7 +21,7 @@ import type { ErrorExtends } from "./type.js";
 /**
  * Remaining parameters past first parameter in constructor.
  */
-type RemainingParameters<TConstructor extends TypedAbstractConstructor<TConstructor>> =
+type RemainingConstructorParameters<TConstructor extends TypedAbstractConstructor<TConstructor>> =
     TConstructor extends abstract new (arg0: infer _P0, ...args: infer P) => InstanceType<TConstructor> ? P : never;
 
 /**
@@ -43,7 +43,7 @@ type ProxyClassConstructor<
     IsAbstract extends boolean,
     TConstructor extends TypedAbstractConstructor<TConstructor>
 > = IsAbstract extends true ?
-    AbstractConstructor<[appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>, ...args: RemainingParameters<TConstructor>], T> :
+    AbstractConstructor<[appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>, ...args: RemainingConstructorParameters<TConstructor>], T> :
     Constructor<[appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>], T>;
 
 /**
@@ -88,9 +88,9 @@ type InterimMethodDescriptor = Omit<MethodDescriptor, "functionName" | "namespac
 /**
  * Subset of method descriptor used in call to decorator.
  */
-type DecoratorMethodDescriptor = Omit<InterimMethodDescriptor, "name" | "parameterDescriptors"> & {
+interface DecoratorMethodDescriptor extends Omit<InterimMethodDescriptor, "name" | "parameterDescriptors"> {
     parameterDescriptors: Array<ParameterDescriptor | ExtendsParameterDescriptor>;
-};
+}
 
 /**
  * Subset of class descriptor used during decoration process.
@@ -101,8 +101,8 @@ type InterimClassDescriptor =
 /**
  * Subset of class descriptor used in call to decorator.
  */
-interface DecoratorClassDescriptor extends Omit<InterimClassDescriptor, "replaceParameterDescriptors"> {
-    readonly replaceParameterDescriptors?: ReadonlyArray<Omit<Required<ClassDescriptor>["replaceParameterDescriptors"][number], "replacement"> & {
+interface DecoratorClassDescriptor extends Omit<InterimClassDescriptor, "replacementParameterDescriptors"> {
+    readonly replacementParameterDescriptors?: ReadonlyArray<Omit<ReplacementParameterDescriptor, "replacement"> & {
         readonly replacement: ParameterDescriptor | ExtendsParameterDescriptor;
     }>;
 }
@@ -264,11 +264,11 @@ export class Proxy {
         TConstructor extends TypedAbstractConstructor<TConstructor>,
         TProxyClassConstructor extends ProxyClassConstructor<ThrowError, TError, TInvocationContext, TBigInt, T, IsAbstract, TConstructor>
     >(isAbstract: IsAbstract, decoratorClassDescriptor: DecoratorClassDescriptor = {}): ClassDecorator<ThrowError, TError, TInvocationContext, TBigInt, T, IsAbstract, TConstructor, TProxyClassConstructor> {
-        const interimClassDescriptor: InterimClassDescriptor = decoratorClassDescriptor.replaceParameterDescriptors === undefined ?
-            omit(decoratorClassDescriptor, "replaceParameterDescriptors") :
+        const interimClassDescriptor: InterimClassDescriptor = decoratorClassDescriptor.replacementParameterDescriptors === undefined ?
+            omit(decoratorClassDescriptor, "replacementParameterDescriptors") :
             {
                 ...decoratorClassDescriptor,
-                replaceParameterDescriptors: decoratorClassDescriptor.replaceParameterDescriptors.map(replaceParameterDescriptor => ({
+                replacementParameterDescriptors: decoratorClassDescriptor.replacementParameterDescriptors.map(replaceParameterDescriptor => ({
                     ...replaceParameterDescriptor,
                     replacement: expandParameterDescriptor(replaceParameterDescriptor.replacement)
                 }))
@@ -319,7 +319,7 @@ export class Proxy {
 
             if (baseClassDescriptor !== undefined) {
                 const baseClassMethodDescriptors = baseClassDescriptor.methodDescriptors;
-                const replaceParameterDescriptors = decoratorClassDescriptor.replaceParameterDescriptors;
+                const replaceParameterDescriptors = decoratorClassDescriptor.replacementParameterDescriptors;
 
                 if (replaceParameterDescriptors !== undefined) {
                     const replacementParameterDescriptorsMap = new Map(replaceParameterDescriptors.map(replaceParameterDescriptor => [replaceParameterDescriptor.name, expandParameterDescriptor(replaceParameterDescriptor.replacement)]));

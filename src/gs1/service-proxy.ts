@@ -1,11 +1,11 @@
 import { isNullish, type Nullishable } from "@aidc-toolkit/core";
-import { type IdentifierType, IdentifierTypes, verifiedByGS1 } from "@aidc-toolkit/gs1";
+import { verifiedByGS1 } from "@aidc-toolkit/gs1";
 import { type ExtendsParameterDescriptor, type ParameterDescriptor, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
-import { i18nextAppExtension } from "../locale/i18n.js";
 import { proxy } from "../proxy.js";
 import type { ErrorExtends, Matrix, MatrixResultError } from "../type.js";
 import { identifierParameterDescriptor, identifierTypeParameterDescriptor } from "./identifier-descriptor.js";
+import { validateIdentifierType } from "./identifier-type.js";
 
 const hyperlinkIdentifierParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: identifierParameterDescriptor,
@@ -30,17 +30,6 @@ const hyperlinkDetailsParameterDescriptor: ParameterDescriptor = {
     namespace: "GS1"
 })
 export class ServiceProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    static #validateIdentifierType(identifierType: string): IdentifierType {
-        if (!(identifierType in IdentifierTypes)) {
-            throw new RangeError(i18nextAppExtension.t("ServiceProxy.invalidIdentifierType", {
-                identifierType
-            }));
-        }
-
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type is known.
-        return identifierType as IdentifierType;
-    }
-
     @proxy.describeMethod({
         type: Types.Any,
         isMatrix: true,
@@ -58,8 +47,10 @@ export class ServiceProxy<ThrowError extends boolean, TError extends ErrorExtend
             throw new Error("Invocation context not provided by application");
         }
 
-        const validatedIdentifierType = ServiceProxy.#validateIdentifierType(identifierType);
-
-        return this.appExtension.mapHyperlinkResults(invocationContext, this.mapMatrix(matrixIdentifiers, identifier => verifiedByGS1(validatedIdentifierType, identifier, text ?? undefined, details ?? undefined)));
+        return this.appExtension.mapHyperlinkResults(invocationContext, this.setupMapMatrix(() =>
+            validateIdentifierType(identifierType),
+        matrixIdentifiers, (validatedIdentifierType, identifier) =>
+            verifiedByGS1(validatedIdentifierType, identifier, text ?? undefined, details ?? undefined)
+        ));
     }
 }

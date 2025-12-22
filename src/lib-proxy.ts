@@ -77,19 +77,15 @@ export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorE
             // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type determination is handled above.
             result = error as ResultError<TResult, ThrowError, TError>;
         } else {
-            // Unknown error; pass up the stack.
-            // eslint-disable-next-line @typescript-eslint/only-throw-error -- Error is being passed on from elsewhere.
-            throw e;
+            // Unknown error; pass on to application extension.
+            result = this.appExtension.handleError(e instanceof Error ? e.message : String(e));
         }
 
         return result;
     }
 
     /**
-     * Do the callback for a simple return.
-     *
-     * @param value
-     * Value.
+     * Do a callback for a single result.
      *
      * @param callback
      * Callback.
@@ -97,11 +93,32 @@ export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorE
      * @returns
      * Callback result or error if errors are not thrown.
      */
-    #doCallback<TValue, TResult>(value: TValue, callback: (value: TValue) => TResult): ResultError<TResult, ThrowError, TError> {
+    singleResult<TResult>(callback: () => TResult): ResultError<TResult, ThrowError, TError> {
         let result: ResultError<TResult, ThrowError, TError>;
 
         try {
-            result = callback(value);
+            result = callback();
+        } catch (e: unknown) {
+            result = this.#handleError(e);
+        }
+
+        return result;
+    }
+
+    /**
+     * Do a callback for an asynchronous single result.
+     *
+     * @param callback
+     * Callback.
+     *
+     * @returns
+     * Callback result or error if errors are not thrown.
+     */
+    async asyncSingleResult<TResult>(callback: () => Promise<TResult>): Promise<ResultError<TResult, ThrowError, TError>> {
+        let result: ResultError<TResult, ThrowError, TError>;
+
+        try {
+            result = await callback();
         } catch (e: unknown) {
             result = this.#handleError(e);
         }
@@ -115,14 +132,41 @@ export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorE
      * @param matrixValues
      * Matrix of values.
      *
-     * @param callback
-     * Callback.
+     * @param valueCallback
+     * Callback to process value.
      *
      * @returns
      * Matrix of callback results and errors if errors are not thrown.
      */
-    protected mapMatrix<TValue, TResult>(matrixValues: Matrix<TValue>, callback: (value: TValue) => TResult): MatrixResultError<TResult, ThrowError, TError> {
-        return matrixValues.map(rowValues => rowValues.map(value => this.#doCallback(value, callback)));
+    protected mapMatrix<TValue, TResult>(matrixValues: Matrix<TValue>, valueCallback: (value: TValue) => TResult): MatrixResultError<TResult, ThrowError, TError> {
+        return matrixValues.map(rowValues => rowValues.map(value => this.singleResult(() => valueCallback(value))));
+    }
+
+    /**
+     * Setup a mapping and map a matrix of values using a callback.
+     *
+     * @param setupCallback
+     * Callback to set up the mapping.
+     *
+     * @param matrixValues
+     * Matrix of values.
+     *
+     * @param valueCallback
+     * Callback to process value.
+     *
+     * @returns
+     * Matrix of callback results and errors if errors are not thrown.
+     */
+    protected setupMapMatrix<TSetup, TValue, TResult>(setupCallback: () => TSetup, matrixValues: Matrix<TValue>, valueCallback: (setup: TSetup, value: TValue) => TResult): MatrixResultError<TResult, ThrowError, TError> {
+        let result: MatrixResultError<TResult, ThrowError, TError>;
+
+        try {
+            result = matrixValues.map(rowValues => rowValues.map(value => this.singleResult(() => valueCallback(setupCallback(), value))));
+        } catch (e: unknown) {
+            result = [[this.#handleError(e)]];
+        }
+
+        return result;
     }
 
     /**
@@ -138,7 +182,7 @@ export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorE
      * Callback result or error as array if errors are not thrown.
      */
     #doArrayCallback<TValue, TResult>(value: TValue, callback: (value: TValue) => TResult[]): Array<ResultError<TResult, ThrowError, TError>> {
-        const result = this.#doCallback(value, callback);
+        const result = this.singleResult(() => callback(value));
 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type determination is handled.
         return result instanceof Array ? result : [result as ResultError<TResult, ThrowError, TError>];

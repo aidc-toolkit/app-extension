@@ -20,7 +20,7 @@ import {
 @proxy.describeClass(false, {
     namespace: "GS1",
     methodInfix: "GTIN",
-    replaceParameterDescriptors: [
+    replacementParameterDescriptors: [
         {
             name: expandParameterDescriptor(prefixDefinitionGS1UPCParameterDescriptor).name,
             replacement: prefixDefinitionAnyParameterDescriptor
@@ -39,11 +39,13 @@ export class GTINCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
         parameterDescriptors: [indicatorDigitParameterDescriptor, prefixDefinitionAnyParameterDescriptor, valueParameterDescriptor, sparseParameterDescriptor]
     })
     createGTIN14(indicatorDigit: string, prefixDefinition: Matrix<unknown>, matrixValues: Matrix<number | bigint>, sparse: Nullishable<boolean>): MatrixResultError<string, ThrowError, TError> {
-        const creator = this.getCreator(prefixDefinition);
-
         const sparseOrUndefined = sparse ?? undefined;
 
-        return this.mapMatrix(matrixValues, value => creator.createGTIN14(indicatorDigit, value, sparseOrUndefined));
+        return this.setupMapMatrix(() =>
+            this.getCreator(prefixDefinition),
+        matrixValues, (creator, value) =>
+            creator.createGTIN14(indicatorDigit, value, sparseOrUndefined)
+        );
     }
 
     @proxy.describeMethod({

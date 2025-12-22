@@ -95,7 +95,9 @@ export abstract class CharacterSetCreatorProxy<ThrowError extends boolean, TErro
         const exclusionOrUndefined = exclusion ?? undefined;
         const tweakOrUndefined = tweak ?? undefined;
 
-        return this.mapMatrix(matrixValues, value => this.#characterSetCreator.create(length, value, exclusionOrUndefined, tweakOrUndefined));
+        return this.mapMatrix(matrixValues, value =>
+            this.#characterSetCreator.create(length, value, exclusionOrUndefined, tweakOrUndefined)
+        );
     }
 
     @proxy.describeMethod({
@@ -104,13 +106,15 @@ export abstract class CharacterSetCreatorProxy<ThrowError extends boolean, TErro
         isMatrix: true,
         parameterDescriptors: [lengthParameterDescriptor, startValueParameterDescriptor, countParameterDescriptor, exclusionNoneParameterDescriptor, tweakParameterDescriptor]
     })
-    createSequence(length: number, startValue: number, count: number, exclusion: Nullishable<Exclusion>, tweak: Nullishable<number | bigint>): Matrix<string> {
-        this.appExtension.validateSequenceCount(count);
+    createSequence(length: number, startValue: number, count: number, exclusion: Nullishable<Exclusion>, tweak: Nullishable<number | bigint>): ResultError<Matrix<string>, ThrowError, TError> {
+        return this.singleResult(() => {
+            this.appExtension.validateSequenceCount(count);
 
-        const exclusionOrUndefined = exclusion ?? undefined;
-        const tweakOrUndefined = tweak ?? undefined;
+            const exclusionOrUndefined = exclusion ?? undefined;
+            const tweakOrUndefined = tweak ?? undefined;
 
-        return LibProxy.matrixResult(this.#characterSetCreator.create(length, new Sequence(startValue, count), exclusionOrUndefined, tweakOrUndefined));
+            return LibProxy.matrixResult(this.#characterSetCreator.create(length, new Sequence(startValue, count), exclusionOrUndefined, tweakOrUndefined));
+        });
     }
 
     @proxy.describeMethod({
@@ -122,13 +126,15 @@ export abstract class CharacterSetCreatorProxy<ThrowError extends boolean, TErro
         const exclusionOrUndefined = exclusion ?? undefined;
         const tweakOrUndefined = tweak ?? undefined;
 
-        return this.mapMatrix(matrixSs, s => this.mapBigInt(this.#characterSetCreator.valueFor(s, exclusionOrUndefined, tweakOrUndefined)));
+        return this.mapMatrix(matrixSs, s =>
+            this.mapBigInt(this.#characterSetCreator.valueFor(s, exclusionOrUndefined, tweakOrUndefined))
+        );
     }
 }
 
 @proxy.describeClass(false, {
     methodInfix: "Numeric",
-    replaceParameterDescriptors: [
+    replacementParameterDescriptors: [
         {
             name: expandParameterDescriptor(exclusionNoneParameterDescriptor).name,
             replacement: exclusionFirstZeroParameterDescriptor
@@ -143,7 +149,7 @@ export class NumericProxy<ThrowError extends boolean, TError extends ErrorExtend
 
 @proxy.describeClass(false, {
     methodInfix: "Hexadecimal",
-    replaceParameterDescriptors: [
+    replacementParameterDescriptors: [
         {
             name: expandParameterDescriptor(exclusionNoneParameterDescriptor).name,
             replacement: exclusionAnyParameterDescriptor
@@ -167,7 +173,7 @@ export class AlphabeticProxy<ThrowError extends boolean, TError extends ErrorExt
 
 @proxy.describeClass(false, {
     methodInfix: "Alphanumeric",
-    replaceParameterDescriptors: [
+    replacementParameterDescriptors: [
         {
             name: expandParameterDescriptor(exclusionNoneParameterDescriptor).name,
             replacement: exclusionAnyParameterDescriptor
