@@ -218,7 +218,8 @@ export class Proxy {
                 if (value === null) {
                     replacementValue = value;
                 } else if (Array.isArray(value)) {
-                    replacementValue = value.map(entry => Proxy.#jsonValue(entry));
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Slicing array is necessary to keep log size down.
+                    replacementValue = (value.length <= 10 ? value : [...value.slice(0, 3), "...", ...value.slice(-3)]).map(entry => Proxy.#jsonValue(entry));
                 } else {
                     replacementValue = Object.fromEntries(Object.entries(value).map(([k, v]) => [k, Proxy.#jsonValue(v)]));
                 }
@@ -439,7 +440,7 @@ export class Proxy {
                         functionName: methodDescriptor.functionName,
                         parameters: methodDescriptor.parameterDescriptors.map((parameterDescriptor, index) => ({
                             name: parameterDescriptor.name,
-                            value: args[index]
+                            value: Proxy.#jsonValue(args[index])
                         })),
                         result: Proxy.#jsonValue(result)
                     }, null, 2));
