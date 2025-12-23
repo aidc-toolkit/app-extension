@@ -1,7 +1,7 @@
 import type { Hyperlink, Promisable } from "@aidc-toolkit/core";
 import type { AppData } from "./app-data.js";
 import { i18nextAppExtension } from "./locale/i18n.js";
-import type { ErrorExtends, MatrixResultError, ResultError, SheetAddress, SheetRange } from "./type.js";
+import type { ErrorExtends, MatrixResult, SheetAddress, SheetRange, SingletonResult } from "./type.js";
 
 /**
  * Application extension.
@@ -328,7 +328,7 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * @returns
      * Mapped big integer value.
      */
-    abstract mapBigInt(value: bigint): ResultError<TBigInt, ThrowError, TError>;
+    abstract mapBigInt(value: bigint): SingletonResult<TBigInt, ThrowError, TError>;
 
     /**
      * Map hyperlink results to a form suitable for the application.
@@ -342,7 +342,7 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * @returns
      * Matrix of results in a form suitable for the application.
      */
-    abstract mapHyperlinkResults(invocationContext: TInvocationContext, matrixHyperlinkResults: MatrixResultError<Hyperlink, ThrowError, TError>): Promisable<MatrixResultError<unknown, ThrowError, TError>>;
+    abstract mapHyperlinkResults(invocationContext: TInvocationContext, matrixHyperlinkResults: MatrixResult<Hyperlink, ThrowError, TError>): Promisable<MatrixResult<unknown, ThrowError, TError>>;
 
     /**
      * Map a range error (thrown by the library) to an application-specific error. If errors are reported through the

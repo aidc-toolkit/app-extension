@@ -13,7 +13,7 @@ import type {
 import type { AppExtension } from "../app-extension.js";
 import { type ExtendsParameterDescriptor, Types } from "../descriptor.js";
 import { proxy } from "../proxy.js";
-import type { ErrorExtends, Matrix, MatrixResultError } from "../type.js";
+import type { ErrorExtends, Matrix } from "../type.js";
 import { exclusionAllNumericParameterDescriptor } from "../utility/character-set-descriptor.js";
 import { StringProxy } from "../utility/string-proxy.js";
 import { identifierParameterDescriptor } from "./identifier-descriptor.js";
@@ -47,7 +47,7 @@ abstract class NumericIdentifierValidatorProxy<ThrowError extends boolean, TErro
         isMatrix: true,
         parameterDescriptors: [validateIdentifierParameterDescriptor]
     })
-    validate(matrixIdentifiers: Matrix<string>): MatrixResultError<string, ThrowError, TError> {
+    validate(matrixIdentifiers: Matrix<string>): Matrix<string> {
         return this.validateString(this.validator, matrixIdentifiers);
     }
 }
@@ -73,7 +73,7 @@ export abstract class NonNumericIdentifierValidatorProxy<ThrowError extends bool
         isMatrix: true,
         parameterDescriptors: [validateIdentifierParameterDescriptor, exclusionAllNumericParameterDescriptor]
     })
-    validate(matrixIdentifiers: Matrix<string>, exclusion: Nullishable<NonNumericIdentifierValidation["exclusion"]>): MatrixResultError<string, ThrowError, TError> {
+    validate(matrixIdentifiers: Matrix<string>, exclusion: Nullishable<NonNumericIdentifierValidation["exclusion"]>): Matrix<string> {
         return this.validateString(this.validator, matrixIdentifiers, {
             exclusion: exclusion ?? undefined
         } satisfies NonNumericIdentifierValidation);

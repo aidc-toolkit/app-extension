@@ -9,7 +9,7 @@ import {
 import { type ExtendsParameterDescriptor, type ParameterDescriptor, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
 import { proxy } from "../proxy.js";
-import type { ErrorExtends, Matrix, MatrixResultError, ResultError } from "../type.js";
+import type { ErrorExtends, Matrix, MatrixResult, SingletonResult } from "../type.js";
 
 const checkSParameterDescriptor: ParameterDescriptor = {
     name: "checkS",
@@ -61,8 +61,8 @@ export class CheckProxy<ThrowError extends boolean, TError extends ErrorExtends<
         isMatrix: true,
         parameterDescriptors: [numericSParameterDescriptor]
     })
-    checkDigit(matrixSs: Matrix<string>): MatrixResultError<string, ThrowError, TError> {
-        return this.mapMatrix(matrixSs, s => checkDigit(s));
+    checkDigit(matrixSs: Matrix<string>): MatrixResult<string, ThrowError, TError> {
+        return this.matrixResult(matrixSs, s => checkDigit(s));
     }
 
     @proxy.describeMethod({
@@ -70,8 +70,8 @@ export class CheckProxy<ThrowError extends boolean, TError extends ErrorExtends<
         isMatrix: true,
         parameterDescriptors: [numericSWithCheckDigitParameterDescriptor]
     })
-    hasValidCheckDigit(matrixSs: Matrix<string>): MatrixResultError<boolean, ThrowError, TError> {
-        return this.mapMatrix(matrixSs, s => hasValidCheckDigit(s));
+    hasValidCheckDigit(matrixSs: Matrix<string>): MatrixResult<boolean, ThrowError, TError> {
+        return this.matrixResult(matrixSs, s => hasValidCheckDigit(s));
     }
 
     @proxy.describeMethod({
@@ -79,8 +79,8 @@ export class CheckProxy<ThrowError extends boolean, TError extends ErrorExtends<
         isMatrix: true,
         parameterDescriptors: [numericSFourOrFiveDigitsParameterDescriptor]
     })
-    priceOrWeightCheckDigit(matrixSs: Matrix<string>): MatrixResultError<string, ThrowError, TError> {
-        return this.mapMatrix(matrixSs, s => priceOrWeightCheckDigit(s));
+    priceOrWeightCheckDigit(matrixSs: Matrix<string>): MatrixResult<string, ThrowError, TError> {
+        return this.matrixResult(matrixSs, s => priceOrWeightCheckDigit(s));
     }
 
     @proxy.describeMethod({
@@ -91,8 +91,8 @@ export class CheckProxy<ThrowError extends boolean, TError extends ErrorExtends<
             isMatrix: false
         }, checkDigitParameterDescriptor]
     })
-    isValidPriceOrWeightCheckDigit(s: string, checkDigit: string): ResultError<boolean, ThrowError, TError> {
-        return this.singleResult(() => isValidPriceOrWeightCheckDigit(s, checkDigit));
+    isValidPriceOrWeightCheckDigit(s: string, checkDigit: string): SingletonResult<boolean, ThrowError, TError> {
+        return this.singletonResult(() => isValidPriceOrWeightCheckDigit(s, checkDigit));
     }
 
     @proxy.describeMethod({
@@ -100,8 +100,8 @@ export class CheckProxy<ThrowError extends boolean, TError extends ErrorExtends<
         isMatrix: true,
         parameterDescriptors: [ai82SParameterDescriptor]
     })
-    checkCharacterPair(matrixSs: Matrix<string>): MatrixResultError<string, ThrowError, TError> {
-        return this.mapMatrix(matrixSs, s => checkCharacterPair(s));
+    checkCharacterPair(matrixSs: Matrix<string>): MatrixResult<string, ThrowError, TError> {
+        return this.matrixResult(matrixSs, s => checkCharacterPair(s));
     }
 
     @proxy.describeMethod({
@@ -109,7 +109,7 @@ export class CheckProxy<ThrowError extends boolean, TError extends ErrorExtends<
         isMatrix: true,
         parameterDescriptors: [ai82SWithCheckCharacterPairParameterDescriptor]
     })
-    hasValidCheckCharacterPair(matrixSs: Matrix<string>): MatrixResultError<boolean, ThrowError, TError> {
-        return this.mapMatrix(matrixSs, s => hasValidCheckCharacterPair(s));
+    hasValidCheckCharacterPair(matrixSs: Matrix<string>): MatrixResult<boolean, ThrowError, TError> {
+        return this.matrixResult(matrixSs, s => hasValidCheckCharacterPair(s));
     }
 }

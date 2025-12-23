@@ -2,7 +2,7 @@ import type { Nullishable } from "@aidc-toolkit/core";
 import { RegExpValidator } from "@aidc-toolkit/utility";
 import { type ParameterDescriptor, Types } from "../descriptor.js";
 import { proxy } from "../proxy.js";
-import type { ErrorExtends, Matrix, MatrixResultError } from "../type.js";
+import type { ErrorExtends, Matrix } from "../type.js";
 import { validateSParameterDescriptor } from "./string-descriptor.js";
 import { StringProxy } from "./string-proxy.js";
 
@@ -29,7 +29,7 @@ export class RegExpProxy<ThrowError extends boolean, TError extends ErrorExtends
         isMatrix: true,
         parameterDescriptors: [regExpParameterDescriptor, validateSParameterDescriptor, errorMessageParameterDescriptor]
     })
-    validate(regExp: string, matrixSs: Matrix<string>, errorMessage: Nullishable<string>): MatrixResultError<string, ThrowError, TError> {
+    validate(regExp: string, matrixSs: Matrix<string>, errorMessage: Nullishable<string>): Matrix<string> {
         return this.validateString(new class extends RegExpValidator {
             protected override createErrorMessage(s: string): string {
                 return errorMessage ?? super.createErrorMessage(s);
@@ -42,7 +42,7 @@ export class RegExpProxy<ThrowError extends boolean, TError extends ErrorExtends
         isMatrix: true,
         parameterDescriptors: [regExpParameterDescriptor, validateSParameterDescriptor]
     })
-    isValid(regExp: string, matrixSs: Matrix<string>): MatrixResultError<boolean, ThrowError, TError> {
+    isValid(regExp: string, matrixSs: Matrix<string>): Matrix<boolean> {
         return this.isValidString(this.validate(regExp, matrixSs, undefined));
     }
 }

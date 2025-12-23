@@ -3,7 +3,7 @@ import { type ExtendsParameterDescriptor, type ParameterDescriptor, Types } from
 import { LibProxy } from "./lib-proxy.js";
 import { i18nextAppExtension } from "./locale/i18n.js";
 import { proxy } from "./proxy.js";
-import type { ErrorExtends, Matrix, ResultError } from "./type.js";
+import type { ErrorExtends, Matrix, MatrixResult } from "./type.js";
 
 const spillMatrixParameterDescriptor: ParameterDescriptor = {
     name: "spillMatrix",
@@ -143,18 +143,22 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
         isMatrix: true,
         parameterDescriptors: [spillMatrixParameterDescriptor, spillMaximumHeightParameterDescriptor, spillMaximumWidthParameterDescriptor]
     })
-    async spill(matrixValues: Matrix<unknown>, maximumHeight: Nullishable<number>, maximumWidth: Nullishable<number>, invocationContext: Nullishable<TInvocationContext>): Promise<ResultError<Matrix<unknown>, ThrowError, TError>> {
-        return await this.asyncSingleResult(async () => {
-            let result: Matrix<unknown>;
+    async spill(matrixValues: Matrix<unknown>, maximumHeight: Nullishable<number>, maximumWidth: Nullishable<number>, invocationContext: Nullishable<TInvocationContext>): Promise<MatrixResult<unknown, ThrowError, TError>> {
+        let result: MatrixResult<unknown, ThrowError, TError>;
 
-            // Assume matrix is uniformly two-dimensional.
-            const height = matrixValues.length;
-            const width = height !== 0 ? matrixValues[0].length : 0;
+        // Assume matrix is uniformly two-dimensional.
+        const height = matrixValues.length;
+        const width = height !== 0 ? matrixValues[0].length : 0;
 
+        const isArrayOrError = this.singletonResult(() => {
             if (height > 1 && width > 1) {
                 throw new RangeError(i18nextAppExtension.t("Proxy.matrixMustBeArray"));
             }
 
+            return true;
+        });
+
+        if (isArrayOrError === true) {
             const maximumDimensions = await this.#defaultMaximums({
                 width: maximumWidth,
                 height: maximumHeight
@@ -239,8 +243,11 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
                 // Return matrix unmodified and let application handle spill error if any.
                 result = matrixValues;
             }
+        } else {
+            // Return error as only element in matrix.
+            result = [[isArrayOrError]];
+        }
 
-            return result;
-        });
+        return result;
     }
 }

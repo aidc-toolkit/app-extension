@@ -68,8 +68,9 @@ export interface SheetRange extends Sheet, Range {
 export type Matrix<T> = T[][];
 
 /**
- * Function result, possibly including an error result. If the application framework reports errors through the return
- * value, the result is the union of the result type and the error type; otherwise, it's just the result type.
+ * Function singleton return, possibly including an error return. If the application extension reports errors through
+ * the return value, the result is the union of the return type and the error type; otherwise, it's just the return
+ * type.
  *
  * @template TResult
  * Result type.
@@ -80,12 +81,12 @@ export type Matrix<T> = T[][];
  * @template TError
  * Error type.
  */
-export type ResultError<TResult, ThrowError extends boolean, TError extends ErrorExtends<ThrowError>> = ThrowError extends false ? TResult | TError : TResult;
+export type SingletonResult<TResult, ThrowError extends boolean, TError extends ErrorExtends<ThrowError>> = ThrowError extends false ? TResult | TError : TResult;
 
 /**
- * Function result as matrix, possibly including an error result in each element. If the application framework reports
- * errors through the return value, the individual element result is the union of the result type and the error type;
- * otherwise, it's just the result type.
+ * Function matrix return, possibly including an error return in each element. If the application extension reports
+ * errors through the return value, the individual element result is the union of the return type and the error type;
+ * otherwise, it's just the return type.
  *
  * @template TResult
  * Result type.
@@ -96,4 +97,4 @@ export type ResultError<TResult, ThrowError extends boolean, TError extends Erro
  * @template TError
  * Error type.
  */
-export type MatrixResultError<TResult, ThrowError extends boolean, TError extends ErrorExtends<ThrowError>> = Matrix<ResultError<TResult, ThrowError, TError>>;
+export type MatrixResult<TResult, ThrowError extends boolean, TError extends ErrorExtends<ThrowError>> = Matrix<SingletonResult<TResult, ThrowError, TError>>;

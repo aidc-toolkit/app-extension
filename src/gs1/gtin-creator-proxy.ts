@@ -3,7 +3,7 @@ import { GTINCreator, type GTINType } from "@aidc-toolkit/gs1";
 import type { AppExtension } from "../app-extension.js";
 import { Types } from "../descriptor.js";
 import { expandParameterDescriptor, proxy } from "../proxy.js";
-import type { ErrorExtends, Matrix, MatrixResultError } from "../type.js";
+import type { ErrorExtends, Matrix, MatrixResult } from "../type.js";
 import { valueParameterDescriptor } from "../utility/transformer-descriptor.js";
 import {
     indicatorDigitParameterDescriptor,
@@ -38,10 +38,10 @@ export class GTINCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
         ignoreInfix: true,
         parameterDescriptors: [indicatorDigitParameterDescriptor, prefixDefinitionAnyParameterDescriptor, valueParameterDescriptor, sparseParameterDescriptor]
     })
-    createGTIN14(indicatorDigit: string, prefixDefinition: Matrix<unknown>, matrixValues: Matrix<number | bigint>, sparse: Nullishable<boolean>): MatrixResultError<string, ThrowError, TError> {
+    createGTIN14(indicatorDigit: string, prefixDefinition: Matrix<unknown>, matrixValues: Matrix<number | bigint>, sparse: Nullishable<boolean>): MatrixResult<string, ThrowError, TError> {
         const sparseOrUndefined = sparse ?? undefined;
 
-        return this.setupMapMatrix(() =>
+        return this.setUpMatrixResult(() =>
             this.getCreator(prefixDefinition),
         matrixValues, (creator, value) =>
             creator.createGTIN14(indicatorDigit, value, sparseOrUndefined)
@@ -54,7 +54,7 @@ export class GTINCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
         ignoreInfix: true,
         parameterDescriptors: [rcnFormatParameterDescriptor, rcnItemReferenceParameterDescriptor, rcnPriceOrWeightParameterDescriptor]
     })
-    createVariableMeasureRCN(format: string, itemReference: number, matrixPricesOrWeights: Matrix<number>): MatrixResultError<string, ThrowError, TError> {
-        return this.mapMatrix(matrixPricesOrWeights, priceOrWeight => GTINCreator.createVariableMeasureRCN(format, itemReference, priceOrWeight));
+    createVariableMeasureRCN(format: string, itemReference: number, matrixPricesOrWeights: Matrix<number>): MatrixResult<string, ThrowError, TError> {
+        return this.matrixResult(matrixPricesOrWeights, priceOrWeight => GTINCreator.createVariableMeasureRCN(format, itemReference, priceOrWeight));
     }
 }

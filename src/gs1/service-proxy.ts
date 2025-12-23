@@ -3,7 +3,7 @@ import { verifiedByGS1 } from "@aidc-toolkit/gs1";
 import { type ExtendsParameterDescriptor, type ParameterDescriptor, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
 import { proxy } from "../proxy.js";
-import type { ErrorExtends, Matrix, MatrixResultError } from "../type.js";
+import type { ErrorExtends, Matrix, MatrixResult } from "../type.js";
 import { identifierParameterDescriptor, identifierTypeParameterDescriptor } from "./identifier-descriptor.js";
 import { validateIdentifierType } from "./identifier-type.js";
 
@@ -41,13 +41,13 @@ export class ServiceProxy<ThrowError extends boolean, TError extends ErrorExtend
             hyperlinkDetailsParameterDescriptor
         ]
     })
-    async verifiedByGS1(identifierType: string, matrixIdentifiers: Matrix<string>, text: Nullishable<string>, details: Nullishable<string>, invocationContext: Nullishable<TInvocationContext>): Promise<MatrixResultError<unknown, ThrowError, TError>> {
+    async verifiedByGS1(identifierType: string, matrixIdentifiers: Matrix<string>, text: Nullishable<string>, details: Nullishable<string>, invocationContext: Nullishable<TInvocationContext>): Promise<MatrixResult<unknown, ThrowError, TError>> {
         if (isNullish(invocationContext)) {
             // Application error; no localization necessary.
             throw new Error("Invocation context not provided by application");
         }
 
-        return this.appExtension.mapHyperlinkResults(invocationContext, this.setupMapMatrix(() =>
+        return this.appExtension.mapHyperlinkResults(invocationContext, this.setUpMatrixResult(() =>
             validateIdentifierType(identifierType),
         matrixIdentifiers, (validatedIdentifierType, identifier) =>
             verifiedByGS1(validatedIdentifierType, identifier, text ?? undefined, details ?? undefined)

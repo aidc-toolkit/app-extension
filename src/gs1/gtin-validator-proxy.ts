@@ -4,7 +4,7 @@ import type { AppExtension } from "../app-extension.js";
 import { type ExtendsParameterDescriptor, type ParameterDescriptor, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
 import { proxy } from "../proxy.js";
-import type { ErrorExtends, Matrix, MatrixResultError } from "../type.js";
+import type { ErrorExtends, Matrix, MatrixResult } from "../type.js";
 import { indicatorDigitParameterDescriptor, rcnFormatParameterDescriptor } from "./gtin-descriptor.js";
 import { identifierParameterDescriptor } from "./identifier-descriptor.js";
 import { GTINValidatorProxy } from "./identifier-validator-proxy.js";
@@ -92,8 +92,8 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
         isMatrix: true,
         parameterDescriptors: [zeroSuppressibleGTIN12ParameterDescriptor]
     })
-    zeroSuppressGTIN12(matrixGTIN12s: Matrix<string>): MatrixResultError<string, ThrowError, TError> {
-        return this.mapMatrix(matrixGTIN12s, gtin12 => GTINValidator.zeroSuppress(gtin12));
+    zeroSuppressGTIN12(matrixGTIN12s: Matrix<string>): MatrixResult<string, ThrowError, TError> {
+        return this.matrixResult(matrixGTIN12s, gtin12 => GTINValidator.zeroSuppress(gtin12));
     }
 
     @proxy.describeMethod({
@@ -101,8 +101,8 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
         isMatrix: true,
         parameterDescriptors: [zeroSuppressedGTIN12ParameterDescriptor]
     })
-    zeroExpandGTIN12(matrixZeroSuppressedGTIN12s: Matrix<string>): MatrixResultError<string, ThrowError, TError> {
-        return this.mapMatrix(matrixZeroSuppressedGTIN12s, zeroSuppressedGTIN12 => GTINValidator.zeroExpand(zeroSuppressedGTIN12));
+    zeroExpandGTIN12(matrixZeroSuppressedGTIN12s: Matrix<string>): MatrixResult<string, ThrowError, TError> {
+        return this.matrixResult(matrixZeroSuppressedGTIN12s, zeroSuppressedGTIN12 => GTINValidator.zeroExpand(zeroSuppressedGTIN12));
     }
 
     @proxy.describeMethod({
@@ -110,8 +110,8 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
         isMatrix: true,
         parameterDescriptors: [indicatorDigitParameterDescriptor, convertGTINParameterDescriptor]
     })
-    convertToGTIN14(indicatorDigit: string, matrixGTINs: Matrix<string>): MatrixResultError<string, ThrowError, TError> {
-        return this.mapMatrix(matrixGTINs, gtin => GTINValidator.convertToGTIN14(indicatorDigit, gtin));
+    convertToGTIN14(indicatorDigit: string, matrixGTINs: Matrix<string>): MatrixResult<string, ThrowError, TError> {
+        return this.matrixResult(matrixGTINs, gtin => GTINValidator.convertToGTIN14(indicatorDigit, gtin));
     }
 
     @proxy.describeMethod({
@@ -119,8 +119,8 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
         isMatrix: true,
         parameterDescriptors: [normalizeGTINParameterDescriptor]
     })
-    normalizeGTIN(matrixGTINs: Matrix<string>): MatrixResultError<string, ThrowError, TError> {
-        return this.mapMatrix(matrixGTINs, gtin => GTINValidator.normalize(gtin));
+    normalizeGTIN(matrixGTINs: Matrix<string>): MatrixResult<string, ThrowError, TError> {
+        return this.matrixResult(matrixGTINs, gtin => GTINValidator.normalize(gtin));
     }
 
     @proxy.describeMethod({
@@ -131,7 +131,7 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
     validateGTIN(matrixGTINs: Matrix<string>, gtinLevel: Nullishable<GTINLevel>): Matrix<string> {
         const gtinLevelOrUndefined = gtinLevel ?? undefined;
 
-        return LibProxy.mapMatrixRangeError(matrixGTINs, (gtin) => {
+        return this.matrixErrorResult(matrixGTINs, (gtin) => {
             GTINValidator.validateAny(gtin, gtinLevelOrUndefined);
         });
     }
@@ -142,7 +142,7 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
         parameterDescriptors: [validateGTIN14ParameterDescriptor]
     })
     validateGTIN14(matrixGTIN14s: Matrix<string>): Matrix<string> {
-        return LibProxy.mapMatrixRangeError(matrixGTIN14s, (gtin14) => {
+        return this.matrixErrorResult(matrixGTIN14s, (gtin14) => {
             GTINValidator.validateGTIN14(gtin14);
         });
     }
@@ -152,8 +152,8 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
         isMatrix: true,
         parameterDescriptors: [rcnFormatParameterDescriptor, rcnParameterDescriptor]
     })
-    parseVariableMeasureRCN(format: string, matrixRCNs: Matrix<string>): MatrixResultError<number, ThrowError, TError> {
-        return this.mapArray(matrixRCNs, (rcn) => {
+    parseVariableMeasureRCN(format: string, matrixRCNs: Matrix<string>): MatrixResult<number, ThrowError, TError> {
+        return this.arrayResult(matrixRCNs, (rcn) => {
             const rcnReference = GTINValidator.parseVariableMeasureRCN(format, rcn);
 
             return [rcnReference.itemReference, rcnReference.priceOrWeight];
