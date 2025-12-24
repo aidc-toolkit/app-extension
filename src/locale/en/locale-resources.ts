@@ -141,6 +141,10 @@ export default {
             name: "gtin14",
             description: "GTIN-14 to validate."
         },
+        gcpLengthIdentifier: {
+            name: "identifier",
+            description: "Identifier for which to get the GS1 Company Prefix length."
+        },
         baseIdentifier: {
             name: "baseIdentifier",
             description: "Base identifier."
@@ -177,6 +181,10 @@ export default {
             name: "tweakFactor",
             description: "Tweak factor, used to support the creation of sparse identifiers. The default tweak factor is based on the GS1 Company Prefix, and is usually sufficient for obfuscation. This allows more control over the encryption when higher security is required."
         },
+        identifierType: {
+            name: "identifierType",
+            description: "Identifier type (GTIN, GLN, SSCC, ...)."
+        },
         prefixDefinitionAny: {
             name: "prefixDefinition",
             description: "Prefix definition, either a simple GS1 Company Prefix (as a string) or the result of a call to definePrefix. Any prefix type is supported."
@@ -204,10 +212,6 @@ export default {
         reference: {
             name: "reference",
             description: "Reference portion of identifier."
-        },
-        identifierType: {
-            name: "identifierType",
-            description: "Identifier type (GTIN, GLN, SSCC, ...)."
         },
         hyperlinkText: {
             name: "text",
@@ -487,6 +491,14 @@ export default {
             definePrefix: {
                 name: "definePrefix",
                 description: "Define a prefix for use in GS1 identifier creation functions."
+            },
+            gcpLengthOf: {
+                name: "gcpLengthOf",
+                description: "Get the length of a GS1 Company Prefix for an identifier."
+            },
+            gcpLengthDateTime: {
+                name: "gcpLengthDateTime",
+                description: "Get the date and time the GS1 Company Prefix length data was last updated."
             },
             createGTIN: {
                 name: "createGTIN",
