@@ -14,7 +14,7 @@ import { Generator } from "./generator.js";
  */
 interface ParametersSequencerEntry {
     /**
-     * Parameters sequence or null if automatic.
+     * Parameters sequencer or null if automatic.
      */
     parametersSequencerOrNull: ParametersSequencer | null;
 
@@ -42,7 +42,6 @@ interface ParametersSequencerEntry {
 /**
  * Parameters sequencer for keeping similar (extended) parameters together.
  */
-// TODO Replace with map.
 type ParametersSequencer = Record<string, ParametersSequencerEntry>;
 
 /**
@@ -187,40 +186,43 @@ class LocaleResourcesGenerator extends Generator {
      * @inheritDoc
      */
     protected createProxyFunction(classDescriptor: ClassDescriptor, methodDescriptor: MethodDescriptor): void {
-        // Add any parameters that are not already known.
-        for (const parameterDescriptor of methodDescriptor.parameterDescriptors) {
-            this.#saveParameterSequence(parameterDescriptor, true);
-        }
-
-        let functionsLocaleResources = this.#functionsLocaleResources;
-
-        const namespace = classDescriptor.namespace;
-
-        if (namespace !== undefined) {
-            if (!(namespace in functionsLocaleResources)) {
-                const namespaceFunctionsLocaleResources: LocaleResources = {};
-
-                // Add namespace and navigate to it.
-                functionsLocaleResources[namespace] = namespaceFunctionsLocaleResources;
-                functionsLocaleResources = namespaceFunctionsLocaleResources;
-            } else {
-                // Navigate to namespace.
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Entry is never a string.
-                functionsLocaleResources = functionsLocaleResources[namespace] as LocaleResources;
+        // Hidden functions aren't localized.
+        if (methodDescriptor.isHidden ?? false) {
+            // Add any parameters that are not already known.
+            for (const parameterDescriptor of methodDescriptor.parameterDescriptors) {
+                this.#saveParameterSequence(parameterDescriptor, true);
             }
+
+            let functionsLocaleResources = this.#functionsLocaleResources;
+
+            const namespace = classDescriptor.namespace;
+
+            if (namespace !== undefined) {
+                if (!(namespace in functionsLocaleResources)) {
+                    const namespaceFunctionsLocaleResources: LocaleResources = {};
+
+                    // Add namespace and navigate to it.
+                    functionsLocaleResources[namespace] = namespaceFunctionsLocaleResources;
+                    functionsLocaleResources = namespaceFunctionsLocaleResources;
+                } else {
+                    // Navigate to namespace.
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Entry is never a string.
+                    functionsLocaleResources = functionsLocaleResources[namespace] as LocaleResources;
+                }
+            }
+
+            const functionName = methodDescriptor.functionName;
+
+            if (functionName in functionsLocaleResources) {
+                throw new Error(`Duplicate function ${functionName}`);
+            }
+
+            // Add function.
+            functionsLocaleResources[functionName] = {
+                name: functionName,
+                description: "*** LOCALIZATION REQUIRED ***"
+            };
         }
-
-        const functionName = methodDescriptor.functionName;
-
-        if (functionName in functionsLocaleResources) {
-            throw new Error(`Duplicate function ${functionName}`);
-        }
-
-        // Add function.
-        functionsLocaleResources[functionName] = {
-            name: functionName,
-            description: "*** LOCALIZATION REQUIRED ***"
-        };
     }
 
     /**

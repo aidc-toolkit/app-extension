@@ -108,6 +108,16 @@ export interface MethodDescriptor extends TypeDescriptor {
     readonly requiresContext?: boolean;
 
     /**
+     * If true, function is hidden from user interface.
+     */
+    readonly isHidden?: boolean;
+
+    /**
+     * If true, function is volatile and should be reevaluated regulary.
+     */
+    readonly isVolatile?: boolean;
+
+    /**
      * If true, method infix is ignored.
      */
     readonly ignoreInfix?: boolean;

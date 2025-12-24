@@ -250,4 +250,15 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
 
         return result;
     }
+
+    @proxy.describeMethod({
+        type: Types.String,
+        isHidden: true,
+        isVolatile: true,
+        isMatrix: true,
+        parameterDescriptors: []
+    })
+    loggerMessages(): MatrixResult<string, ThrowError, TError> {
+        return this.iterableResult(() => this.appExtension.loggerMessages);
+    }
 }

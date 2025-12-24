@@ -1,4 +1,5 @@
-import type { Hyperlink, Promisable } from "@aidc-toolkit/core";
+import { getLogger, type Hyperlink, LogLevels, type Promisable } from "@aidc-toolkit/core";
+import type { Logger } from "tslog";
 import type { AppData } from "./app-data.js";
 import { i18nextAppExtension } from "./locale/i18n.js";
 import type { ErrorExtends, MatrixResult, SheetAddress, SheetRange, SingletonResult } from "./type.js";
@@ -30,6 +31,18 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
     static readonly VERSION_NAME = `${AppExtension.APPLICATION_NAME_PREFIX}version`;
 
     /**
+     * Maximum logger messages length. When the number of logger messages reaches this length, the oldest messages are
+     * rotated out.
+     */
+    static readonly #MAXIMUM_LOGGER_MESSAGES_LENGTH = 120;
+
+    /**
+     * Rotate logger messages length. When the number of logger messages reaches the maximum, the logger messages are
+     * trimmed to this length.
+     */
+    static readonly #ROTATE_LOGGER_MESSAGES_LENGTH = 100;
+
+    /**
      * Application version.
      */
     readonly #version: string;
@@ -43,6 +56,16 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * If true, errors are reported through the throw/catch mechanism.
      */
     readonly #throwError: ThrowError;
+
+    /**
+     * Logger.
+     */
+    readonly #logger: Logger<object>;
+
+    /**
+     * Logger messages.
+     */
+    readonly #loggerMessages: string[] = [];
 
     /**
      * Constructor.
@@ -60,6 +83,24 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
         this.#version = version;
         this.#maximumSequenceCount = maximumSequenceCount;
         this.#throwError = throwError;
+
+        // Running in production if version doesn't include a pre-release identifier.
+        const isProduction = !version.includes("-");
+
+        this.#logger = getLogger(isProduction ? LogLevels.Info : LogLevels.Trace, {
+            type: "hidden",
+            hideLogPositionForProduction: isProduction,
+            attachedTransports: [
+                (logObject) => {
+                    // Trim logger messages if necessary.
+                    if (this.#loggerMessages.length === AppExtension.#MAXIMUM_LOGGER_MESSAGES_LENGTH) {
+                        this.#loggerMessages.splice(0, AppExtension.#MAXIMUM_LOGGER_MESSAGES_LENGTH - AppExtension.#ROTATE_LOGGER_MESSAGES_LENGTH);
+                    }
+
+                    this.#loggerMessages.push(JSON.stringify(logObject));
+                }
+            ]
+        });
     }
 
     /**
@@ -88,6 +129,20 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      */
     get throwError(): ThrowError {
         return this.#throwError;
+    }
+
+    /**
+     * Get the logger.
+     */
+    get logger(): Logger<object> {
+        return this.#logger;
+    }
+
+    /**
+     * Get the logger messages.
+     */
+    get loggerMessages(): readonly string[] {
+        return this.#loggerMessages;
     }
 
     /**

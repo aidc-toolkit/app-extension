@@ -1,19 +1,18 @@
 import {
     type AbstractConstructor,
     type Constructor,
-    getLogger,
     type LogLevel,
     LogLevels,
     omit,
     type TypedAbstractConstructor
 } from "@aidc-toolkit/core";
-import type { Logger } from "tslog";
 import type { AppExtension } from "./app-extension.js";
 import type {
     ClassDescriptor,
     ExtendsParameterDescriptor,
     MethodDescriptor,
-    ParameterDescriptor, ReplacementParameterDescriptor
+    ParameterDescriptor,
+    ReplacementParameterDescriptor
 } from "./descriptor.js";
 import { LibProxy } from "./lib-proxy.js";
 import type { ErrorExtends } from "./type.js";
@@ -166,13 +165,6 @@ interface TargetLogger {
  * Proxy class.
  */
 export class Proxy {
-    /**
-     * Logger.
-     */
-    // TODO Add configuration parameter to output JSON.
-    // TODO Change this to LogLevels.Trace when configuration available.
-    readonly #logger: Logger<unknown> = getLogger(LogLevels.Info);
-
     /**
      * Abstract class descriptors map, keyed on declaration class name. Abstract classes are not used directly by target
      * applications.
@@ -420,30 +412,31 @@ export class Proxy {
 
             this.#interim = undefined;
 
-            const logger = this.#logger;
-
             return class extends Target implements TargetLogger {
                 /**
                  * @inheritDoc
                  */
                 log(logLevel: LogLevel, methodName: string, args: unknown[], result: unknown): void {
-                    // // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type hierarchy is known.
-                    // const appExtension = (this as unknown as T).appExtension;
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type hierarchy is known.
+                    const logger = (this as unknown as T).appExtension.logger;
 
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Method name is known to be valid at this point.
-                    const methodDescriptor = methodDescriptorsMap.get(methodName)!;
+                    // Checking log level outside of logger skips expensive object construction.
+                    if (logLevel >= logger.settings.minLevel) {
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Method name is known to be valid at this point.
+                        const methodDescriptor = methodDescriptorsMap.get(methodName)!;
 
-                    logger.log(logLevel, "", JSON.stringify({
-                        namespace: decoratorClassDescriptor.namespace,
-                        className: name,
-                        methodName,
-                        functionName: methodDescriptor.functionName,
-                        parameters: methodDescriptor.parameterDescriptors.map((parameterDescriptor, index) => ({
-                            name: parameterDescriptor.name,
-                            value: Proxy.#jsonValue(args[index])
-                        })),
-                        result: Proxy.#jsonValue(result)
-                    }, null, 2));
+                        logger.log(logLevel, "", {
+                            namespace: decoratorClassDescriptor.namespace,
+                            className: name,
+                            methodName,
+                            functionName: methodDescriptor.functionName,
+                            parameters: methodDescriptor.parameterDescriptors.map((parameterDescriptor, index) => ({
+                                name: parameterDescriptor.name,
+                                value: Proxy.#jsonValue(args[index])
+                            })),
+                            result: Proxy.#jsonValue(result)
+                        });
+                    }
                 }
             };
         };
@@ -500,10 +493,9 @@ export class Proxy {
                 try {
                     result = target.call(this, ...args);
 
-                    // TODO Change this to LogLevels.Trace when configuration available.
-                    targetLogger.log(LogLevels.Info, name, args, result);
+                    targetLogger.log(LogLevels.Trace, name, args, result);
                 } catch (e: unknown) {
-                    targetLogger.log(LogLevels.Error, name, args, e instanceof Error ? `${e.name}: ${e.message}` : `Unknown exception: ${String(e)}`);
+                    targetLogger.log(LogLevels.Error, name, args, e);
 
                     throw e;
                 }
