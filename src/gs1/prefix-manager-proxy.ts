@@ -92,6 +92,8 @@ export class PrefixManagerProxy<ThrowError extends boolean, TError extends Error
 
             if (gcpLengthCacheSharedData?.type === "object" && isGCPLengthCacheData(gcpLengthCacheSharedData.data)) {
                 this.#gcpLengthCacheData = gcpLengthCacheSharedData.data;
+
+                this.appExtension.logger.trace("GS1 Company Prefix length data loaded from shared data");
             } else {
                 // No shared data.
                 this.#gcpLengthCacheData = {
@@ -118,6 +120,8 @@ export class PrefixManagerProxy<ThrowError extends boolean, TError extends Error
                         type: "object",
                         data: gcpLengthCacheData
                     });
+
+                    appExtension.logger.trace("GS1 Company Prefix length data saved to shared data");
                 }
 
                 override getCacheDateTime(): Date | undefined {
@@ -141,8 +145,7 @@ export class PrefixManagerProxy<ThrowError extends boolean, TError extends Error
                 // Try again in ten minutes.
                 gcpLengthCacheData.nextCheckDateTime = new Date(now.getTime() + 10 * 60 * 1000);
 
-                // TODO Swallow error and call AppExtension log function.
-                throw e;
+                this.appExtension.logger.error("Load GS1 Company Prefix length data failed", e);
             });
         }
     }
