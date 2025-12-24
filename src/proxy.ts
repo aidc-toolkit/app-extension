@@ -493,7 +493,10 @@ export class Proxy {
                 try {
                     result = target.call(this, ...args);
 
-                    targetLogger.log(LogLevels.Trace, name, args, result);
+                    // Volatile methods are not logged due to frequency.
+                    if (!(decoratorMethodDescriptor.isVolatile ?? false)) {
+                        targetLogger.log(LogLevels.Trace, name, args, result);
+                    }
                 } catch (e: unknown) {
                     targetLogger.log(LogLevels.Error, name, args, e);
 

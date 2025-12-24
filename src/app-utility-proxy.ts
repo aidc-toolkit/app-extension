@@ -251,6 +251,12 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
         return result;
     }
 
+    /**
+     * Get the logger messages.
+     *
+     * @returns
+     * Logger messages.
+     */
     @proxy.describeMethod({
         type: Types.String,
         isHidden: true,

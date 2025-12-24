@@ -88,7 +88,7 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
         const isProduction = !version.includes("-");
 
         this.#logger = getLogger(isProduction ? LogLevels.Info : LogLevels.Trace, {
-            type: "hidden",
+            type: isProduction ? "hidden" : "pretty",
             hideLogPositionForProduction: isProduction,
             attachedTransports: [
                 (logObject) => {
