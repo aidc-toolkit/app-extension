@@ -226,38 +226,44 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * Decoded application data.
      */
     protected static decodeAppData(stringData: string): AppData | undefined {
-        let appData: AppData | undefined;
+        let appData: AppData | undefined = undefined;
 
-        const [type, data] = stringData.split(":", 2);
+        // First capture group is type, second is data; simple split at ':' character.
+        const stringDataGroups = /^(?<type>\w+):(?<data>.*)$/.exec(stringData)?.groups;
 
-        switch (type) {
-            case "text":
-            case "json":
-                appData = {
-                    type,
-                    data
-                };
-                break;
+        if (stringDataGroups !== undefined) {
+            const type = stringDataGroups["type"];
+            const data = stringDataGroups["data"];
 
-            case "object":
-                appData = {
-                    type: "object",
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type is determined by application mapping.
-                    data: JSON.parse(data, (_key, value: unknown) =>
-                        // Decode strings representing binary arrays and pass through other values unmodified.
-                        typeof value === "string" && value.startsWith("binary:") ?
-                            AppExtension.#decodeBinary(value) :
-                            value
-                    ) as object
-                };
-                break;
+            switch (type) {
+                case "text":
+                case "json":
+                    appData = {
+                        type,
+                        data
+                    };
+                    break;
 
-            case "binary":
-                appData = {
-                    type: "binary",
-                    data: AppExtension.#decodeBinary(data)
-                };
-                break;
+                case "object":
+                    appData = {
+                        type: "object",
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type is determined by application mapping.
+                        data: JSON.parse(data, (_key, value: unknown) =>
+                            // Decode strings representing binary arrays and pass through other values unmodified.
+                            typeof value === "string" && value.startsWith("binary:") ?
+                                AppExtension.#decodeBinary(value) :
+                                value
+                        ) as object
+                    };
+                    break;
+
+                case "binary":
+                    appData = {
+                        type: "binary",
+                        data: AppExtension.#decodeBinary(data)
+                    };
+                    break;
+            }
         }
 
         return appData;
@@ -298,7 +304,7 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
             case "object":
                 stringData = `object:${JSON.stringify(appData.data, (_key, value: unknown) =>
                     // Encode binary arrays as strings and pass through other values unmodified.
-                    typeof value === "object" && value !== null && value instanceof Uint8Array ?
+                    value instanceof Uint8Array ?
                         // There's a very small risk that a string will be passed in this format.
                         AppExtension.#encodeBinary(value) :
                         value
