@@ -55,14 +55,14 @@ interface GCPLengthCacheData {
  * True if data object is GS1 Company Prefix length cache data.
  */
 function isGCPLengthCacheData(data: object): data is GCPLengthCacheData {
-    // Comprehensive check is necessary to guard against data corruption or changes in format.
-    return "nextCheckDateTime" in data && typeof data.nextCheckDateTime === "object" && data.nextCheckDateTime !== null && data.nextCheckDateTime instanceof Date;
+    // Property type check is necessary to guard against data corruption or changes in format.
+    return "nextCheckDateTime" in data && data.nextCheckDateTime instanceof Date;
 }
 
 @proxy.describeClass(false, {
     namespace: "GS1"
 })
-export class PrefixManagerProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+export class PrefixManagerProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
     /**
      * GS1 Company Prefix length data property name.
      */
@@ -155,13 +155,13 @@ export class PrefixManagerProxy<ThrowError extends boolean, TError extends Error
         isMatrix: true,
         parameterDescriptors: [identifierTypeParameterDescriptor, gcpLengthIdentifierParameterDescriptor]
     })
-    async gcpLengthOf(identifierType: string, matrixIdentifiers: Matrix<string>): Promise<MatrixResult<number, ThrowError, TError>> {
+    async gcpLength(identifierType: string, matrixIdentifiers: Matrix<string>): Promise<MatrixResult<number, ThrowError, TError>> {
         await this.#loadGCPLengthData();
 
         return this.setUpMatrixResult(() =>
             validateIdentifierType(identifierType),
         matrixIdentifiers, (validatedIdentifierType, identifier) =>
-            PrefixManager.gcpLengthOf(validatedIdentifierType, identifier)
+            PrefixManager.gcpLength(validatedIdentifierType, identifier)
         );
     }
 

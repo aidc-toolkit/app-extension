@@ -492,7 +492,7 @@ export default {
                 name: "definisserPrefixe",
                 description: "Définisser un préfixe à utiliser dans les fonctions de création de clé d'identification GS1."
             },
-            gcpLengthOf: {
+            gcpLength: {
                 name: "longueurGCPDe",
                 description: "Obtenez la longueur du préfixe d'entreprise GS1 pour un identifiant."
             },

@@ -492,8 +492,8 @@ export default {
                 name: "definePrefix",
                 description: "Define a prefix for use in GS1 identifier creation functions."
             },
-            gcpLengthOf: {
-                name: "gcpLengthOf",
+            gcpLength: {
+                name: "gcpLength",
                 description: "Get the length of a GS1 Company Prefix for an identifier."
             },
             gcpLengthDateTime: {
