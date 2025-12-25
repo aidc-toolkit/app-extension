@@ -1,11 +1,11 @@
 import {
     type AbstractConstructor,
     type Constructor,
-    type LogLevel,
-    LogLevels,
+    loggableValue,
     omit,
     type TypedAbstractConstructor
 } from "@aidc-toolkit/core";
+import type { Logger } from "tslog";
 import type { AppExtension } from "./app-extension.js";
 import type {
     ClassDescriptor,
@@ -144,10 +144,12 @@ interface Interim {
  */
 interface TargetLogger {
     /**
-     * Log a method call.
-     *
-     * @param logLevel
-     * Log level.
+     * Logger.
+     */
+    readonly logger: Logger<object>;
+
+    /**
+     * Build a function that returns a loggable value for a method call.
      *
      * @param methodName
      * Method name.
@@ -158,7 +160,7 @@ interface TargetLogger {
      * @param result
      * Output result.
      */
-    log: (logLevel: LogLevel, methodName: string, args: unknown[], result: unknown) => void;
+    callBuilder: (methodName: string, args: unknown[], result: unknown) => () => unknown;
 }
 
 /**
@@ -180,50 +182,6 @@ export class Proxy {
      * Interim object.
      */
     #interim: Interim | undefined = undefined;
-
-    /**
-     * Get the proper JSON representation of a value.
-     *
-     * @param value
-     * Value.
-     *
-     * @returns
-     * Replacement value.
-     */
-    static #jsonValue(value: unknown): unknown {
-        let replacementValue: unknown;
-
-        switch (typeof value) {
-            case "string":
-            case "number":
-            case "boolean":
-            case "undefined":
-                replacementValue = value;
-                break;
-
-            case "bigint":
-                // Big integers not supported in JSON.
-                replacementValue = value >= Number.MIN_SAFE_INTEGER && value <= Number.MAX_SAFE_INTEGER ? Number(value) : value.toString(10);
-                break;
-
-            case "object":
-                if (value === null) {
-                    replacementValue = value;
-                } else if (Array.isArray(value)) {
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- Slicing array is necessary to keep log size down.
-                    replacementValue = (value.length <= 10 ? value : [...value.slice(0, 3), "...", ...value.slice(-3)]).map(entry => Proxy.#jsonValue(entry));
-                } else {
-                    replacementValue = Object.fromEntries(Object.entries(value).map(([k, v]) => [k, Proxy.#jsonValue(v)]));
-                }
-                break;
-
-            case "symbol":
-            case "function":
-                throw new Error(`Unsupported ${typeof value} value type`);
-        }
-
-        return replacementValue;
-    }
 
     /**
      * Describe a proxy class.
@@ -414,29 +372,33 @@ export class Proxy {
 
             return class extends Target implements TargetLogger {
                 /**
+                 * Get the logger.
+                 */
+                get logger(): Logger<object> {
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type hierarchy is known.
+                    return (this as unknown as T).appExtension.logger;
+                }
+
+                /**
                  * @inheritDoc
                  */
-                log(logLevel: LogLevel, methodName: string, args: unknown[], result: unknown): void {
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type hierarchy is known.
-                    const logger = (this as unknown as T).appExtension.logger;
-
-                    // Checking log level outside of logger skips expensive object construction.
-                    if (logLevel >= logger.settings.minLevel) {
+                callBuilder(methodName: string, args: unknown[], result: unknown): () => unknown {
+                    return () => {
                         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Method name is known to be valid at this point.
                         const methodDescriptor = methodDescriptorsMap.get(methodName)!;
 
-                        logger.log(logLevel, "", {
+                        return {
                             namespace: decoratorClassDescriptor.namespace,
                             className: name,
                             methodName,
                             functionName: methodDescriptor.functionName,
                             parameters: methodDescriptor.parameterDescriptors.map((parameterDescriptor, index) => ({
                                 name: parameterDescriptor.name,
-                                value: Proxy.#jsonValue(args[index])
+                                value: loggableValue(args[index])
                             })),
-                            result: Proxy.#jsonValue(result)
-                        });
-                    }
+                            result: loggableValue(result)
+                        };
+                    };
                 }
             };
         };
@@ -495,10 +457,23 @@ export class Proxy {
 
                     // Volatile methods are not logged due to frequency.
                     if (!(decoratorMethodDescriptor.isVolatile ?? false)) {
-                        targetLogger.log(LogLevels.Trace, name, args, result);
+                        if (!(result instanceof Promise)) {
+                            targetLogger.logger.trace(targetLogger.callBuilder(name, args, result));
+                        } else {
+                            // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Promise interception pattern.
+                            result = result.then((promisedResult: unknown) => {
+                                targetLogger.logger.trace(targetLogger.callBuilder(name, args, promisedResult));
+
+                                return promisedResult;
+                            }).catch((e: unknown) => {
+                                targetLogger.logger.error(targetLogger.callBuilder(name, args, e));
+
+                                throw e;
+                            }) as TReturn;
+                        }
                     }
                 } catch (e: unknown) {
-                    targetLogger.log(LogLevels.Error, name, args, e);
+                    targetLogger.logger.error(targetLogger.callBuilder(name, args, e));
 
                     throw e;
                 }
