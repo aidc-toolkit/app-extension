@@ -27,8 +27,8 @@ import {
         }
     ]
 })
-export class GTINCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt, GTINType, GTINCreator> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
+export class GTINCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, GTINType, GTINCreator> {
+    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
         super(appExtension, prefixManager => prefixManager.gtinCreator);
     }
 

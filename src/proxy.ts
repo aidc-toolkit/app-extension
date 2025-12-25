@@ -37,13 +37,13 @@ type RemainingConstructorParameters<TConstructor extends TypedAbstractConstructo
  * Proxy class constructor type.
  */
 type ProxyClassConstructor<
-    ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt,
-    T extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt>,
+    ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt,
+    T extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>,
     IsAbstract extends boolean,
     TConstructor extends TypedAbstractConstructor<TConstructor>
 > = IsAbstract extends true ?
-    AbstractConstructor<[appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>, ...args: RemainingConstructorParameters<TConstructor>], T> :
-    Constructor<[appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>], T>;
+    AbstractConstructor<[appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>, ...args: RemainingConstructorParameters<TConstructor>], T> :
+    Constructor<[appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>], T>;
 
 /**
  * Class decorator type. Defines the parameters passed to a class decorator function and the return type as identical to
@@ -62,11 +62,11 @@ type ProxyClassConstructor<
  * Narrowed proxy class constructor type.
  */
 type ClassDecorator<
-    ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt,
-    T extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt>,
+    ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt,
+    T extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>,
     IsAbstract extends boolean,
     TConstructor extends TypedAbstractConstructor<TConstructor>,
-    TProxyClassConstructor extends ProxyClassConstructor<ThrowError, TError, TInvocationContext, TBigInt, T, IsAbstract, TConstructor>
+    TProxyClassConstructor extends ProxyClassConstructor<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, T, IsAbstract, TConstructor>
 > = (Target: TProxyClassConstructor, context: ClassDecoratorContext<TProxyClassConstructor>) => TProxyClassConstructor;
 
 /**
@@ -208,12 +208,12 @@ export class Proxy {
      * Function with which to decorate the class.
      */
     describeClass<
-        ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt,
-        T extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt>,
+        ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt,
+        T extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>,
         IsAbstract extends boolean,
         TConstructor extends TypedAbstractConstructor<TConstructor>,
-        TProxyClassConstructor extends ProxyClassConstructor<ThrowError, TError, TInvocationContext, TBigInt, T, IsAbstract, TConstructor>
-    >(isAbstract: IsAbstract, decoratorClassDescriptor: DecoratorClassDescriptor = {}): ClassDecorator<ThrowError, TError, TInvocationContext, TBigInt, T, IsAbstract, TConstructor, TProxyClassConstructor> {
+        TProxyClassConstructor extends ProxyClassConstructor<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, T, IsAbstract, TConstructor>
+    >(isAbstract: IsAbstract, decoratorClassDescriptor: DecoratorClassDescriptor = {}): ClassDecorator<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, T, IsAbstract, TConstructor, TProxyClassConstructor> {
         const interimClassDescriptor: InterimClassDescriptor = decoratorClassDescriptor.replacementParameterDescriptors === undefined ?
             omit(decoratorClassDescriptor, "replacementParameterDescriptors") :
             {
@@ -455,8 +455,8 @@ export class Proxy {
                 try {
                     result = target.call(this, ...args);
 
-                    // Volatile methods are not logged due to frequency.
-                    if (!(decoratorMethodDescriptor.isVolatile ?? false)) {
+                    // Stream methods are responsible for their own logging.
+                    if (!(decoratorMethodDescriptor.isStream ?? false)) {
                         if (!(result instanceof Promise)) {
                             targetLogger.logger.trace(targetLogger.callBuilder(name, args, result));
                         } else {

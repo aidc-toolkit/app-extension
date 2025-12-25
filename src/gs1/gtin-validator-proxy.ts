@@ -13,8 +13,8 @@ import { GTINValidatorProxy } from "./identifier-validator-proxy.js";
     namespace: "GS1",
     methodInfix: "GTIN13"
 })
-export class GTIN13ValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends GTINValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
+export class GTIN13ValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends GTINValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
         super(appExtension, IdentifierValidators.GTIN[GTINLengths.GTIN13]);
     }
 }
@@ -23,8 +23,8 @@ export class GTIN13ValidatorProxy<ThrowError extends boolean, TError extends Err
     namespace: "GS1",
     methodInfix: "GTIN12"
 })
-export class GTIN12ValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends GTINValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
+export class GTIN12ValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends GTINValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
         super(appExtension, IdentifierValidators.GTIN[GTINLengths.GTIN12]);
     }
 }
@@ -33,8 +33,8 @@ export class GTIN12ValidatorProxy<ThrowError extends boolean, TError extends Err
     namespace: "GS1",
     methodInfix: "GTIN8"
 })
-export class GTIN8ValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends GTINValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
+export class GTIN8ValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends GTINValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
         super(appExtension, IdentifierValidators.GTIN[GTINLengths.GTIN8]);
     }
 }
@@ -86,7 +86,7 @@ const rcnParameterDescriptor: ParameterDescriptor = {
 @proxy.describeClass(false, {
     namespace: "GS1"
 })
-export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
     @proxy.describeMethod({
         type: Types.String,
         isMatrix: true,

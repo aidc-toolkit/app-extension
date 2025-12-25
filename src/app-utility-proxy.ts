@@ -1,4 +1,4 @@
-import { isNullish, type NonNullishable, type Nullishable } from "@aidc-toolkit/core";
+import { isNullish, type LogLevel, logLevelOf, type NonNullishable, type Nullishable } from "@aidc-toolkit/core";
 import { type ExtendsParameterDescriptor, type ParameterDescriptor, Types } from "./descriptor.js";
 import { LibProxy } from "./lib-proxy.js";
 import { i18nextAppExtension } from "./locale/i18n.js";
@@ -49,7 +49,7 @@ interface MaximumDimensions {
 /**
  * Application utilities.
  *
- *@template ThrowError
+ * @template ThrowError
  * If true, errors are reported through the throw/catch mechanism.
  *
  * @template TError
@@ -58,11 +58,14 @@ interface MaximumDimensions {
  * @template TInvocationContext
  * Application-specific invocation context type.
  *
+ * @template TStreamingInvocationContext
+ * Application-specific streaming invocation context type.
+ * 
  * @template TBigInt
  * Type to which big integer is mapped.
  */
 @proxy.describeClass(false)
-export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
     /**
      * Get the version.
      *
@@ -252,19 +255,65 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
     }
 
     /**
-     * Get the logger messages.
+     * Get the logger messages as a stream.
      *
-     * @returns
-     * Logger messages.
+     * @param logLevelString
+     * Log level as string.
+     *
+     * @param streamingInvocationContext
+     * Streaming invocation context.
      */
     @proxy.describeMethod({
         type: Types.String,
         isHidden: true,
-        isVolatile: true,
+        isStream: true,
         isMatrix: true,
-        parameterDescriptors: []
+        parameterDescriptors: [{
+            name: "logLevel",
+            type: Types.String,
+            isMatrix: false,
+            isRequired: false
+        }]
     })
-    loggerMessages(): MatrixResult<string, ThrowError, TError> {
-        return this.iterableResult(() => this.appExtension.loggerMessages);
+    loggerMessages(logLevelString: Nullishable<string>, streamingInvocationContext: Nullishable<TStreamingInvocationContext>): void {
+        if (isNullish(streamingInvocationContext)) {
+            // Application error; no localization necessary.
+            throw new Error("Streaming invocation context not provided by application");
+        }
+
+        const appExtension = this.appExtension;
+
+        let previousLogLevel: number | undefined = undefined;
+
+        const streamingConsumerCallback = appExtension.setUpStreaming<string>(streamingInvocationContext, () => {
+            if (previousLogLevel !== undefined) {
+                appExtension.logger.settings.minLevel = previousLogLevel;
+            }
+
+            appExtension.memoryTransport.removeNotificationCallback("loggerMessages");
+        });
+
+        if (appExtension.memoryTransport.addNotificationCallback("loggerMessages", (_message, messages) => {
+            streamingConsumerCallback(this.iterableResult(() => messages));
+        })) {
+            let logLevel: LogLevel | undefined = undefined;
+
+            if (!isNullish(logLevelString)) {
+                try {
+                    logLevel = logLevelOf(logLevelString);
+                } catch {
+                    // Ignore error.
+                }
+            }
+
+            // Set log level if required.
+            if (logLevel !== undefined) {
+                previousLogLevel = appExtension.logger.settings.minLevel;
+                appExtension.logger.settings.minLevel = logLevel;
+            }
+        } else {
+            // Diagnostic tool; localization not required.
+            streamingConsumerCallback([["Only one logger messages call allowable per workbook"]]);
+        }
     }
 }

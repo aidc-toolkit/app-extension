@@ -113,9 +113,14 @@ export interface MethodDescriptor extends TypeDescriptor {
     readonly isHidden?: boolean;
 
     /**
-     * If true, function is volatile and should be reevaluated regulary.
+     * If true, function is volatile and should be reevaluated regularly.
      */
     readonly isVolatile?: boolean;
+
+    /**
+     * If true, function opens a stream that updates asynchronously.
+     */
+    readonly isStream?: boolean;
 
     /**
      * If true, method infix is ignored.

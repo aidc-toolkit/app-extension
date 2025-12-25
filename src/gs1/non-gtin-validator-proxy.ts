@@ -12,8 +12,8 @@ import {
     namespace: "GS1",
     methodInfix: "GLN"
 })
-export class GLNValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonSerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
+export class GLNValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonSerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
         super(appExtension, IdentifierValidators.GLN);
     }
 }
@@ -22,8 +22,8 @@ export class GLNValidatorProxy<ThrowError extends boolean, TError extends ErrorE
     namespace: "GS1",
     methodInfix: "SSCC"
 })
-export class SSCCValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonSerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
+export class SSCCValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonSerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
         super(appExtension, IdentifierValidators.SSCC);
     }
 }
@@ -32,8 +32,8 @@ export class SSCCValidatorProxy<ThrowError extends boolean, TError extends Error
     namespace: "GS1",
     methodInfix: "GRAI"
 })
-export class GRAIValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends SerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
+export class GRAIValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends SerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
         super(appExtension, IdentifierValidators.GRAI);
     }
 }
@@ -42,8 +42,8 @@ export class GRAIValidatorProxy<ThrowError extends boolean, TError extends Error
     namespace: "GS1",
     methodInfix: "GIAI"
 })
-export class GIAIValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
+export class GIAIValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
         super(appExtension, IdentifierValidators.GIAI);
     }
 }
@@ -52,8 +52,8 @@ export class GIAIValidatorProxy<ThrowError extends boolean, TError extends Error
     namespace: "GS1",
     methodInfix: "GSRN"
 })
-export class GSRNValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonSerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
+export class GSRNValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonSerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
         super(appExtension, IdentifierValidators.GSRN);
     }
 }
@@ -62,8 +62,8 @@ export class GSRNValidatorProxy<ThrowError extends boolean, TError extends Error
     namespace: "GS1",
     methodInfix: "GDTI"
 })
-export class GDTIValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends SerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
+export class GDTIValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends SerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
         super(appExtension, IdentifierValidators.GDTI);
     }
 }
@@ -72,8 +72,8 @@ export class GDTIValidatorProxy<ThrowError extends boolean, TError extends Error
     namespace: "GS1",
     methodInfix: "GINC"
 })
-export class GINCValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
+export class GINCValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
         super(appExtension, IdentifierValidators.GINC);
     }
 }
@@ -82,8 +82,8 @@ export class GINCValidatorProxy<ThrowError extends boolean, TError extends Error
     namespace: "GS1",
     methodInfix: "GSIN"
 })
-export class GSINValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonSerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
+export class GSINValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonSerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
         super(appExtension, IdentifierValidators.GSIN);
     }
 }
@@ -92,8 +92,8 @@ export class GSINValidatorProxy<ThrowError extends boolean, TError extends Error
     namespace: "GS1",
     methodInfix: "GCN"
 })
-export class GCNValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends SerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
+export class GCNValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends SerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
         super(appExtension, IdentifierValidators.GCN);
     }
 }
@@ -102,8 +102,8 @@ export class GCNValidatorProxy<ThrowError extends boolean, TError extends ErrorE
     namespace: "GS1",
     methodInfix: "CPID"
 })
-export class CPIDValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
+export class CPIDValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
         super(appExtension, IdentifierValidators.CPID);
     }
 }
@@ -112,8 +112,8 @@ export class CPIDValidatorProxy<ThrowError extends boolean, TError extends Error
     namespace: "GS1",
     methodInfix: "GMN"
 })
-export class GMNValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends NonNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
+export class GMNValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
         super(appExtension, IdentifierValidators.GMN);
     }
 }

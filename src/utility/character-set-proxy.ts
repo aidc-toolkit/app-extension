@@ -41,10 +41,10 @@ const valueForSParameterDescriptor: ExtendsParameterDescriptor = {
 };
 
 @proxy.describeClass(true)
-export abstract class CharacterSetValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends StringProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+export abstract class CharacterSetValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends StringProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
     readonly #characterSetValidator: CharacterSetValidator;
 
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>, characterSetValidator: CharacterSetValidator) {
+    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>, characterSetValidator: CharacterSetValidator) {
         super(appExtension);
 
         this.#characterSetValidator = characterSetValidator;
@@ -72,10 +72,10 @@ export abstract class CharacterSetValidatorProxy<ThrowError extends boolean, TEr
 }
 
 @proxy.describeClass(true)
-export abstract class CharacterSetCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends CharacterSetValidatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+export abstract class CharacterSetCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends CharacterSetValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
     readonly #characterSetCreator: CharacterSetCreator;
 
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>, characterSetCreator: CharacterSetCreator) {
+    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>, characterSetCreator: CharacterSetCreator) {
         super(appExtension, characterSetCreator);
 
         this.#characterSetCreator = characterSetCreator;
@@ -136,8 +136,8 @@ export abstract class CharacterSetCreatorProxy<ThrowError extends boolean, TErro
         }
     ]
 })
-export class NumericProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends CharacterSetCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
+export class NumericProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends CharacterSetCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
         super(appExtension, NUMERIC_CREATOR);
     }
 }
@@ -151,8 +151,8 @@ export class NumericProxy<ThrowError extends boolean, TError extends ErrorExtend
         }
     ]
 })
-export class HexadecimalProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends CharacterSetCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
+export class HexadecimalProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends CharacterSetCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
         super(appExtension, HEXADECIMAL_CREATOR);
     }
 }
@@ -160,8 +160,8 @@ export class HexadecimalProxy<ThrowError extends boolean, TError extends ErrorEx
 @proxy.describeClass(false, {
     methodInfix: "Alphabetic"
 })
-export class AlphabeticProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends CharacterSetCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
+export class AlphabeticProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends CharacterSetCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
         super(appExtension, ALPHABETIC_CREATOR);
     }
 }
@@ -175,8 +175,8 @@ export class AlphabeticProxy<ThrowError extends boolean, TError extends ErrorExt
         }
     ]
 })
-export class AlphanumericProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends CharacterSetCreatorProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
+export class AlphanumericProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends CharacterSetCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
         super(appExtension, ALPHANUMERIC_CREATOR);
     }
 }

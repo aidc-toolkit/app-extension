@@ -15,14 +15,17 @@ import type { ErrorExtends, Matrix, MatrixResult, SingletonResult } from "./type
  * @template TInvocationContext
  * Application-specific invocation context type.
  *
+ * @template TStreamingInvocationContext
+ * Application-specific streaming invocation context type.
+ * 
  * @template TBigInt
  * Type to which big integer is mapped.
  */
-export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> {
+export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> {
     /**
      * Application extension.
      */
-    readonly #appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>;
+    readonly #appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>;
 
     /**
      * Constructor.
@@ -30,14 +33,14 @@ export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorE
      * @param appExtension
      * Application extension.
      */
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TBigInt>) {
+    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
         this.#appExtension = appExtension;
     }
 
     /**
      * Get the application extension.
      */
-    get appExtension(): AppExtension<ThrowError, TError, TInvocationContext, TBigInt> {
+    get appExtension(): AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
         return this.#appExtension;
     }
 

@@ -23,7 +23,7 @@ const errorMessageParameterDescriptor: ParameterDescriptor = {
 @proxy.describeClass(false, {
     methodInfix: "RegExp"
 })
-export class RegExpProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends StringProxy<ThrowError, TError, TInvocationContext, TBigInt> {
+export class RegExpProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends StringProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
     @proxy.describeMethod({
         type: Types.String,
         isMatrix: true,

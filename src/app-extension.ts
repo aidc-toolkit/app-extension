@@ -1,7 +1,8 @@
-import { getLogger, type Hyperlink, LogLevels, type Promisable } from "@aidc-toolkit/core";
+import { getLogger, type Hyperlink, LogLevels, MemoryTransport, type Promisable } from "@aidc-toolkit/core";
 import type { Logger } from "tslog";
 import type { AppData } from "./app-data.js";
 import { i18nextAppExtension } from "./locale/i18n.js";
+import type { StreamingCancelledCallback, StreamingConsumerCallback } from "./streaming.js";
 import type { ErrorExtends, MatrixResult, SheetAddress, SheetRange, SingletonResult } from "./type.js";
 
 /**
@@ -16,10 +17,13 @@ import type { ErrorExtends, MatrixResult, SheetAddress, SheetRange, SingletonRes
  * @template TInvocationContext
  * Application-specific invocation context type.
  *
+ * @template TStreamingInvocationContext
+ * Application-specific streaming invocation context type.
+ *
  * @template TBigInt
  * Type to which big integer is mapped.
  */
-export abstract class AppExtension<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> {
+export abstract class AppExtension<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> {
     /**
      * Application name prefix for properties and application data.
      */
@@ -31,16 +35,14 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
     static readonly VERSION_NAME = `${AppExtension.APPLICATION_NAME_PREFIX}version`;
 
     /**
-     * Maximum logger messages length. When the number of logger messages reaches this length, the oldest messages are
-     * rotated out.
+     * Maximum logger messages length.
      */
     static readonly #MAXIMUM_LOGGER_MESSAGES_LENGTH = 120;
 
     /**
-     * Rotate logger messages length. When the number of logger messages reaches the maximum, the logger messages are
-     * trimmed to this length.
+     * Truncate logger messages length.
      */
-    static readonly #ROTATE_LOGGER_MESSAGES_LENGTH = 100;
+    static readonly #TRUNCATE_LOGGER_MESSAGES_LENGTH = 100;
 
     /**
      * Application version.
@@ -63,9 +65,9 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
     readonly #logger: Logger<object>;
 
     /**
-     * Logger messages.
+     * Logger memory transport.
      */
-    readonly #loggerMessages: string[] = [];
+    readonly #memoryTransport: MemoryTransport<object>;
 
     /**
      * Constructor.
@@ -89,18 +91,10 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
 
         this.#logger = getLogger(isProduction ? LogLevels.Info : LogLevels.Trace, {
             type: isProduction ? "hidden" : "pretty",
-            hideLogPositionForProduction: isProduction,
-            attachedTransports: [
-                (logObject) => {
-                    // Trim logger messages if necessary.
-                    if (this.#loggerMessages.length === AppExtension.#MAXIMUM_LOGGER_MESSAGES_LENGTH) {
-                        this.#loggerMessages.splice(0, AppExtension.#MAXIMUM_LOGGER_MESSAGES_LENGTH - AppExtension.#ROTATE_LOGGER_MESSAGES_LENGTH);
-                    }
-
-                    this.#loggerMessages.push(JSON.stringify(logObject));
-                }
-            ]
+            hideLogPositionForProduction: isProduction
         });
+
+        this.#memoryTransport = new MemoryTransport(this.#logger, AppExtension.#MAXIMUM_LOGGER_MESSAGES_LENGTH, AppExtension.#TRUNCATE_LOGGER_MESSAGES_LENGTH);
     }
 
     /**
@@ -139,10 +133,10 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
     }
 
     /**
-     * Get the logger messages.
+     * Get the logger memory transport.
      */
-    get loggerMessages(): readonly string[] {
-        return this.#loggerMessages;
+    get memoryTransport(): MemoryTransport<object> {
+        return this.#memoryTransport;
     }
 
     /**
@@ -179,6 +173,20 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * Sheet range or null if parameter is not a range.
      */
     abstract getParameterSheetRange(invocationContext: TInvocationContext, parameterNumber: number): Promisable<SheetRange | null>;
+
+    /**
+     * Set up streaming for a streaming function.
+     *
+     * @param streamingInvocationContext
+     * Streaming invocation context.
+     *
+     * @param streamingCancelledCallback
+     * Streaming cancelled callback, called when streaming is cancelled.
+     *
+     * @returns
+     * Streaming consumer callback, called when stream contents updated.
+     */
+    abstract setUpStreaming<TResult>(streamingInvocationContext: TStreamingInvocationContext, streamingCancelledCallback: StreamingCancelledCallback): StreamingConsumerCallback<TResult, ThrowError, TError>;
 
     /**
      * Get a property stored within the active file.
