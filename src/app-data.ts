@@ -12,35 +12,44 @@ export type AppData = string | number | boolean | Date | Uint8Array | object;
  * @returns
  * Decoded application data.
  */
-export function decodeAppData(stringData: string): AppData {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Mapping is expected to be correct.
-    return JSON.parse(stringData, (_key, value: unknown) => {
-        let replacementValue = value;
+export function decodeAppData(stringData: string): AppData | undefined {
+    let decodedAppData: AppData | undefined;
 
-        // Decode string representing date/time and binary array and pass through other values unmodified.
-        if (typeof value === "string") {
-            // First capture group is type, second is data; simple split at ':' character.
-            const stringDataGroups = /^(?<type>\w+):(?<data>.*)$/.exec(value)?.groups;
+    try {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Mapping is expected to be correct.
+        decodedAppData = JSON.parse(stringData, (_key, value: unknown) => {
+            let replacementValue = value;
 
-            if (stringDataGroups !== undefined) {
-                const type = stringDataGroups["type"];
-                const data = stringDataGroups["data"];
+            // Decode string representing date/time and binary array and pass through other values unmodified.
+            if (typeof value === "string") {
+                // First capture group is type, second is data; simple split at ':' character.
+                const stringDataGroups = /^(?<type>\w+):(?<data>.*)$/.exec(value)?.groups;
 
-                switch (type) {
-                    case "dateTime":
-                        replacementValue = new Date(data);
-                        break;
+                if (stringDataGroups !== undefined) {
+                    const type = stringDataGroups["type"];
+                    const data = stringDataGroups["data"];
 
-                    case "binary":
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Index 0 is always valid.
-                        replacementValue = new Uint8Array(atob(data).split("").map(char => char.codePointAt(0)!));
-                        break;
+                    switch (type) {
+                        case "dateTime":
+                            replacementValue = new Date(data);
+                            break;
+
+                        case "binary":
+                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Index 0 is always valid.
+                            replacementValue = new Uint8Array(atob(data).split("").map(char => char.codePointAt(0)!));
+                            break;
+                    }
                 }
             }
-        }
 
-        return replacementValue;
-    }) as AppData;
+            return replacementValue;
+        }) as AppData;
+    } catch {
+        // String data is not valid JSON; discard it.
+        decodedAppData = undefined;
+    }
+
+    return decodedAppData;
 }
 
 /**
