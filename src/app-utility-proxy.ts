@@ -283,19 +283,24 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
 
         const appExtension = this.appExtension;
 
+        let notificationCallbackAdded = false;
         let previousLogLevel: number | undefined = undefined;
 
         const streamingConsumerCallback = appExtension.setUpStreaming<string>(streamingInvocationContext, () => {
+            if (notificationCallbackAdded) {
+                appExtension.memoryTransport.removeNotificationCallback("loggerMessages");
+            }
+
             if (previousLogLevel !== undefined) {
                 appExtension.logger.settings.minLevel = previousLogLevel;
             }
-
-            appExtension.memoryTransport.removeNotificationCallback("loggerMessages");
         });
 
         if (appExtension.memoryTransport.addNotificationCallback("loggerMessages", (_message, messages) => {
             streamingConsumerCallback(this.iterableResult(() => messages));
         })) {
+            notificationCallbackAdded = true;
+
             let logLevel: LogLevel | undefined = undefined;
 
             if (!isNullish(logLevelString)) {
