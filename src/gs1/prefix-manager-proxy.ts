@@ -39,7 +39,7 @@ const gcpLengthIdentifierParameterDescriptor: ExtendsParameterDescriptor = {
  * GS1 Company Prefix length cache data.
  */
 interface GCPLengthCacheData {
-    nextCheckDateTime: Date;
+    nextCheckDateTime: Date | undefined;
 
     cacheDateTime: Date | undefined;
 
@@ -68,7 +68,7 @@ class AppExtensionGCPLengthCache<ThrowError extends boolean, TError extends Erro
 
     readonly #appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>;
 
-    #nextCheckDateTime!: Date;
+    #nextCheckDateTime?: Date | undefined;
 
     #cacheDateTime?: Date | undefined;
 
@@ -81,8 +81,6 @@ class AppExtensionGCPLengthCache<ThrowError extends boolean, TError extends Erro
     }
     
     async initialize(): Promise<void> {
-        const now = new Date();
-
         const gcpLengthCacheAppData = await this.#appExtension.getSharedData(AppExtensionGCPLengthCache.#GCP_LENGTH_DATA_NAME);
 
         if (isGCPLengthCacheData(gcpLengthCacheAppData)) {
@@ -91,14 +89,11 @@ class AppExtensionGCPLengthCache<ThrowError extends boolean, TError extends Erro
             this.#cacheData = gcpLengthCacheAppData.cacheData;
 
             this.#appExtension.logger.trace("GS1 Company Prefix length data loaded from shared data");
-        } else {
-            // No shared data.
-            this.#nextCheckDateTime = now;
         }
     }
 
-    getNextCheckDateTime(): Date {
-        this.#appExtension.logger.debug(`GS1 Company Prefix length next check date/time ${this.#nextCheckDateTime.toISOString()}`);
+    getNextCheckDateTime(): Date | undefined {
+        this.#appExtension.logger.debug(`GS1 Company Prefix length next check date/time ${this.#nextCheckDateTime?.toISOString()}`);
 
         return this.#nextCheckDateTime;
     }
@@ -173,8 +168,6 @@ export class PrefixManagerProxy<ThrowError extends boolean, TError extends Error
      * Load GS1 Company Prefix length data.
      */
     async #loadGCPLengthData(): Promise<void> {
-        const now = new Date();
-
         const appExtension = this.appExtension;
 
         if (this.#gcpLengthCache === undefined) {
@@ -187,7 +180,10 @@ export class PrefixManagerProxy<ThrowError extends boolean, TError extends Error
 
         await PrefixManager.loadGCPLengthData(gcpLengthCache).catch(async (e: unknown) => {
             // Try again in ten minutes.
-            await gcpLengthCache.setNextCheckDateTime(new Date(now.getTime() + 10 * 60 * 1000));
+            const nowPlus10Minutes = new Date();
+            nowPlus10Minutes.setMinutes(nowPlus10Minutes.getMinutes() + 10);
+
+            await gcpLengthCache.setNextCheckDateTime(nowPlus10Minutes);
 
             appExtension.logger.error("Load GS1 Company Prefix length data failed", e);
         });
