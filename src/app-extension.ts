@@ -89,7 +89,7 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
         // Running in production if version doesn't include a pre-release identifier.
         const isProduction = !version.includes("-");
 
-        this.#logger = getLogger(isProduction ? LogLevels.Info : LogLevels.Trace, {
+        this.#logger = getLogger(isProduction ? LogLevels.Info : LogLevels.Debug, {
             type: isProduction ? "hidden" : "pretty",
             hideLogPositionForProduction: isProduction
         });
