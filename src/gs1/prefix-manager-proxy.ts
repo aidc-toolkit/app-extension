@@ -39,24 +39,35 @@ const gcpLengthIdentifierParameterDescriptor: ExtendsParameterDescriptor = {
  */
 interface GCPLengthCacheData {
     nextCheckDateTime: Date;
-    
-    cacheDateTime?: Date;
-    
-    cacheData?: Uint8Array;
+
+    cacheDateTime: Date | undefined;
+
+    cacheData: Uint8Array | undefined;
 }
 
 /**
- * Determine if data object is GS1 Company Prefix length cache data.
+ * GS1 Company Prefix length cache shared data.
+ */
+interface GCPLengthCacheSharedData {
+    nextCheckDateTimeString: string;
+
+    cacheDateTimeString: string | undefined;
+
+    cacheData: Uint8Array | undefined;
+}
+
+/**
+ * Determine if data object is GS1 Company Prefix length cache shared data.
  *
  * @param data
  * Data object.
  *
  * @returns
- * True if data object is GS1 Company Prefix length cache data.
+ * True if data object is GS1 Company Prefix length cache shared data.
  */
-function isGCPLengthCacheData(data: object): data is GCPLengthCacheData {
+function isGCPLengthCacheSharedData(data: object): data is GCPLengthCacheSharedData {
     // Property type check is necessary to guard against data corruption or changes in format.
-    return "nextCheckDateTime" in data && data.nextCheckDateTime instanceof Date;
+    return "nextCheckDateTimeString" in data && typeof data.nextCheckDateTimeString === "string";
 }
 
 @proxy.describeClass(false, {
@@ -88,16 +99,22 @@ export class PrefixManagerProxy<ThrowError extends boolean, TError extends Error
 
         // Restore from shared data if available on first pass.
         if (this.#gcpLengthCacheData === undefined) {
-            const gcpLengthCacheSharedData = await this.appExtension.getSharedData(PrefixManagerProxy.#GCP_LENGTH_DATA_NAME);
+            const gcpLengthCacheAppData = await this.appExtension.getSharedData(PrefixManagerProxy.#GCP_LENGTH_DATA_NAME);
 
-            if (gcpLengthCacheSharedData?.type === "object" && isGCPLengthCacheData(gcpLengthCacheSharedData.data)) {
-                this.#gcpLengthCacheData = gcpLengthCacheSharedData.data;
+            if (gcpLengthCacheAppData?.type === "object" && isGCPLengthCacheSharedData(gcpLengthCacheAppData.data)) {
+                this.#gcpLengthCacheData = {
+                    nextCheckDateTime: new Date(gcpLengthCacheAppData.data.nextCheckDateTimeString),
+                    cacheDateTime: gcpLengthCacheAppData.data.cacheDateTimeString !== undefined ? new Date(gcpLengthCacheAppData.data.cacheDateTimeString) : undefined,
+                    cacheData: gcpLengthCacheAppData.data.cacheData
+                };
 
                 this.appExtension.logger.trace("GS1 Company Prefix length data loaded from shared data");
             } else {
                 // No shared data.
                 this.#gcpLengthCacheData = {
-                    nextCheckDateTime: now
+                    nextCheckDateTime: now,
+                    cacheDateTime: undefined,
+                    cacheData: undefined
                 };
             }
         }
@@ -108,7 +125,9 @@ export class PrefixManagerProxy<ThrowError extends boolean, TError extends Error
             const gcpLengthCacheData = this.#gcpLengthCacheData;
 
             const gcpLengthCache = new class extends RemoteGCPLengthCache {
-                getNextCheckDateTime(): Date | undefined {
+                getNextCheckDateTime(): Date {
+                    appExtension.logger.debug(`GS1 Company Prefix length next check date/time ${gcpLengthCacheData.nextCheckDateTime.toISOString()}`);
+
                     return gcpLengthCacheData.nextCheckDateTime;
                 }
 
@@ -118,13 +137,19 @@ export class PrefixManagerProxy<ThrowError extends boolean, TError extends Error
                     // Next check date/time is the last property to be updated.
                     await appExtension.setSharedData(PrefixManagerProxy.#GCP_LENGTH_DATA_NAME, {
                         type: "object",
-                        data: gcpLengthCacheData
+                        data: {
+                            nextCheckDateTimeString: nextCheckDateTime.toISOString(),
+                            cacheDateTimeString: gcpLengthCacheData.cacheDateTime?.toISOString(),
+                            cacheData: gcpLengthCacheData.cacheData
+                        } satisfies GCPLengthCacheSharedData
                     });
 
-                    appExtension.logger.trace("GS1 Company Prefix length data saved to shared data");
+                    appExtension.logger.trace(`GS1 Company Prefix length saved to shared data with next check date/time ${nextCheckDateTime.toISOString()}`);
                 }
 
                 override getCacheDateTime(): Date | undefined {
+                    appExtension.logger.debug(`GS1 Company Prefix length cache date/time ${gcpLengthCacheData.cacheDateTime?.toISOString()}`);
+
                     return gcpLengthCacheData.cacheDateTime;
                 }
 
@@ -133,11 +158,29 @@ export class PrefixManagerProxy<ThrowError extends boolean, TError extends Error
                 }
 
                 override getCacheData(): Uint8Array | undefined {
+                    appExtension.logger.debug("GS1 Company Prefix length cache data retrieved");
+
                     return gcpLengthCacheData.cacheData;
                 }
 
                 override setCacheData(cacheData: Uint8Array): void {
                     gcpLengthCacheData.cacheData = cacheData;
+                }
+
+                override async getSourceDateTime(): Promise<Date> {
+                    const sourceDateTime = await super.getSourceDateTime();
+
+                    appExtension.logger.debug(`GS1 Company Prefix source date/time ${sourceDateTime.toISOString()}`);
+
+                    return sourceDateTime;
+                }
+
+                override async getSourceData(): Promise<string | Uint8Array> {
+                    const sourceData = super.getSourceData();
+
+                    appExtension.logger.debug("GS1 Company Prefix length source data retrieved");
+
+                    return sourceData;
                 }
             }();
 
@@ -145,7 +188,7 @@ export class PrefixManagerProxy<ThrowError extends boolean, TError extends Error
                 // Try again in ten minutes.
                 gcpLengthCacheData.nextCheckDateTime = new Date(now.getTime() + 10 * 60 * 1000);
 
-                this.appExtension.logger.error("Load GS1 Company Prefix length data failed", e);
+                appExtension.logger.error("Load GS1 Company Prefix length data failed", e);
             });
         }
     }
