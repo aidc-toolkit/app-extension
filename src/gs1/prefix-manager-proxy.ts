@@ -60,12 +60,18 @@ function isGCPLengthCacheData(data: AppData | undefined): data is GCPLengthCache
     return typeof data === "object" && "nextCheckDateTime" in data && data.nextCheckDateTime instanceof Date;
 }
 
+/**
+ * Application extension GCP length cache. Data is stored in application extension shared data.
+ */
 class AppExtensionGCPLengthCache<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends RemoteGCPLengthCache {
     /**
      * GS1 Company Prefix length data property name.
      */
     static readonly #GCP_LENGTH_DATA_NAME = `${AppExtension.APPLICATION_NAME_PREFIX}gcpLength`;
 
+    /**
+     * Application extension.
+     */
     readonly #appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>;
 
     #nextCheckDateTime?: Date | undefined;
@@ -73,7 +79,13 @@ class AppExtensionGCPLengthCache<ThrowError extends boolean, TError extends Erro
     #cacheDateTime?: Date | undefined;
 
     #cacheData?: Uint8Array | undefined;
-    
+
+    /**
+     * Constructor.
+     *
+     * @param appExtension
+     * Application extension.
+     */
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
         super();
 
@@ -92,16 +104,59 @@ class AppExtensionGCPLengthCache<ThrowError extends boolean, TError extends Erro
         }
     }
 
-    getNextCheckDateTime(): Date | undefined {
+    get nextCheckDateTime(): Date | undefined {
         this.#appExtension.logger.debug(`GS1 Company Prefix length next check date/time ${this.#nextCheckDateTime?.toISOString()}`);
 
         return this.#nextCheckDateTime;
     }
 
-    async setNextCheckDateTime(nextCheckDateTime: Date): Promise<void> {
+    get cacheDateTime(): Date | undefined {
+        this.#appExtension.logger.debug(`GS1 Company Prefix length cache date/time ${this.#cacheDateTime?.toISOString()}`);
+
+        return this.#cacheDateTime;
+    }
+
+    get cacheData(): Uint8Array {
+        this.#appExtension.logger.debug("GS1 Company Prefix length cache data retrieved");
+
+        if (this.#cacheData === undefined) {
+            // Application bug; localization not necessary.
+            throw new Error("Cache data not defined");
+        }
+
+        return this.#cacheData;
+    }
+
+    override get sourceDateTime(): Promise<Date> {
+        return super.sourceDateTime.then((sourceDateTime) => {
+            this.#appExtension.logger.debug(`GS1 Company Prefix source date/time ${sourceDateTime.toISOString()}`);
+
+            return sourceDateTime;
+        });
+    }
+
+    override get sourceData(): Promise<Uint8Array> {
+        return super.sourceData.then((sourceData) => {
+            this.#appExtension.logger.debug("GS1 Company Prefix length source data retrieved");
+
+            return sourceData;
+        });
+    }
+
+    /**
+     * @inheritDoc
+     */
+    async update(nextCheckDateTime: Date, cacheDateTime?: Date, cacheData?: Uint8Array): Promise<void> {
         this.#nextCheckDateTime = nextCheckDateTime;
 
-        // Next check date/time is the last property to be updated.
+        if (cacheDateTime !== undefined) {
+            this.#cacheDateTime = cacheDateTime;
+        }
+
+        if (cacheData !== undefined) {
+            this.#cacheData = cacheData;
+        }
+
         await this.#appExtension.setSharedData(AppExtensionGCPLengthCache.#GCP_LENGTH_DATA_NAME, {
             nextCheckDateTime: this.#nextCheckDateTime,
             cacheDateTime: this.#cacheDateTime,
@@ -109,42 +164,6 @@ class AppExtensionGCPLengthCache<ThrowError extends boolean, TError extends Erro
         } satisfies GCPLengthCacheData);
 
         this.#appExtension.logger.trace(`GS1 Company Prefix length saved to shared data with next check date/time ${nextCheckDateTime.toISOString()}`);
-    }
-
-    override getCacheDateTime(): Date | undefined {
-        this.#appExtension.logger.debug(`GS1 Company Prefix length cache date/time ${this.#cacheDateTime?.toISOString()}`);
-
-        return this.#cacheDateTime;
-    }
-
-    override setCacheDateTime(cacheDateTime: Date): void {
-        this.#cacheDateTime = cacheDateTime;
-    }
-
-    override getCacheData(): Uint8Array | undefined {
-        this.#appExtension.logger.debug("GS1 Company Prefix length cache data retrieved");
-
-        return this.#cacheData;
-    }
-
-    override setCacheData(cacheData: Uint8Array): void {
-        this.#cacheData = cacheData;
-    }
-
-    override async getSourceDateTime(): Promise<Date> {
-        const sourceDateTime = await super.getSourceDateTime();
-
-        this.#appExtension.logger.debug(`GS1 Company Prefix source date/time ${sourceDateTime.toISOString()}`);
-
-        return sourceDateTime;
-    }
-
-    override async getSourceData(): Promise<string | Uint8Array> {
-        const sourceData = super.getSourceData();
-
-        this.#appExtension.logger.debug("GS1 Company Prefix length source data retrieved");
-
-        return sourceData;
     }
 }
 
@@ -178,13 +197,8 @@ export class PrefixManagerProxy<ThrowError extends boolean, TError extends Error
 
         const gcpLengthCache = this.#gcpLengthCache;
 
-        await PrefixManager.loadGCPLengthData(gcpLengthCache).catch(async (e: unknown) => {
-            // Try again in ten minutes.
-            const nowPlus10Minutes = new Date();
-            nowPlus10Minutes.setMinutes(nowPlus10Minutes.getMinutes() + 10);
-
-            await gcpLengthCache.setNextCheckDateTime(nowPlus10Minutes);
-
+        await PrefixManager.loadGCPLengthData(gcpLengthCache).catch((e: unknown) => {
+            // Swallow error and log it.
             appExtension.logger.error("Load GS1 Company Prefix length data failed", e);
         });
     }
