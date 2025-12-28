@@ -139,12 +139,30 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
     @proxy.describeMethod({
         type: Types.String,
         isMatrix: true,
+        parameterDescriptors: [validateGTINParameterDescriptor, gtinLevelParameterDescriptor]
+    })
+    isValidGTIN(matrixGTINs: Matrix<string>, gtinLevel: Nullishable<GTINLevel>): Matrix<boolean> {
+        return this.isValidString(this.validateGTIN(matrixGTINs, gtinLevel));
+    }
+
+    @proxy.describeMethod({
+        type: Types.String,
+        isMatrix: true,
         parameterDescriptors: [validateGTIN14ParameterDescriptor]
     })
     validateGTIN14(matrixGTIN14s: Matrix<string>): Matrix<string> {
         return this.matrixErrorResult(matrixGTIN14s, (gtin14) => {
             GTINValidator.validateGTIN14(gtin14);
         });
+    }
+
+    @proxy.describeMethod({
+        type: Types.String,
+        isMatrix: true,
+        parameterDescriptors: [validateGTIN14ParameterDescriptor]
+    })
+    isValidGTIN14(matrixGTIN14s: Matrix<string>): Matrix<boolean> {
+        return this.isValidString(this.validateGTIN14(matrixGTIN14s));
     }
 
     @proxy.describeMethod({

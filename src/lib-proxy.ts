@@ -126,19 +126,17 @@ export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorE
     }
 
     /**
-     * Call a matrix result function with no error handling.
+     * Map a matrix of validate string results to boolean. If the string is empty, the result is true, indicating that
+     * there is no error.
      *
-     * @param matrixValues
-     * Matrix of values.
-     *
-     * @param valueCallback
-     * Callback to process value.
+     * @param matrixValidateResults
+     * Matrix of results from a call to a validate function.
      *
      * @returns
-     * Matrix of callback results.
+     * Matrix of boolean values, true if corresponding string is empty.
      */
-    protected matrixResultNoError<TValue, TResult>(matrixValues: Matrix<TValue>, valueCallback: (value: TValue) => TResult): Matrix<TResult> {
-        return matrixValues.map(rowValues => rowValues.map(value => valueCallback(value)));
+    protected isValidString(matrixValidateResults: MatrixResult<string, ThrowError, TError>): Matrix<boolean> {
+        return matrixValidateResults.map(rowValues => rowValues.map(value => (validateResult => validateResult === "")(value)));
     }
 
     /**

@@ -408,13 +408,25 @@ export default {
                 name: "validerGTIN13",
                 description: "Valider un GTIN-13."
             },
+            isValidGTIN13: {
+                name: "estValideGTIN13",
+                description: "Déterminer si un GTIN-13 est valide."
+            },
             validateGTIN12: {
                 name: "validerGTIN12",
                 description: "Valider un GTIN-12."
             },
+            isValidGTIN12: {
+                name: "estValideGTIN12",
+                description: "Déterminer si un GTIN-12 est valide."
+            },
             validateGTIN8: {
                 name: "validerGTIN8",
                 description: "Valider un GTIN-8."
+            },
+            isValidGTIN8: {
+                name: "estValideGTIN8",
+                description: "Déterminer si un GTIN-8 est valide."
             },
             zeroSuppressGTIN12: {
                 name: "supprimerZeroGTIN12",
@@ -434,11 +446,19 @@ export default {
             },
             validateGTIN: {
                 name: "validerGTIN",
-                description: "Validez n'importe quel GTIN."
+                description: "Valider un GTIN de n'importe quelle longueur."
+            },
+            isValidGTIN: {
+                name: "estValideGTIN",
+                description: "Déterminer si un GTIN, quelle que soit sa longueur, est valide."
             },
             validateGTIN14: {
                 name: "validerGTIN14",
                 description: "Valider un GTIN-14."
+            },
+            isValidGTIN14: {
+                name: "estValideGTIN14",
+                description: "Déterminer si un GTIN-14 est valide."
             },
             parseVariableMeasureRCN: {
                 name: "parseVariableMeasureRCN",
@@ -448,45 +468,89 @@ export default {
                 name: "validerGLN",
                 description: "Valider un GLN."
             },
+            isValidGLN: {
+                name: "estValideGLN",
+                description: "Déterminer si un GLN est valide."
+            },
             validateSSCC: {
                 name: "validerSSCC",
                 description: "Valider un SSCC."
+            },
+            isValidSSCC: {
+                name: "estValideSSCC",
+                description: "Déterminer si un SSCC est valide."
             },
             validateGRAI: {
                 name: "validerGRAI",
                 description: "Valider un GRAI."
             },
+            isValidGRAI: {
+                name: "estValideGRAI",
+                description: "Déterminer si un GRAI est valide."
+            },
             validateGIAI: {
                 name: "validerGIAI",
                 description: "Valider un GIAI."
+            },
+            isValidGIAI: {
+                name: "estValideGIAI",
+                description: "Déterminer si un GIAI est valide."
             },
             validateGSRN: {
                 name: "validerGSRN",
                 description: "Valider un GSRN."
             },
+            isValidGSRN: {
+                name: "estValideGSRN",
+                description: "Déterminer si un GSRN est valide."
+            },
             validateGDTI: {
                 name: "validerGDTI",
                 description: "Valider un GDTI."
+            },
+            isValidGDTI: {
+                name: "estValideGDTI",
+                description: "Déterminer si un GDTI est valide."
             },
             validateGINC: {
                 name: "validerGINC",
                 description: "Valider un GINC."
             },
+            isValidGINC: {
+                name: "estValideGINC",
+                description: "Déterminer si un GINC est valide."
+            },
             validateGSIN: {
                 name: "validerGSIN",
                 description: "Valider un GSIN."
+            },
+            isValidGSIN: {
+                name: "estValideGSIN",
+                description: "Déterminer si un GSIN est valide."
             },
             validateGCN: {
                 name: "validerGCN",
                 description: "Valider un GCN."
             },
+            isValidGCN: {
+                name: "estValideGCN",
+                description: "Déterminer si un GCN est valide."
+            },
             validateCPID: {
                 name: "validerCPID",
                 description: "Valider un CPID."
             },
+            isValidCPID: {
+                name: "estValideCPID",
+                description: "Déterminer si un CPID est valide."
+            },
             validateGMN: {
                 name: "validerGMN",
                 description: "Valider un GMN."
+            },
+            isValidGMN: {
+                name: "estValideGMN",
+                description: "Déterminer si un GMN est valide."
             },
             definePrefix: {
                 name: "definisserPrefixe",

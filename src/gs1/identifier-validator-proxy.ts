@@ -50,6 +50,15 @@ abstract class NumericIdentifierValidatorProxy<ThrowError extends boolean, TErro
     validate(matrixIdentifiers: Matrix<string>): Matrix<string> {
         return this.validateString(this.validator, matrixIdentifiers);
     }
+
+    @proxy.describeMethod({
+        type: Types.String,
+        isMatrix: true,
+        parameterDescriptors: [validateIdentifierParameterDescriptor]
+    })
+    isValid(matrixIdentifiers: Matrix<string>): Matrix<boolean> {
+        return this.isValidString(this.validate(matrixIdentifiers));
+    }
 }
 
 export abstract class GTINValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, GTINType> {
@@ -77,5 +86,14 @@ export abstract class NonNumericIdentifierValidatorProxy<ThrowError extends bool
         return this.validateString(this.validator, matrixIdentifiers, {
             exclusion: exclusion ?? undefined
         } satisfies NonNumericIdentifierValidation);
+    }
+
+    @proxy.describeMethod({
+        type: Types.String,
+        isMatrix: true,
+        parameterDescriptors: [validateIdentifierParameterDescriptor, exclusionAllNumericParameterDescriptor]
+    })
+    isValid(matrixIdentifiers: Matrix<string>, exclusion: Nullishable<NonNumericIdentifierValidation["exclusion"]>): Matrix<boolean> {
+        return this.isValidString(this.validate(matrixIdentifiers, exclusion));
     }
 }
