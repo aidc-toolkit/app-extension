@@ -420,9 +420,14 @@ export class Proxy {
         return (target: (this: TThis, ...args: TArguments) => TReturn, context: ClassMethodDecoratorContext<TThis>): (this: TThis, ...args: TArguments) => TReturn => {
             const name = context.name;
 
-            // Validate that method descriptor is applied within an appropriate class and has a valid name.
-            if (this.#interim === undefined || typeof name !== "string" || context.static || context.private) {
-                throw new Error(`${String(name)} is not defined within a supported class, has an invalid name, is static, or is private`);
+            // Validate that method descriptor is applied within an appropriate class.
+            if (this.#interim === undefined) {
+                throw new Error(`Class for method ${String(name)} does not have a descriptor`);
+            }
+
+            // Validate that method descriptor has a valid name and is neither static nor private.
+            if (typeof name !== "string" || context.static || context.private) {
+                throw new Error(`Method ${String(name)} has an invalid name, is static, or is private`);
             }
 
             let anyOptional = false;

@@ -13,7 +13,7 @@ import type {
 import type { AppExtension } from "../app-extension.js";
 import { type ExtendsParameterDescriptor, Types } from "../descriptor.js";
 import { proxy } from "../proxy.js";
-import type { ErrorExtends, Matrix } from "../type.js";
+import type { ErrorExtends, Matrix, MatrixResult } from "../type.js";
 import { exclusionAllNumericParameterDescriptor } from "../utility/character-set-descriptor.js";
 import { StringProxy } from "../utility/string-proxy.js";
 import { identifierParameterDescriptor } from "./identifier-descriptor.js";
@@ -22,6 +22,12 @@ const validateIdentifierParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: identifierParameterDescriptor,
     sortOrder: 0,
     name: "validateIdentifier"
+};
+
+const splitIdentifierParameterDescriptor: ExtendsParameterDescriptor = {
+    extendsDescriptor: identifierParameterDescriptor,
+    sortOrder: 1,
+    name: "splitIdentifier"
 };
 
 abstract class IdentifierValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt, TIdentifierType extends IdentifierType> extends StringProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
@@ -70,7 +76,22 @@ abstract class NonGTINNumericIdentifierValidatorProxy<ThrowError extends boolean
 export abstract class NonSerializableNumericIdentifierValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonGTINNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, NonSerializableNumericIdentifierType> {
 }
 
+@proxy.describeClass(true, {
+    namespace: "GS1"
+})
 export abstract class SerializableNumericIdentifierValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonGTINNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, SerializableNumericIdentifierType> {
+    @proxy.describeMethod({
+        type: Types.String,
+        isMatrix: true,
+        parameterDescriptors: [splitIdentifierParameterDescriptor]
+    })
+    split(matrixIdentifiers: Matrix<string>): MatrixResult<string, ThrowError, TError> {
+        return this.arrayResult(matrixIdentifiers, (identifier) => {
+            const serializableNumericIdentifierSplit = this.validator.split(identifier);
+
+            return [serializableNumericIdentifierSplit.baseIdentifier, serializableNumericIdentifierSplit.serialComponent];
+        });
+    }
 }
 
 @proxy.describeClass(true, {

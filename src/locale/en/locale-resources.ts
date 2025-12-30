@@ -117,6 +117,10 @@ export default {
             name: "identifier",
             description: "Identifier to validate."
         },
+        splitIdentifier: {
+            name: "splitIdentifier",
+            description: "Identifier to split."
+        },
         zeroSuppressibleGTIN12: {
             name: "gtin12",
             description: "GTIN-12 for which to suppress zeros."
@@ -488,6 +492,10 @@ export default {
                 name: "isValidGRAI",
                 description: "Determine if a GRAI is valid."
             },
+            splitGRAI: {
+                name: "splitGRAI",
+                description: "Split a GRAI into its base identifier and serial component."
+            },
             validateGIAI: {
                 name: "validateGIAI",
                 description: "Validate a GIAI."
@@ -512,6 +520,10 @@ export default {
                 name: "isValidGDTI",
                 description: "Determine if a GDTI is valid."
             },
+            splitGDTI: {
+                name: "splitGDTI",
+                description: "Split a GDTI into its base identifier and serial component."
+            },
             validateGINC: {
                 name: "validateGINC",
                 description: "Validate a GINC."
@@ -535,6 +547,10 @@ export default {
             isValidGCN: {
                 name: "isValidGCN",
                 description: "Determine if a GCN is valid."
+            },
+            splitGCN: {
+                name: "splitGCN",
+                description: "Split a GCN into its base identifier and serial component."
             },
             validateCPID: {
                 name: "validateCPID",
