@@ -576,6 +576,10 @@ export default {
                 name: "dateHeureLongueurGCP",
                 description: "Obtenez la date et l'heure de la dernière mise à jour des données relatives à la longueur du préfixe d'entreprise GS1."
             },
+            gcpLengthDisclaimer: {
+                name: "avertissementLongueurGCP",
+                description: "Obtenez l'avertissement relatif aux données sur la longueur des préfixes d'entreprise GS1."
+            },
             createGTIN: {
                 name: "creerGTIN",
                 description: "Créer un GTIN."

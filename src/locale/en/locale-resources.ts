@@ -576,6 +576,10 @@ export default {
                 name: "gcpLengthDateTime",
                 description: "Get the date and time the GS1 Company Prefix length data was last updated."
             },
+            gcpLengthDisclaimer: {
+                name: "gcpLengthDisclaimer",
+                description: "Get the disclaimer for the GS1 Company Prefix length data."
+            },
             createGTIN: {
                 name: "createGTIN",
                 description: "Create a GTIN."
