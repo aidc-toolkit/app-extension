@@ -1,3 +1,5 @@
+import { fromByteArray, toByteArray } from "base64-js";
+
 /**
  * Application data.
  */
@@ -35,8 +37,7 @@ export function decodeAppData(stringData: string): AppData | undefined {
                             break;
 
                         case "binary":
-                            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- Index 0 is always valid.
-                            replacementValue = new Uint8Array(atob(data).split("").map(char => char.codePointAt(0)!));
+                            replacementValue = toByteArray(data);
                             break;
                     }
                 }
@@ -67,7 +68,7 @@ function encodeObject(data: object): object | string {
     if (data instanceof Date) {
         mappedData = `dateTime:${data.toISOString()}`;
     } else if (data instanceof Uint8Array) {
-        mappedData = `binary:${btoa(String.fromCodePoint(...data))}`;
+        mappedData = `binary:${fromByteArray(data)}`;
     } else {
         mappedData = Object.fromEntries(Object.entries(data).map(([key, value]: [string, unknown]) =>
             // Encode date/time and binary array as string and pass through other values unmodified.
