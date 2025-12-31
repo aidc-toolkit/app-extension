@@ -1,16 +1,11 @@
 import type { Nullishable } from "@aidc-toolkit/core";
-import { GTINCreator, type GTINType } from "@aidc-toolkit/gs1";
+import type { GTINCreator, GTINType } from "@aidc-toolkit/gs1";
 import type { AppExtension } from "../app-extension.js";
 import { Types } from "../descriptor.js";
 import { expandParameterDescriptor, proxy } from "../proxy.js";
 import type { ErrorExtends, Matrix, MatrixResult } from "../type.js";
 import { valueParameterDescriptor } from "../utility/transformer-descriptor.js";
-import {
-    indicatorDigitParameterDescriptor,
-    rcnFormatParameterDescriptor,
-    rcnItemReferenceParameterDescriptor,
-    rcnPriceOrWeightParameterDescriptor
-} from "./gtin-descriptor.js";
+import { indicatorDigitParameterDescriptor } from "./gtin-descriptor.js";
 import { NumericIdentifierCreatorProxy, sparseParameterDescriptor } from "./identifier-creator-proxy.js";
 import {
     prefixDefinitionAnyParameterDescriptor,
@@ -46,15 +41,5 @@ export class GTINCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
         matrixValues, (creator, value) =>
             creator.createGTIN14(indicatorDigit, value, sparseOrUndefined)
         );
-    }
-
-    @proxy.describeMethod({
-        type: Types.String,
-        isMatrix: true,
-        ignoreInfix: true,
-        parameterDescriptors: [rcnFormatParameterDescriptor, rcnItemReferenceParameterDescriptor, rcnPriceOrWeightParameterDescriptor]
-    })
-    createVariableMeasureRCN(format: string, itemReference: number, matrixPricesOrWeights: Matrix<number>): MatrixResult<string, ThrowError, TError> {
-        return this.matrixResult(matrixPricesOrWeights, priceOrWeight => GTINCreator.createVariableMeasureRCN(format, itemReference, priceOrWeight));
     }
 }

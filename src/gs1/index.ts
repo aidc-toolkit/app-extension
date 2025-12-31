@@ -10,4 +10,6 @@ export * from "./prefix-manager-proxy.js";
 export * from "./gtin-creator-proxy.js";
 export * from "./non-gtin-creator-proxy.js";
 
+export * from "./variable-measure-proxy.js";
+
 export * from "./service-proxy.js";

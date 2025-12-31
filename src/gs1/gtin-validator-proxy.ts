@@ -5,7 +5,7 @@ import { type ExtendsParameterDescriptor, type ParameterDescriptor, Types } from
 import { LibProxy } from "../lib-proxy.js";
 import { proxy } from "../proxy.js";
 import type { ErrorExtends, Matrix, MatrixResult } from "../type.js";
-import { indicatorDigitParameterDescriptor, rcnFormatParameterDescriptor } from "./gtin-descriptor.js";
+import { indicatorDigitParameterDescriptor } from "./gtin-descriptor.js";
 import { identifierParameterDescriptor } from "./identifier-descriptor.js";
 import { GTINValidatorProxy } from "./identifier-validator-proxy.js";
 
@@ -74,13 +74,6 @@ const gtinLevelParameterDescriptor: ParameterDescriptor = {
 const validateGTIN14ParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: identifierParameterDescriptor,
     name: "validateGTIN14"
-};
-
-const rcnParameterDescriptor: ParameterDescriptor = {
-    name: "rcn",
-    type: Types.String,
-    isMatrix: true,
-    isRequired: true
 };
 
 @proxy.describeClass(false, {
@@ -163,18 +156,5 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
     })
     isValidGTIN14(matrixGTIN14s: Matrix<string>): Matrix<boolean> {
         return this.isValidString(this.validateGTIN14(matrixGTIN14s));
-    }
-
-    @proxy.describeMethod({
-        type: Types.Number,
-        isMatrix: true,
-        parameterDescriptors: [rcnFormatParameterDescriptor, rcnParameterDescriptor]
-    })
-    parseVariableMeasureRCN(format: string, matrixRCNs: Matrix<string>): MatrixResult<number, ThrowError, TError> {
-        return this.arrayResult(matrixRCNs, (rcn) => {
-            const rcnReference = GTINValidator.parseVariableMeasureRCN(format, rcn);
-
-            return [rcnReference.itemReference, rcnReference.priceOrWeight];
-        });
     }
 }

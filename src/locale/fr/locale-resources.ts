@@ -165,14 +165,6 @@ export default {
             name: "niveau",
             description: "Niveau auquel valider le GTIN. Les valeurs valides sont 0 (n'importe lequel), 1 (article commercial de consommation au détail) et 2 (autre que le niveau de l'article commercial de consommation au détail)."
         },
-        rcnFormat: {
-            name: "format",
-            description: "Format de numéro de diffusion restreinte."
-        },
-        rcn: {
-            name: "rcn",
-            description: "Numéro de diffusion restreint à analyser."
-        },
         prefix: {
             name: "prefixe",
             description: "Préfixe."
@@ -201,14 +193,6 @@ export default {
             name: "clairsemee",
             description: "Si cette valeur est vraie, la valeur est mappée sur une séquence clairsemée résistante à la découverte. La valeur par défaut est faux."
         },
-        rcnItemReference: {
-            name: "referenceDArticle",
-            description: "Référence d'article."
-        },
-        rcnPriceOrWeight: {
-            name: "prixOuPoids",
-            description: "Prix ou poids (nombre entier uniquement)."
-        },
         serialComponent: {
             name: "composanteSerie",
             description: "Composante série."
@@ -216,6 +200,22 @@ export default {
         reference: {
             name: "reference",
             description: "Partie de référence de la clé d'identification."
+        },
+        rcnFormat: {
+            name: "format",
+            description: "Format de numéro de diffusion restreinte."
+        },
+        rcn: {
+            name: "rcn",
+            description: "Numéro de diffusion restreint à analyser."
+        },
+        rcnItemReference: {
+            name: "referenceDArticle",
+            description: "Référence d'article."
+        },
+        rcnPriceOrWeight: {
+            name: "prixOuPoids",
+            description: "Prix ou poids (nombre entier uniquement)."
         },
         hyperlinkText: {
             name: "texte",
@@ -464,10 +464,6 @@ export default {
                 name: "estValideGTIN14",
                 description: "Déterminer si un GTIN-14 est valide."
             },
-            parseVariableMeasureRCN: {
-                name: "parseVariableMeasureRCN",
-                description: "Analyser un numéro de diffusion restreinte (RCN) à l'aide d'un format d'article commercial à mesure variable."
-            },
             validateGLN: {
                 name: "validerGLN",
                 description: "Valider un GLN."
@@ -596,10 +592,6 @@ export default {
                 name: "creerGTIN14",
                 description: "Créer un GTIN-14."
             },
-            createVariableMeasureRCN: {
-                name: "creerMesureVariableRCN",
-                description: "Créer un numéro de diffusion restreinte (RCN) à l'aide d'un format d'article commercial à mesure variable."
-            },
             createGLN: {
                 name: "creerGLN",
                 description: "Créer un GLN."
@@ -723,6 +715,14 @@ export default {
             createGMN: {
                 name: "creerGMN",
                 description: "Créer un GMN."
+            },
+            parseVariableMeasureRCN: {
+                name: "parseVariableMeasureRCN",
+                description: "Analyser un numéro de diffusion restreinte (RCN) à l'aide d'un format d'article commercial à mesure variable."
+            },
+            createVariableMeasureRCN: {
+                name: "creerMesureVariableRCN",
+                description: "Créer un numéro de diffusion restreinte (RCN) à l'aide d'un format d'article commercial à mesure variable."
             },
             verifiedByGS1: {
                 name: "verifiedByGS1",

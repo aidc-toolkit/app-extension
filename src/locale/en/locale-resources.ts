@@ -165,14 +165,6 @@ export default {
             name: "level",
             description: "Level at which to validate the GTIN. Valid values are 0 (any), 1 (retail consumer trade item), and 2 (other than retail consumer trade item level)."
         },
-        rcnFormat: {
-            name: "format",
-            description: "Restricted Circulation Number format."
-        },
-        rcn: {
-            name: "rcn",
-            description: "Restricted Circulation Number to parse."
-        },
         prefix: {
             name: "prefix",
             description: "Prefix."
@@ -201,14 +193,6 @@ export default {
             name: "sparse",
             description: "If true, value is mapped to a sparse sequence resistant to discovery. Default is false."
         },
-        rcnItemReference: {
-            name: "itemReference",
-            description: "Item reference."
-        },
-        rcnPriceOrWeight: {
-            name: "priceOrWeight",
-            description: "Price or weight (whole number only)."
-        },
         serialComponent: {
             name: "serialComponent",
             description: "Serial component."
@@ -216,6 +200,22 @@ export default {
         reference: {
             name: "reference",
             description: "Reference portion of identifier."
+        },
+        rcnFormat: {
+            name: "format",
+            description: "Restricted Circulation Number format."
+        },
+        rcn: {
+            name: "rcn",
+            description: "Restricted Circulation Number to parse."
+        },
+        rcnItemReference: {
+            name: "itemReference",
+            description: "Item reference."
+        },
+        rcnPriceOrWeight: {
+            name: "priceOrWeight",
+            description: "Price or weight (whole number only)."
         },
         hyperlinkText: {
             name: "text",
@@ -464,10 +464,6 @@ export default {
                 name: "isValidGTIN14",
                 description: "Determine if a GTIN-14 is valid."
             },
-            parseVariableMeasureRCN: {
-                name: "parseVariableMeasureRCN",
-                description: "Parse a Restricted Circulation Number (RCN) using a variable measure trade item format."
-            },
             validateGLN: {
                 name: "validateGLN",
                 description: "Validate a GLN."
@@ -596,10 +592,6 @@ export default {
                 name: "createGTIN14",
                 description: "Create a GTIN-14."
             },
-            createVariableMeasureRCN: {
-                name: "createVariableMeasureRCN",
-                description: "Create a variable measure Restricted Circulation Number (RCN)."
-            },
             createGLN: {
                 name: "createGLN",
                 description: "Create a GLN."
@@ -723,6 +715,14 @@ export default {
             createGMN: {
                 name: "createGMN",
                 description: "Create a GMN."
+            },
+            parseVariableMeasureRCN: {
+                name: "parseVariableMeasureRCN",
+                description: "Parse a Restricted Circulation Number (RCN) using a variable measure trade item format."
+            },
+            createVariableMeasureRCN: {
+                name: "createVariableMeasureRCN",
+                description: "Create a variable measure Restricted Circulation Number (RCN)."
             },
             verifiedByGS1: {
                 name: "verifiedByGS1",
