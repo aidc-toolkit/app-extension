@@ -17,6 +17,7 @@ function registerProxies(..._proxies: unknown[]): void {
 }
 
 registerProxies(AppUtilityProxy, Utility, GS1);
+
 /**
  * Localization.
  */
