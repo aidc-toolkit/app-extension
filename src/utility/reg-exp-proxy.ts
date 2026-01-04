@@ -32,7 +32,8 @@ export class RegExpProxy<ThrowError extends boolean, TError extends ErrorExtends
     validate(regExp: string, matrixSs: Matrix<string>, errorMessage: Nullishable<string>): Matrix<string> {
         return this.validateString(new class extends RegExpValidator {
             protected override createErrorMessage(s: string): string {
-                return errorMessage ?? super.createErrorMessage(s);
+                // Replace {{s}} with the invalid string.
+                return errorMessage?.replace(/\{\{s}}/g, s) ?? super.createErrorMessage(s);
             }
         }(new RegExp(regExp)), matrixSs);
     }
