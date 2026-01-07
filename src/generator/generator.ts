@@ -226,10 +226,6 @@ export abstract class Generator {
 
         await i18nAppExtensionInit(I18nEnvironments.CLI);
 
-        // const LocaleResourcesSource = path.resolve(LocaleResourcesGenerator.IMPORT_PATH, entry.name, "locale-resources.ts");
-        //
-        // await import(LocaleResourcesSource).then((module) => {
-
         this.initialize();
 
         try {
