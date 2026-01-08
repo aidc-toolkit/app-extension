@@ -19,19 +19,20 @@
     "url": "https://www.linkedin.com/in/kdean"
   },
   "scripts": {
-    "locale-resources-generator": "tsx src/generator/locale-resources-generator.ts",
+    "generate-locale-resources": "tsx src/generator/locale-resources-generator.ts",
     "lint": "eslint",
     "tsc:core": "tsc --project tsconfig-src.json",
-    "build:dev": "tsup --define.mode=dev",
+    "build:dev": "npm run tsc:core -- --noEmit && tsup --define.mode=dev",
     "build:release": "npm run tsc:core -- --noEmit && tsup",
     "build:doc": "npm run build:dev"
   },
   "devDependencies": {
-    "@aidc-toolkit/dev": "1.0.32-alpha.202512211159"
+    "@aidc-toolkit/dev": "1.0.32-alpha.202601082147"
   },
   "dependencies": {
-    "@aidc-toolkit/core": "1.0.32-alpha.202512211159",
-    "@aidc-toolkit/gs1": "1.0.32-alpha.202512211209",
-    "@aidc-toolkit/utility": "1.0.32-alpha.202512211200"
+    "@aidc-toolkit/core": "1.0.32-alpha.202601082147",
+    "@aidc-toolkit/gs1": "1.0.32-alpha.202601082153",
+    "@aidc-toolkit/utility": "1.0.32-alpha.202601082148",
+    "base64-js": "^1.5.1"
   }
 }
