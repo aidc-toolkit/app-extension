@@ -346,7 +346,7 @@ export class Proxy {
             // Third capture group, separated by optional period, is:
             // - single uppercase letter followed by zero or more characters (remainder of string); or
             // - zero characters (empty string).
-            const objectNameGroups = /^(?<namespaceFirstWord>[A-Z]+[0-9]*|[A-Z][^A-Z.]*)(?<namespaceRemaining>[A-Z][^.]*|)\.?(?<className>[A-Z].*|)$/.exec(namespaceClassName)?.groups;
+            const objectNameGroups = /^(?<namespaceFirstWord>[A-Z]+[0-9]*|[A-Z][^A-Z.]*)(?<namespaceRemaining>[A-Z][^.]*|)\.?(?<className>[A-Z].*|)$/u.exec(namespaceClassName)?.groups;
 
             if (objectNameGroups === undefined) {
                 throw new Error(`${namespaceClassName} is not a valid namespace-qualified class name`);

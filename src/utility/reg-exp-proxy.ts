@@ -33,9 +33,9 @@ export class RegExpProxy<ThrowError extends boolean, TError extends ErrorExtends
         return this.validateString(new class extends RegExpValidator {
             protected override createErrorMessage(s: string): string {
                 // Replace {{s}} with the invalid string.
-                return errorMessage?.replace(/\{\{s}}/g, s) ?? super.createErrorMessage(s);
+                return errorMessage?.replace(/\{\{s\}\}/ug, s) ?? super.createErrorMessage(s);
             }
-        }(new RegExp(regExp)), matrixSs);
+        }(new RegExp(regExp, "u")), matrixSs);
     }
 
     @proxy.describeMethod({

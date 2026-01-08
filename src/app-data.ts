@@ -25,7 +25,7 @@ export function decodeAppData(stringData: string): AppData | undefined {
             // Decode string representing date/time and binary array and pass through other values unmodified.
             if (typeof value === "string") {
                 // First capture group is type, second is data; simple split at ':' character.
-                const stringDataGroups = /^(?<type>\w+):(?<data>.*)$/.exec(value)?.groups;
+                const stringDataGroups = /^(?<type>\w+):(?<data>.*)$/u.exec(value)?.groups;
 
                 if (stringDataGroups !== undefined) {
                     const type = stringDataGroups["type"];
