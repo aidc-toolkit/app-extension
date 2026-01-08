@@ -461,7 +461,7 @@ export class Proxy {
                     result = target.call(this, ...args);
 
                     // Stream methods are responsible for their own logging.
-                    if (!(decoratorMethodDescriptor.isStream ?? false)) {
+                    if (decoratorMethodDescriptor.isStream !== true) {
                         if (!(result instanceof Promise)) {
                             targetLogger.logger.trace(targetLogger.callBuilder(name, args, result));
                         } else {
