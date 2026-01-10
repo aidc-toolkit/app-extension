@@ -107,10 +107,10 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * Initialize the application extension.
      */
     async initialize(): Promise<void> {
-        const fileVersion = await this.getFileProperty(AppExtension.VERSION_NAME);
+        const fileVersion = await this.getDocumentProperty(AppExtension.VERSION_NAME);
 
         if (fileVersion !== this.#version) {
-            await this.setFileProperty(AppExtension.VERSION_NAME, this.#version);
+            await this.setDocumentProperty(AppExtension.VERSION_NAME, this.#version);
         }
     }
 
@@ -195,7 +195,7 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
     abstract setUpStreaming<TResult>(streamingInvocationContext: TStreamingInvocationContext, streamingCancelledCallback: StreamingCancelledCallback): StreamingConsumerCallback<TResult, ThrowError, TError>;
 
     /**
-     * Get a property stored within the active file.
+     * Get a property stored within the active document.
      *
      * @param name
      * Property name.
@@ -203,10 +203,10 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * @returns
      * Property value or undefined if no value is stored under the given name.
      */
-    abstract getFileProperty(name: string): Promisable<string | undefined>;
+    abstract getDocumentProperty(name: string): Promisable<string | undefined>;
 
     /**
-     * Set a property to be stored within the active file.
+     * Set a property to be stored within the active document.
      *
      * @param name
      * Property name.
@@ -214,15 +214,15 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * @param value
      * Property value or null to remove.
      */
-    abstract setFileProperty(name: string, value: string | null): Promisable<void>;
+    abstract setDocumentProperty(name: string, value: string | null): Promisable<void>;
 
     /**
-     * Get file application data storage.
+     * Get application data storage for the current document.
      */
-    abstract get fileAppDataStorage(): AppDataStorage<boolean>;
+    abstract get documentAppDataStorage(): AppDataStorage<boolean>;
 
     /**
-     * Get shared application data storage.
+     * Get application data storage shared across multiple documents.
      */
     abstract get sharedAppDataStorage(): AppDataStorage<boolean>;
 
