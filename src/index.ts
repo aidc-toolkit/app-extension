@@ -17,7 +17,6 @@
 export * from "./locale/i18n.js";
 
 export type * from "./type.js";
-export * from "./app-data.js";
 
 export type * from "./streaming.js";
 export * from "./app-extension.js";

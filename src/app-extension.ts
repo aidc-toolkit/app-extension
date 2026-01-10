@@ -1,6 +1,12 @@
-import { getLogger, type Hyperlink, LogLevels, MemoryTransport, type Promisable } from "@aidc-toolkit/core";
+import {
+    type AppDataStorage,
+    getLogger,
+    type Hyperlink,
+    LogLevels,
+    MemoryTransport,
+    type Promisable
+} from "@aidc-toolkit/core";
 import type { Logger } from "tslog";
-import type { AppData } from "./app-data.js";
 import { i18nextAppExtension } from "./locale/i18n.js";
 import type { StreamingCancelledCallback, StreamingConsumerCallback } from "./streaming.js";
 import type { ErrorExtends, MatrixResult, SheetAddress, SheetRange, SingletonResult } from "./type.js";
@@ -25,14 +31,14 @@ import type { ErrorExtends, MatrixResult, SheetAddress, SheetRange, SingletonRes
  */
 export abstract class AppExtension<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> {
     /**
-     * Application name prefix for properties and application data.
+     * Application name.
      */
-    static readonly APPLICATION_NAME_PREFIX = "AIDCToolkit.";
+    static readonly APPLICATION_NAME = "AIDCToolkit";
 
     /**
      * Version property name.
      */
-    static readonly VERSION_NAME = `${AppExtension.APPLICATION_NAME_PREFIX}version`;
+    static readonly VERSION_NAME = `${AppExtension.APPLICATION_NAME}/version`;
 
     /**
      * Maximum logger messages length.
@@ -211,48 +217,14 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
     abstract setFileProperty(name: string, value: string | null): Promisable<void>;
 
     /**
-     * Get application data stored within the active file.
-     *
-     * @param name
-     * Name under which data is stored.
-     *
-     * @returns
-     * Application data or undefined if no data is stored under the given name.
+     * Get file application data storage.
      */
-    abstract getFileData(name: string): Promisable<AppData | undefined>;
+    abstract get fileAppDataStorage(): AppDataStorage<boolean>;
 
     /**
-     * Set application data to be stored within the active file.
-     *
-     * @param name
-     * Name under which to store data.
-     *
-     * @param appData
-     * Application data or null to remove.
+     * Get shared application data storage.
      */
-    abstract setFileData(name: string, appData: AppData | null): Promisable<void>;
-
-    /**
-     * Get application data stored and shared across multiple files.
-     *
-     * @param name
-     * Name under which data is stored.
-     *
-     * @returns
-     * Application ata or undefined if no data is stored under the given name.
-     */
-    abstract getSharedData(name: string): Promisable<AppData | undefined>;
-
-    /**
-     * Set application data to be stored and shared across multiple files.
-     *
-     * @param name
-     * Name under which to store data.
-     *
-     * @param appData
-     * Application data or null to remove.
-     */
-    abstract setSharedData(name: string, appData: AppData | null): Promisable<void>;
+    abstract get sharedAppDataStorage(): AppDataStorage<boolean>;
 
     /**
      * Validate a sequence count against the maximum supported by application.

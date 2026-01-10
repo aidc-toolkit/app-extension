@@ -1,7 +1,6 @@
 import type { Nullishable } from "@aidc-toolkit/core";
 import { type GCPLengthData, PrefixManager, type PrefixType, RemoteGCPLengthCache } from "@aidc-toolkit/gs1";
-import type { AppData } from "../app-data.js";
-import { AppExtension } from "../app-extension.js";
+import type { AppExtension } from "../app-extension.js";
 import { type ExtendsParameterDescriptor, type ParameterDescriptor, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
 import { proxy } from "../proxy.js";
@@ -36,49 +35,13 @@ const gcpLengthIdentifierParameterDescriptor: ExtendsParameterDescriptor = {
 };
 
 /**
- * GS1 Company Prefix length application data.
- */
-interface GCPLengthAppData {
-    /**
-     * Next check date/time.
-     */
-    nextCheckDateTime: Date | undefined;
-
-    /**
-     * GS1 Company Prefix length data.
-     */
-    gcpLengthData: GCPLengthData | undefined;
-}
-
-/**
- * Determine if data object is GS1 Company Prefix length application data.
- *
- * @param data
- * Data object.
- *
- * @returns
- * True if data object is GS1 Company Prefix length application data.
- */
-function isGCPLengthAppData(data: AppData | undefined): data is GCPLengthAppData {
-    // Property type check is necessary to guard against data corruption or changes in format.
-    return typeof data === "object" && "nextCheckDateTime" in data && data.nextCheckDateTime instanceof Date;
-}
-
-/**
  * Application extension GCP length cache. Data is stored in application extension shared data.
  */
 class AppExtensionGCPLengthCache<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends RemoteGCPLengthCache {
     /**
-     * GS1 Company Prefix length data property name.
-     */
-    static readonly #GCP_LENGTH_DATA_NAME = `${AppExtension.APPLICATION_NAME_PREFIX}gcpLength`;
-
-    /**
      * Application extension.
      */
     readonly #appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>;
-
-    #gcpLengthAppData?: GCPLengthAppData | undefined;
 
     /**
      * Constructor.
@@ -87,50 +50,44 @@ class AppExtensionGCPLengthCache<ThrowError extends boolean, TError extends Erro
      * Application extension.
      */
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
-        super();
+        super(appExtension.sharedAppDataStorage);
 
         this.#appExtension = appExtension;
     }
-    
-    async initialize(): Promise<void> {
-        const gcpLengthAppData = await this.#appExtension.getSharedData(AppExtensionGCPLengthCache.#GCP_LENGTH_DATA_NAME);
 
-        if (isGCPLengthAppData(gcpLengthAppData)) {
-            this.#gcpLengthAppData = gcpLengthAppData;
+    /**
+     * @inheritDoc
+     */
+    override get nextCheckDateTime(): Promise<Date | undefined> {
+        return super.nextCheckDateTime.then((nextCheckDateTime) => {
+            this.#appExtension.logger.debug(`GS1 Company Prefix length next check date/time ${nextCheckDateTime?.toISOString()}`);
 
-            this.#appExtension.logger.trace("GS1 Company Prefix length data loaded from shared data");
-        }
+            return nextCheckDateTime;
+        });
     }
 
-    get nextCheckDateTime(): Date | undefined {
-        const nextCheckDateTime = this.#gcpLengthAppData?.nextCheckDateTime;
+    /**
+     * @inheritDoc
+     */
+    override get cacheDateTime(): Promise<Date | undefined> {
+        return super.cacheDateTime.then((cacheDateTime) => {
+            this.#appExtension.logger.debug(`GS1 Company Prefix length cache date/time ${cacheDateTime?.toISOString()}`);
 
-        this.#appExtension.logger.debug(`GS1 Company Prefix length next check date/time ${nextCheckDateTime?.toISOString()}`);
-
-        return nextCheckDateTime;
+            return cacheDateTime;
+        });
     }
 
-    get cacheDateTime(): Date | undefined {
-        const cacheDateTime = this.#gcpLengthAppData?.gcpLengthData?.dateTime;
+    override get cacheData(): Promise<GCPLengthData> {
+        return super.cacheData.then((cacheData) => {
+            this.#appExtension.logger.debug("GS1 Company Prefix length cache data retrieved");
 
-        this.#appExtension.logger.debug(`GS1 Company Prefix length cache date/time ${cacheDateTime?.toISOString()}`);
-
-        return cacheDateTime;
+            return cacheData;
+        });
     }
 
-    get cacheData(): GCPLengthData {
-        this.#appExtension.logger.debug("GS1 Company Prefix length cache data retrieved");
-
-        const gcpLengthData = this.#gcpLengthAppData?.gcpLengthData;
-
-        if (gcpLengthData === undefined) {
-            // Application bug; localization not necessary.
-            throw new Error("Cache data not defined");
-        }
-
-        return gcpLengthData;
-    }
-
+    /**
+     * @inheritDoc
+     */
     override get sourceDateTime(): Promise<Date> {
         return super.sourceDateTime.then((sourceDateTime) => {
             this.#appExtension.logger.debug(`GS1 Company Prefix source date/time ${sourceDateTime.toISOString()}`);
@@ -139,6 +96,9 @@ class AppExtensionGCPLengthCache<ThrowError extends boolean, TError extends Erro
         });
     }
 
+    /**
+     * @inheritDoc
+     */
     override get sourceData(): Promise<GCPLengthData> {
         return super.sourceData.then((sourceData) => {
             this.#appExtension.logger.debug("GS1 Company Prefix length source data retrieved");
@@ -150,15 +110,10 @@ class AppExtensionGCPLengthCache<ThrowError extends boolean, TError extends Erro
     /**
      * @inheritDoc
      */
-    async update(nextCheckDateTime: Date, _cacheDateTime?: Date, cacheData?: GCPLengthData): Promise<void> {
-        this.#gcpLengthAppData = {
-            nextCheckDateTime,
-            gcpLengthData: cacheData ?? this.#gcpLengthAppData?.gcpLengthData
-        };
-
-        await this.#appExtension.setSharedData(AppExtensionGCPLengthCache.#GCP_LENGTH_DATA_NAME, this.#gcpLengthAppData);
-
-        this.#appExtension.logger.trace(`GS1 Company Prefix length saved to shared data with next check date/time ${nextCheckDateTime.toISOString()}`);
+    override async update(nextCheckDateTime: Date, cacheDateTime?: Date, cacheData?: GCPLengthData): Promise<void> {
+        return super.update(nextCheckDateTime, cacheDateTime, cacheData).then(() => {
+            this.#appExtension.logger.trace(`GS1 Company Prefix length saved to shared data with next check date/time ${nextCheckDateTime.toISOString()}`);
+        });
     }
 }
 
@@ -166,7 +121,7 @@ class AppExtensionGCPLengthCache<ThrowError extends boolean, TError extends Erro
     namespace: "GS1"
 })
 export class PrefixManagerProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
-    #gcpLengthCache?: AppExtensionGCPLengthCache<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>;
+    readonly #gcpLengthCache = new AppExtensionGCPLengthCache(this.appExtension);
     
     @proxy.describeMethod({
         type: Types.Any,
@@ -182,19 +137,11 @@ export class PrefixManagerProxy<ThrowError extends boolean, TError extends Error
      * Load GS1 Company Prefix length data.
      */
     async #loadGCPLengthData(): Promise<void> {
-        const appExtension = this.appExtension;
+        const logger = this.appExtension.logger;
 
-        if (this.#gcpLengthCache === undefined) {
-            this.#gcpLengthCache = new AppExtensionGCPLengthCache(this.appExtension);
-
-            await this.#gcpLengthCache.initialize();
-        }
-
-        const gcpLengthCache = this.#gcpLengthCache;
-
-        await PrefixManager.loadGCPLengthData(gcpLengthCache).catch((e: unknown) => {
+        await PrefixManager.loadGCPLengthData(this.#gcpLengthCache).catch((e: unknown) => {
             // Swallow error and log it.
-            appExtension.logger.error("Load GS1 Company Prefix length data failed", e);
+            logger.error("Load GS1 Company Prefix length data failed", e);
         });
     }
 
@@ -206,10 +153,10 @@ export class PrefixManagerProxy<ThrowError extends boolean, TError extends Error
     async gcpLength(identifierType: string, matrixIdentifiers: Matrix<string>): Promise<MatrixResult<number, ThrowError, TError>> {
         await this.#loadGCPLengthData();
 
-        return this.setUpMatrixResult(() =>
-            validateIdentifierType(identifierType),
-        matrixIdentifiers, (validatedIdentifierType, identifier) =>
-            PrefixManager.gcpLength(validatedIdentifierType, identifier)
+        return this.setUpMatrixResult(
+            () => validateIdentifierType(identifierType),
+            matrixIdentifiers,
+            (validatedIdentifierType, identifier) => PrefixManager.gcpLength(validatedIdentifierType, identifier)
         );
     }
 
