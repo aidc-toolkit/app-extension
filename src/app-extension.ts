@@ -38,7 +38,7 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
     /**
      * Version property name.
      */
-    static readonly VERSION_NAME = `${AppExtension.APPLICATION_NAME}/version`;
+    static readonly VERSION_NAME = `${AppExtension.APPLICATION_NAME}.version`;
 
     /**
      * Maximum logger messages length.
@@ -212,9 +212,17 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * Property name.
      *
      * @param value
-     * Property value or null to remove.
+     * Property value.
      */
-    abstract setDocumentProperty(name: string, value: string | null): Promisable<void>;
+    abstract setDocumentProperty(name: string, value: string): Promisable<void>;
+
+    /**
+     * Delete a property from the active document.
+     *
+     * @param name
+     * Property name.
+     */
+    abstract deleteDocumentProperty(name: string): Promisable<void>;
 
     /**
      * Get application data storage for the current document.
