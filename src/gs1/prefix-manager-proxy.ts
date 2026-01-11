@@ -1,5 +1,12 @@
 import type { Nullishable } from "@aidc-toolkit/core";
-import { type GCPLengthData, PrefixManager, type PrefixType, RemoteGCPLengthCache } from "@aidc-toolkit/gs1";
+import {
+    type GCPLengthCache,
+    type GCPLengthData,
+    PrefixManager,
+    type PrefixType,
+    RemoteGCPLengthCache
+} from "@aidc-toolkit/gs1";
+import type { Logger } from "tslog";
 import type { AppExtension } from "../app-extension.js";
 import { type ExtendsParameterDescriptor, type ParameterDescriptor, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
@@ -39,9 +46,9 @@ const gcpLengthIdentifierParameterDescriptor: ExtendsParameterDescriptor = {
  */
 class AppExtensionGCPLengthCache<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends RemoteGCPLengthCache {
     /**
-     * Application extension.
+     * Logger.
      */
-    readonly #appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>;
+    readonly #logger: Logger<object>;
 
     /**
      * Constructor.
@@ -52,7 +59,7 @@ class AppExtensionGCPLengthCache<ThrowError extends boolean, TError extends Erro
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
         super(appExtension.sharedAppDataStorage);
 
-        this.#appExtension = appExtension;
+        this.#logger = appExtension.logger;
     }
 
     /**
@@ -60,7 +67,7 @@ class AppExtensionGCPLengthCache<ThrowError extends boolean, TError extends Erro
      */
     override get nextCheckDateTime(): Promise<Date | undefined> {
         return super.nextCheckDateTime.then((nextCheckDateTime) => {
-            this.#appExtension.logger.debug(`GS1 Company Prefix length next check date/time ${nextCheckDateTime?.toISOString()}`);
+            this.#logger.debug(`GS1 Company Prefix length next check date/time ${nextCheckDateTime?.toISOString()}`);
 
             return nextCheckDateTime;
         });
@@ -71,7 +78,7 @@ class AppExtensionGCPLengthCache<ThrowError extends boolean, TError extends Erro
      */
     override get cacheDateTime(): Promise<Date | undefined> {
         return super.cacheDateTime.then((cacheDateTime) => {
-            this.#appExtension.logger.debug(`GS1 Company Prefix length cache date/time ${cacheDateTime?.toISOString()}`);
+            this.#logger.debug(`GS1 Company Prefix length cache date/time ${cacheDateTime?.toISOString()}`);
 
             return cacheDateTime;
         });
@@ -79,7 +86,7 @@ class AppExtensionGCPLengthCache<ThrowError extends boolean, TError extends Erro
 
     override get cacheData(): Promise<GCPLengthData> {
         return super.cacheData.then((cacheData) => {
-            this.#appExtension.logger.debug("GS1 Company Prefix length cache data retrieved");
+            this.#logger.debug("GS1 Company Prefix length cache data retrieved");
 
             return cacheData;
         });
@@ -90,7 +97,7 @@ class AppExtensionGCPLengthCache<ThrowError extends boolean, TError extends Erro
      */
     override get sourceDateTime(): Promise<Date> {
         return super.sourceDateTime.then((sourceDateTime) => {
-            this.#appExtension.logger.debug(`GS1 Company Prefix source date/time ${sourceDateTime.toISOString()}`);
+            this.#logger.debug(`GS1 Company Prefix source date/time ${sourceDateTime.toISOString()}`);
 
             return sourceDateTime;
         });
@@ -101,7 +108,7 @@ class AppExtensionGCPLengthCache<ThrowError extends boolean, TError extends Erro
      */
     override get sourceData(): Promise<GCPLengthData> {
         return super.sourceData.then((sourceData) => {
-            this.#appExtension.logger.debug("GS1 Company Prefix length source data retrieved");
+            this.#logger.debug("GS1 Company Prefix length source data retrieved");
 
             return sourceData;
         });
@@ -112,7 +119,7 @@ class AppExtensionGCPLengthCache<ThrowError extends boolean, TError extends Erro
      */
     override async update(nextCheckDateTime: Date, cacheDateTime?: Date, cacheData?: GCPLengthData): Promise<void> {
         return super.update(nextCheckDateTime, cacheDateTime, cacheData).then(() => {
-            this.#appExtension.logger.trace(`GS1 Company Prefix length saved to shared data with next check date/time ${nextCheckDateTime.toISOString()}`);
+            this.#logger.trace(`GS1 Company Prefix length saved to shared data with next check date/time ${nextCheckDateTime.toISOString()}`);
         });
     }
 }
@@ -121,8 +128,16 @@ class AppExtensionGCPLengthCache<ThrowError extends boolean, TError extends Erro
     namespace: "GS1"
 })
 export class PrefixManagerProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
-    readonly #gcpLengthCache = new AppExtensionGCPLengthCache(this.appExtension);
+    #gcpLengthCache!: GCPLengthCache;
     
+    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
+        super(appExtension);
+        
+        appExtension.addPostInitializeCallback(() => {
+            this.#gcpLengthCache = new AppExtensionGCPLengthCache(appExtension);
+        });
+    }
+
     @proxy.describeMethod({
         type: Types.Any,
         isMatrix: true,
@@ -139,7 +154,7 @@ export class PrefixManagerProxy<ThrowError extends boolean, TError extends Error
     async #loadGCPLengthData(): Promise<void> {
         const logger = this.appExtension.logger;
 
-        await PrefixManager.loadGCPLengthData(this.#gcpLengthCache).catch((e: unknown) => {
+        return PrefixManager.loadGCPLengthData(this.#gcpLengthCache).catch((e: unknown) => {
             // Swallow error and log it.
             logger.error("Load GS1 Company Prefix length data failed", e);
         });
@@ -151,13 +166,11 @@ export class PrefixManagerProxy<ThrowError extends boolean, TError extends Error
         parameterDescriptors: [identifierTypeParameterDescriptor, gcpLengthIdentifierParameterDescriptor]
     })
     async gcpLength(identifierType: string, matrixIdentifiers: Matrix<string>): Promise<MatrixResult<number, ThrowError, TError>> {
-        await this.#loadGCPLengthData();
-
-        return this.setUpMatrixResult(
+        return this.#loadGCPLengthData().then(() => this.setUpMatrixResult(
             () => validateIdentifierType(identifierType),
             matrixIdentifiers,
             (validatedIdentifierType, identifier) => PrefixManager.gcpLength(validatedIdentifierType, identifier)
-        );
+        ));
     }
 
     @proxy.describeMethod({
@@ -166,9 +179,9 @@ export class PrefixManagerProxy<ThrowError extends boolean, TError extends Error
         parameterDescriptors: []
     })
     async gcpLengthDateTime(): Promise<SingletonResult<string, ThrowError, TError>> {
-        await this.#loadGCPLengthData();
-
-        return this.singletonResult(() => PrefixManager.gcpLengthDateTime().toISOString());
+        return this.#loadGCPLengthData().then(() =>
+            this.singletonResult(() => PrefixManager.gcpLengthDateTime().toISOString())
+        );
     }
 
     @proxy.describeMethod({
@@ -177,8 +190,8 @@ export class PrefixManagerProxy<ThrowError extends boolean, TError extends Error
         parameterDescriptors: []
     })
     async gcpLengthDisclaimer(): Promise<SingletonResult<string, ThrowError, TError>> {
-        await this.#loadGCPLengthData();
-
-        return this.singletonResult(() => PrefixManager.gcpLengthDisclaimer());
+        return this.#loadGCPLengthData().then(() =>
+            this.singletonResult(() => PrefixManager.gcpLengthDisclaimer())
+        );
     }
 }
