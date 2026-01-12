@@ -103,13 +103,13 @@ class LocaleResourcesGenerator extends Generator {
     /**
      * @inheritDoc
      */
-    protected initialize(): void {
+    protected override initialize(): void {
     }
 
     /**
      * @inheritDoc
      */
-    protected createProxyObject(): void {
+    protected override createProxyObject(): void {
     }
 
     /**
@@ -187,7 +187,7 @@ class LocaleResourcesGenerator extends Generator {
     /**
      * @inheritDoc
      */
-    protected createProxyFunction(classDescriptor: ClassDescriptor, methodDescriptor: MethodDescriptor): void {
+    protected override createProxyFunction(classDescriptor: ClassDescriptor, methodDescriptor: MethodDescriptor): void {
         // Hidden functions aren't localized.
         if (!(methodDescriptor.isHidden ?? false)) {
             // Add any parameters that are not already known.
@@ -368,7 +368,7 @@ class LocaleResourcesGenerator extends Generator {
     /**
      * @inheritDoc
      */
-    protected async finalize(success: boolean): Promise<void> {
+    protected override async finalize(success: boolean): Promise<void> {
         if (success) {
             this.#buildParametersLocaleResources(this.#parametersSequencer);
 
