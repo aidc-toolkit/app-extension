@@ -13,7 +13,7 @@ export const appExtensionNS = "aidct_app_extension";
 export type AppExtensionLocaleResources = typeof enLocaleResources;
 
 /**
- * App extension resource.
+ * App extension resource bundle.
  */
 export const appExtensionResourceBundle: Resource = {
     en: {
@@ -37,7 +37,7 @@ export const i18nextAppExtension: i18n = i18next.createInstance();
  * Debug setting.
  *
  * @returns
- * App extension resource.
+ * App extension resource bundle.
  */
 export async function i18nAppExtensionInit(environment: I18nEnvironment, debug = false): Promise<Resource> {
     return i18nInit(i18nextAppExtension, environment, debug, appExtensionNS, appExtensionResourceBundle, i18nCoreInit, i18nUtilityInit, i18nGS1Init);
