@@ -1,3 +1,5 @@
+/* eslint-disable no-console -- Console application. */
+
 import { getLogger, type LocaleResources } from "@aidc-toolkit/core";
 import * as fs from "node:fs";
 import * as path from "node:path";
@@ -375,7 +377,7 @@ class LocaleResourcesGenerator extends Generator {
             }).filter(entry => entry.isDirectory()).map(async (entry) => {
                 const localeResourcesSource = path.resolve(LocaleResourcesGenerator.#IMPORT_PATH, entry.name, "locale-resources.ts");
 
-                await import(localeResourcesSource).then((module) => {
+                return import(localeResourcesSource).then((module) => {
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Module format is known.
                     const localeResources = this.#merge(entry.name === "en", "", this.#LocaleResources, (module as LocaleResourcesModule).default, !entry.name.includes("-"));
 
@@ -386,4 +388,7 @@ class LocaleResourcesGenerator extends Generator {
     }
 }
 
-await new LocaleResourcesGenerator().generate();
+new LocaleResourcesGenerator().generate().catch((e: unknown) => {
+    console.error(e);
+    process.exit(1);
+});
