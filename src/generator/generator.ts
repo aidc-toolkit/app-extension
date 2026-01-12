@@ -3,7 +3,7 @@ import type { ParseKeys } from "i18next";
 import { AppUtilityProxy } from "../app-utility-proxy.js";
 import type { ClassDescriptor, MethodDescriptor } from "../descriptor.js";
 import * as GS1 from "../gs1/index.js";
-import { appExtensionResources, i18nAppExtensionInit, i18nextAppExtension } from "../locale/i18n.js";
+import { appExtensionResourceBundle, i18nAppExtensionInit, i18nextAppExtension } from "../locale/i18n.js";
 import { proxy } from "../proxy.js";
 import * as Utility from "../utility/index.js";
 
@@ -84,7 +84,7 @@ export abstract class Generator {
      * Include localizations if true.
      */
     constructor(includeLocalizations = true) {
-        this.#locales = includeLocalizations ? Object.keys(appExtensionResources) : [];
+        this.#locales = includeLocalizations ? Object.keys(appExtensionResourceBundle) : [];
         this.#defaultLocale = this.#locales[0] ?? "";
     }
 
