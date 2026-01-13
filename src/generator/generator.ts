@@ -1,5 +1,6 @@
-import { I18nEnvironments, type Promisable } from "@aidc-toolkit/core";
+import { getLogger, I18nEnvironments, type Promisable } from "@aidc-toolkit/core";
 import type { ParseKeys } from "i18next";
+import type { Logger } from "tslog";
 import { AppUtilityProxy } from "../app-utility-proxy.js";
 import type { ClassDescriptor, MethodDescriptor } from "../descriptor.js";
 import * as GS1 from "../gs1/index.js";
@@ -63,6 +64,11 @@ export abstract class Generator {
     static readonly #DOCUMENTATION_PATH = "app-extension/";
 
     /**
+     * Logger.
+     */
+    readonly #logger = getLogger();
+
+    /**
      * Locales.
      */
     readonly #locales: readonly string[];
@@ -86,6 +92,13 @@ export abstract class Generator {
     constructor(includeLocalizations = true) {
         this.#locales = includeLocalizations ? Object.keys(appExtensionResourceBundle) : [];
         this.#defaultLocale = this.#locales[0] ?? "";
+    }
+
+    /**
+     * Get the logger.
+     */
+    get logger(): Logger<object> {
+        return this.#logger;
     }
 
     /**

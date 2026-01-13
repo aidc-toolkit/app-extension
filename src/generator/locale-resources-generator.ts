@@ -1,6 +1,4 @@
-/* eslint-disable no-console -- Console application. */
-
-import { getLogger, type LocaleResources } from "@aidc-toolkit/core";
+import type { LocaleResources } from "@aidc-toolkit/core";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import type {
@@ -64,11 +62,6 @@ class LocaleResourcesGenerator extends Generator {
      * Locale resources import path.
      */
     static readonly #IMPORT_PATH = "../app-extension/src/locale";
-
-    /**
-     * Logger.
-     */
-    readonly #logger = getLogger();
 
     /**
      * Parameters sequencer.
@@ -260,7 +253,7 @@ class LocaleResourcesGenerator extends Generator {
                 if (!deleteMissing) {
                     newDestinationLocaleResources[key] = destinationValue;
                 } else if (logChanges) {
-                    this.#logger.info(`Deleting ${parentKey}${key}...`);
+                    this.logger.info(`Deleting ${parentKey}${key}...`);
                 }
             }
         }
@@ -269,7 +262,7 @@ class LocaleResourcesGenerator extends Generator {
             if (!(key in destinationLocaleResources)) {
                 if (addMissing) {
                     if (logChanges) {
-                        this.#logger.info(`Adding ${parentKey}${key}...`);
+                        this.logger.info(`Adding ${parentKey}${key}...`);
                     }
 
                     newDestinationLocaleResources[key] = sourceValue;
@@ -388,7 +381,9 @@ class LocaleResourcesGenerator extends Generator {
     }
 }
 
-new LocaleResourcesGenerator().generate().catch((e: unknown) => {
-    console.error(e);
+const generator = new LocaleResourcesGenerator();
+
+generator.generate().catch((e: unknown) => {
+    generator.logger.error(e);
     process.exit(1);
 });
