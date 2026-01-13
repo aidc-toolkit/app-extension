@@ -128,14 +128,12 @@ class AppExtensionGCPLengthCache<ThrowError extends boolean, TError extends Erro
     namespace: "GS1"
 })
 export class PrefixManagerProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
-    #gcpLengthCache!: GCPLengthCache;
+    readonly #gcpLengthCache: GCPLengthCache;
     
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
         super(appExtension);
         
-        appExtension.addPostInitializeCallback(() => {
-            this.#gcpLengthCache = new AppExtensionGCPLengthCache(appExtension);
-        });
+        this.#gcpLengthCache = new AppExtensionGCPLengthCache(appExtension);
     }
 
     @proxy.describeMethod({
@@ -150,13 +148,14 @@ export class PrefixManagerProxy<ThrowError extends boolean, TError extends Error
 
     /**
      * Load GS1 Company Prefix length data.
+     *
+     * @returns
+     * Void promise.
      */
     async #loadGCPLengthData(): Promise<void> {
-        const logger = this.appExtension.logger;
-
         return PrefixManager.loadGCPLengthData(this.#gcpLengthCache).catch((e: unknown) => {
-            // Swallow error and log it.
-            logger.error("Load GS1 Company Prefix length data failed", e);
+            // Log and swallow error.
+            this.appExtension.logger.error("Load GS1 Company Prefix length data failed", e);
         });
     }
 

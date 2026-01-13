@@ -76,11 +76,6 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
     readonly #memoryTransport: MemoryTransport<object>;
 
     /**
-     * Callbacks to run after initialization.
-     */
-    readonly #postInitializeCallbacks: Array<() => Promisable<void>> = [];
-
-    /**
      * Constructor.
      *
      * @param version
@@ -109,16 +104,6 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
     }
 
     /**
-     * Add a callback to run after initialization.
-     *
-     * @param postInitializeCallback
-     * Callback to run after initialization.
-     */
-    addPostInitializeCallback(postInitializeCallback: () => Promisable<void>): void {
-        this.#postInitializeCallbacks.push(postInitializeCallback);
-    }
-
-    /**
      * Initialize the application extension.
      */
     async initialize(): Promise<void> {
@@ -127,13 +112,6 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
         if (fileVersion !== this.#version) {
             await this.setDocumentProperty(AppExtension.VERSION_NAME, this.#version);
         }
-    }
-
-    /**
-     * Perform post-initialization tasks. Must be called by derived class after initialization.
-     */
-    protected async postInitialize(): Promise<void> {
-        await Promise.all(this.#postInitializeCallbacks.map(async postInitializeCallback => Promise.resolve(postInitializeCallback())));
     }
 
     /**
