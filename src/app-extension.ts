@@ -96,8 +96,7 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
         const isProduction = !version.includes("-");
 
         this.#logger = getLogger(isProduction ? LogLevels.Info : LogLevels.Debug, {
-            type: isProduction ? "hidden" : "pretty",
-            hideLogPositionForProduction: isProduction
+            type: isProduction ? "hidden" : "pretty"
         });
 
         this.#memoryTransport = new MemoryTransport(this.#logger, AppExtension.#MAXIMUM_LOGGER_MESSAGES_LENGTH, AppExtension.#TRUNCATE_LOGGER_MESSAGES_LENGTH);
