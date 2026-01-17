@@ -1,15 +1,15 @@
-import { type ParameterDescriptor, Types } from "../descriptor.js";
+import { Multiplicities, type ParameterDescriptor, Types } from "../descriptor.js";
 
 export const identifierTypeParameterDescriptor: ParameterDescriptor = {
     name: "identifierType",
     type: Types.String,
-    isMatrix: false,
+    multiplicity: Multiplicities.Singleton,
     isRequired: true
 };
 
 export const identifierParameterDescriptor: ParameterDescriptor = {
     name: "identifier",
     type: Types.String,
-    isMatrix: true,
+    multiplicity: Multiplicities.Matrix,
     isRequired: true
 };

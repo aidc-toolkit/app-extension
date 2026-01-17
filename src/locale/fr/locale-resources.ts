@@ -5,6 +5,19 @@ export default {
     Proxy: {
         matrixMustBeArray: "La matrice d'entrée doit être unidimensionnelle"
     },
+    Categories: {
+        utility: "Utilitaire",
+        transformation: "Transformation",
+        string: "Chaîne de caractères",
+        GS1: {
+            checkCharacter: "Caractère de contrôle",
+            identifierValidation: "Validation d'identifiants",
+            identifierCreation: "Création d'identifiants",
+            variableMeasure: "Mesure variable",
+            prefix: "Préfixe",
+            service: "Service"
+        }
+    },
     IdentifierCreatorProxy: {
         prefixDefinitionMustBeOneDimensional: "La définition du préfixe doit être une matrice unidimensionnelle",
         prefixDefinitionMustHaveMaximumThreeElements: "La définition du préfixe doit comporter un maximum de 3 éléments",
@@ -17,21 +30,21 @@ export default {
         invalidIdentifierType: "Type d'identifiant invalide «{{identifierType}}»"
     },
     Parameters: {
-        spillMatrix: {
-            name: "matrice",
-            description: "Matrice unidimensionnelle à renverser."
+        spillArray: {
+            name: "tableau",
+            description: "Tableau à renverser."
         },
         spillMaximumWidth: {
             name: "largeurMaximale",
-            description: "Largeur maximale dans laquelle déverser la matrice. Si non fournie, la largeur restante de la feuille est utilisée."
+            description: "Largeur maximale dans laquelle déverser le tableau. Si non fournie, la largeur restante de la feuille est utilisée."
         },
         spillMaximumHeight: {
             name: "hauteurMaximale",
-            description: "Hauteur maximale dans laquelle déverser la matrice. Si non fournie, la hauteur restante de la feuille est utilisée."
+            description: "Hauteur maximale dans laquelle déverser le tableau. Si non fournie, la hauteur restante de la feuille est utilisée."
         },
         domain: {
             name: "domaine",
-            description: "Domaine de transformation. Les valeurs d'entrée valides vont de zéro au domaine-1."
+            description: "Domaine de transformation. Les valeurs d'entrée valides vont de *0* au *domaine-1*."
         },
         value: {
             name: "valeur",
@@ -43,7 +56,7 @@ export default {
         },
         count: {
             name: "compte",
-            description: "Nombre de valeurs à transformer. Si positive, les valeurs transformées vont de valeurInitiale ascendante à valeurInitiale+compte-1. Si négative, les valeurs transformées vont de valeurInitiale descendant à valeurInitiale+compte+1."
+            description: "Nombre de valeurs à transformer. Si positive, les valeurs transformées vont de *valeurInitiale* ascendante à *valeurInitiale+compte-1*. Si négative, les valeurs transformées vont de *valeurInitiale* descendant à *valeurInitiale+compte+1*."
         },
         transformedValue: {
             name: "valeurTransformee",
@@ -71,19 +84,19 @@ export default {
         },
         exclusionNone: {
             name: "exclusion",
-            description: "Valeurs de chaîne à exclure. La seule valeur valide est 0 (aucune exclusion)."
+            description: "Valeurs de chaîne à exclure. La seule valeur valide est *0* (aucune exclusion)."
         },
         exclusionFirstZero: {
             name: "exclusion",
-            description: "Valeurs de chaîne à exclure. Les valeurs valides sont 0 (aucune exclusion) et 1 (chaînes commençant par 0 exclues)."
+            description: "Valeurs de chaîne à exclure. Les valeurs valides sont *0* (aucune exclusion) et *1* (chaînes commençant par 0 exclues)."
         },
         exclusionAllNumeric: {
             name: "exclusion",
-            description: "Valeurs de chaîne à exclure. Les valeurs valides sont 0 (aucune exclusion) et 2 (chaînes entièrement numériques exclues)."
+            description: "Valeurs de chaîne à exclure. Les valeurs valides sont *0* (aucune exclusion) et *2* (chaînes entièrement numériques exclues)."
         },
         exclusionAny: {
             name: "exclusion",
-            description: "Valeurs de chaîne à exclure. Les valeurs valides sont 0 (aucune exclusion), 1 (chaînes commençant par 0 exclues) et 2 (chaînes toutes numériques exclues)."
+            description: "Valeurs de chaîne à exclure. Les valeurs valides sont *0* (aucune exclusion), *1* (chaînes commençant par 0 exclues) et *2* (chaînes toutes numériques exclues)."
         },
         length: {
             name: "longueur",
@@ -163,7 +176,7 @@ export default {
         },
         gtinLevel: {
             name: "niveau",
-            description: "Niveau auquel valider le GTIN. Les valeurs valides sont 0 (n'importe lequel), 1 (article commercial de consommation au détail) et 2 (autre que le niveau de l'article commercial de consommation au détail)."
+            description: "Niveau auquel valider le GTIN. Les valeurs valides sont *0* (n'importe lequel), *1* (article commercial de consommation au détail) et *2* (autre que le niveau de l'article commercial de consommation au détail)."
         },
         prefix: {
             name: "prefixe",
@@ -171,7 +184,7 @@ export default {
         },
         prefixType: {
             name: "typeDePréfixe",
-            description: "Type de préfixe. Les valeurs valides sont 0 (préfixe d'entreprise GS1), 1 (préfixe d'entreprise U.P.C.) et 2 (préfixe GS1)."
+            description: "Type de préfixe. Les valeurs valides sont *0* (préfixe d'entreprise GS1), *1* (préfixe d'entreprise U.P.C.) et *2* (préfixe GS1)."
         },
         tweakFactor: {
             name: "facteurDeReglage",
@@ -183,11 +196,11 @@ export default {
         },
         prefixDefinitionAny: {
             name: "prefixeDefinition",
-            description: "Définition de préfixe, soit un préfixe d'entreprise simple GS1 (sous forme de chaîne), soit le résultat d'un appel à definePrefix. Tout type de préfixe est pris en charge."
+            description: "Définition de préfixe, soit un préfixe d'entreprise simple GS1 (sous forme de chaîne), soit le résultat d'un appel à *definisserPrefixe*. Tout type de préfixe est pris en charge."
         },
         prefixDefinitionGS1UPC: {
             name: "prefixeDefinition",
-            description: "Définition de préfixe, soit un préfixe d'entreprise simple GS1 (sous forme de chaîne), soit le résultat d'un appel à definePrefix. Seuls les types de préfixes 0 (préfixe d'entreprise GS1) et 1 (préfixe d'entreprise U.P.C.) sont pris en charge."
+            description: "Définition de préfixe, soit un préfixe d'entreprise simple GS1 (sous forme de chaîne), soit le résultat d'un appel à *definisserPrefixe*. Seuls les types de préfixes *0* (préfixe d'entreprise GS1) et *1* (préfixe d'entreprise U.P.C.) sont pris en charge."
         },
         sparse: {
             name: "clairsemee",

@@ -1,21 +1,21 @@
 import { isNullish, type LogLevel, logLevelOf, type NonNullishable, type Nullishable } from "@aidc-toolkit/core";
-import { type ExtendsParameterDescriptor, type ParameterDescriptor, Types } from "./descriptor.js";
+import { type ExtendsParameterDescriptor, Multiplicities, type ParameterDescriptor, Types } from "./descriptor.js";
 import { LibProxy } from "./lib-proxy.js";
 import { i18nextAppExtension } from "./locale/i18n.js";
 import { proxy } from "./proxy.js";
 import type { ErrorExtends, Matrix, MatrixResult } from "./type.js";
 
-const spillMatrixParameterDescriptor: ParameterDescriptor = {
-    name: "spillMatrix",
+const spillArrayParameterDescriptor: ParameterDescriptor = {
+    name: "spillArray",
     type: Types.Any,
-    isMatrix: true,
+    multiplicity: Multiplicities.Array,
     isRequired: true
 };
 
 const spillMaximumParameterDescriptor: ParameterDescriptor = {
     name: "spillMaximum",
     type: Types.Number,
-    isMatrix: false,
+    multiplicity: Multiplicities.Singleton,
     isRequired: false
 };
 
@@ -64,7 +64,9 @@ interface MaximumDimensions {
  * @template TBigInt
  * Type to which big integer is mapped.
  */
-@proxy.describeClass(false)
+@proxy.describeClass(false, {
+    category: "utility"
+})
 export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
     /**
      * Get the version.
@@ -74,7 +76,7 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
      */
     @proxy.describeMethod({
         type: Types.String,
-        isMatrix: false,
+        multiplicity: Multiplicities.Singleton,
         parameterDescriptors: []
     })
     version(): string {
@@ -125,7 +127,7 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
     /**
      * Spill a one-dimensional matrix to fit a rectangle within a given maximum height and width.
      *
-     * @param matrixValues
+     * @param arrayValues
      * Matrix values. Matrix is length 1 or contains arrays of length 1 with the values.
      *
      * @param maximumHeight
@@ -143,15 +145,15 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
     @proxy.describeMethod({
         requiresContext: true,
         type: Types.Any,
-        isMatrix: true,
-        parameterDescriptors: [spillMatrixParameterDescriptor, spillMaximumHeightParameterDescriptor, spillMaximumWidthParameterDescriptor]
+        multiplicity: Multiplicities.Matrix,
+        parameterDescriptors: [spillArrayParameterDescriptor, spillMaximumHeightParameterDescriptor, spillMaximumWidthParameterDescriptor]
     })
-    async spill(matrixValues: Matrix<unknown>, maximumHeight: Nullishable<number>, maximumWidth: Nullishable<number>, invocationContext: Nullishable<TInvocationContext>): Promise<MatrixResult<unknown, ThrowError, TError>> {
+    async spill(arrayValues: Matrix<unknown>, maximumHeight: Nullishable<number>, maximumWidth: Nullishable<number>, invocationContext: Nullishable<TInvocationContext>): Promise<MatrixResult<unknown, ThrowError, TError>> {
         let result: MatrixResult<unknown, ThrowError, TError>;
 
         // Assume matrix is uniformly two-dimensional.
-        const height = matrixValues.length;
-        const width = height !== 0 ? matrixValues[0].length : 0;
+        const height = arrayValues.length;
+        const width = height !== 0 ? arrayValues[0].length : 0;
 
         const isArrayOrError = this.singletonResult(() => {
             if (height > 1 && width > 1) {
@@ -209,7 +211,7 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
                         const endIndex = startIndex + spillParallel;
 
                         // Each row is a slice of the original single row.
-                        const row = matrixValues[0].slice(startIndex, endIndex);
+                        const row = arrayValues[0].slice(startIndex, endIndex);
 
                         // Row length will be anywhere from 1 to spillParallel.
                         if (row.length < spillParallel) {
@@ -231,7 +233,7 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
 
                         // Each column is a slice of the original single column.
                         for (let valueIndex = rowIndex; valueIndex < length; valueIndex += spillParallel) {
-                            row.push(matrixValues[valueIndex][0]);
+                            row.push(arrayValues[valueIndex][0]);
                         }
 
                         // Row length will always be spillPerpendicular or spillPerpendicular - 1.
@@ -244,7 +246,7 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
                 }
             } else {
                 // Return matrix unmodified and let application handle spill error if any.
-                result = matrixValues;
+                result = arrayValues;
             }
         } else {
             // Return error as only element in matrix.
@@ -267,11 +269,11 @@ export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExt
         type: Types.String,
         isHidden: true,
         isStream: true,
-        isMatrix: true,
+        multiplicity: Multiplicities.Array,
         parameterDescriptors: [{
             name: "logLevel",
             type: Types.String,
-            isMatrix: false,
+            multiplicity: Multiplicities.Singleton,
             isRequired: false
         }]
     })

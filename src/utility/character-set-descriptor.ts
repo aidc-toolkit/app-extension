@@ -1,9 +1,9 @@
-import { type ExtendsParameterDescriptor, type ParameterDescriptor, Types } from "../descriptor.js";
+import { type ExtendsParameterDescriptor, Multiplicities, type ParameterDescriptor, Types } from "../descriptor.js";
 
 const exclusionParameterDescriptor: ParameterDescriptor = {
     name: "exclusion",
     type: Types.Number,
-    isMatrix: false,
+    multiplicity: Multiplicities.Singleton,
     isRequired: false
 };
 

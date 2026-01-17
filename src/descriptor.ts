@@ -44,6 +44,42 @@ export type TypeKey = keyof typeof Types;
 export type Type = typeof Types[TypeKey];
 
 /**
+ * Multiplicities supported by proxy methods.
+ */
+export const Multiplicities = {
+    /**
+     * Parameter or return value is a singleton.
+     */
+    Singleton: 0,
+
+    /**
+     * Parameter or return value is a singleton or an array.
+     */
+    Array: 1,
+
+    /**
+     * Parameter or return value is a singleton, an array, or a matrix.
+     */
+    Matrix: 2,
+
+    /**
+     * Parameter value is a singleton or array but is treated as a singleton internally and doesn't drive multiplicity
+     * of the return value. Return value is an array for use as a singleton array parameter.
+     */
+    SingletonArray: 3
+} as const;
+
+/**
+ * Multiplicity key.
+ */
+export type MultiplicityKey = keyof typeof Multiplicities;
+
+/**
+ * Multiplicity.
+ */
+export type Multiplicity = typeof Multiplicities[MultiplicityKey];
+
+/**
  * Type descriptor.
  */
 interface TypeDescriptor extends Descriptor {
@@ -53,9 +89,9 @@ interface TypeDescriptor extends Descriptor {
     readonly type: Type;
 
     /**
-     * True if type is a matrix (method accepts or returns, or parameter is, a two-dimensional array).
+     * Multiplicity.
      */
-    readonly isMatrix: boolean;
+    readonly multiplicity: Multiplicity;
 }
 
 /**
@@ -157,6 +193,11 @@ export interface ClassDescriptor extends Descriptor {
      * Class namespace. If not provided, class is at the top level.
      */
     readonly namespace?: string | undefined;
+
+    /**
+     * Category.
+     */
+    readonly category: string;
 
     /**
      * Method infix. If undefined, method name is generated verbatim.

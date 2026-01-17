@@ -9,7 +9,6 @@ import {
 } from "./identifier-creator-proxy.js";
 
 @proxy.describeClass(false, {
-    namespace: "GS1",
     methodInfix: "GLN"
 })
 export class GLNCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonSerializableNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, NonSerializableNumericIdentifierType, NonGTINNumericIdentifierCreator> {
@@ -19,7 +18,6 @@ export class GLNCreatorProxy<ThrowError extends boolean, TError extends ErrorExt
 }
 
 @proxy.describeClass(false, {
-    namespace: "GS1",
     methodInfix: "SSCC"
 })
 export class SSCCCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonSerializableNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, NonSerializableNumericIdentifierType, NonGTINNumericIdentifierCreator> {
@@ -29,7 +27,6 @@ export class SSCCCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
 }
 
 @proxy.describeClass(false, {
-    namespace: "GS1",
     methodInfix: "GRAI"
 })
 export class GRAICreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends SerializableNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
@@ -39,7 +36,6 @@ export class GRAICreatorProxy<ThrowError extends boolean, TError extends ErrorEx
 }
 
 @proxy.describeClass(false, {
-    namespace: "GS1",
     methodInfix: "GIAI"
 })
 export class GIAICreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
@@ -49,7 +45,6 @@ export class GIAICreatorProxy<ThrowError extends boolean, TError extends ErrorEx
 }
 
 @proxy.describeClass(false, {
-    namespace: "GS1",
     methodInfix: "GSRN"
 })
 export class GSRNCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonSerializableNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, NonSerializableNumericIdentifierType, NonGTINNumericIdentifierCreator> {
@@ -59,7 +54,6 @@ export class GSRNCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
 }
 
 @proxy.describeClass(false, {
-    namespace: "GS1",
     methodInfix: "GDTI"
 })
 export class GDTICreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends SerializableNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
@@ -69,7 +63,6 @@ export class GDTICreatorProxy<ThrowError extends boolean, TError extends ErrorEx
 }
 
 @proxy.describeClass(false, {
-    namespace: "GS1",
     methodInfix: "GINC"
 })
 export class GINCCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
@@ -79,7 +72,6 @@ export class GINCCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
 }
 
 @proxy.describeClass(false, {
-    namespace: "GS1",
     methodInfix: "GSIN"
 })
 export class GSINCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonSerializableNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, NonSerializableNumericIdentifierType, NonGTINNumericIdentifierCreator> {
@@ -89,7 +81,6 @@ export class GSINCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
 }
 
 @proxy.describeClass(false, {
-    namespace: "GS1",
     methodInfix: "GCN"
 })
 export class GCNCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends SerializableNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
@@ -99,7 +90,6 @@ export class GCNCreatorProxy<ThrowError extends boolean, TError extends ErrorExt
 }
 
 @proxy.describeClass(false, {
-    namespace: "GS1",
     methodInfix: "CPID"
 })
 export class CPIDCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
@@ -109,7 +99,6 @@ export class CPIDCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
 }
 
 @proxy.describeClass(false, {
-    namespace: "GS1",
     methodInfix: "GMN"
 })
 export class GMNCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {

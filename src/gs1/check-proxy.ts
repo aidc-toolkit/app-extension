@@ -6,7 +6,7 @@ import {
     isValidPriceOrWeightCheckDigit,
     priceOrWeightCheckDigit
 } from "@aidc-toolkit/gs1";
-import { type ExtendsParameterDescriptor, type ParameterDescriptor, Types } from "../descriptor.js";
+import { type ExtendsParameterDescriptor, Multiplicities, type ParameterDescriptor, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
 import { proxy } from "../proxy.js";
 import type { ErrorExtends, Matrix, MatrixResult, SingletonResult } from "../type.js";
@@ -14,7 +14,7 @@ import type { ErrorExtends, Matrix, MatrixResult, SingletonResult } from "../typ
 const checkSParameterDescriptor: ParameterDescriptor = {
     name: "checkS",
     type: Types.String,
-    isMatrix: true,
+    multiplicity: Multiplicities.Matrix,
     isRequired: true
 };
 
@@ -39,7 +39,7 @@ const checkDigitParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: numericSParameterDescriptor,
     sortOrder: 2,
     name: "checkDigit",
-    isMatrix: false
+    multiplicity: Multiplicities.Singleton
 };
 
 const ai82SParameterDescriptor: ExtendsParameterDescriptor = {
@@ -53,12 +53,13 @@ const ai82SWithCheckCharacterPairParameterDescriptor: ExtendsParameterDescriptor
 };
 
 @proxy.describeClass(false, {
-    namespace: "GS1"
+    namespace: "GS1",
+    category: "checkCharacter"
 })
 export class CheckProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
     @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true,
+        multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [numericSParameterDescriptor]
     })
     checkDigit(matrixSs: Matrix<string>): MatrixResult<string, ThrowError, TError> {
@@ -67,7 +68,7 @@ export class CheckProxy<ThrowError extends boolean, TError extends ErrorExtends<
 
     @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true,
+        multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [numericSWithCheckDigitParameterDescriptor]
     })
     hasValidCheckDigit(matrixSs: Matrix<string>): MatrixResult<boolean, ThrowError, TError> {
@@ -76,7 +77,7 @@ export class CheckProxy<ThrowError extends boolean, TError extends ErrorExtends<
 
     @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true,
+        multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [numericSFourOrFiveDigitsParameterDescriptor]
     })
     priceOrWeightCheckDigit(matrixSs: Matrix<string>): MatrixResult<string, ThrowError, TError> {
@@ -85,10 +86,10 @@ export class CheckProxy<ThrowError extends boolean, TError extends ErrorExtends<
 
     @proxy.describeMethod({
         type: Types.String,
-        isMatrix: false,
+        multiplicity: Multiplicities.Singleton,
         parameterDescriptors: [{
             ...numericSFourOrFiveDigitsParameterDescriptor,
-            isMatrix: false
+            multiplicity: Multiplicities.Singleton
         }, checkDigitParameterDescriptor]
     })
     isValidPriceOrWeightCheckDigit(s: string, checkDigit: string): SingletonResult<boolean, ThrowError, TError> {
@@ -97,7 +98,7 @@ export class CheckProxy<ThrowError extends boolean, TError extends ErrorExtends<
 
     @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true,
+        multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [ai82SParameterDescriptor]
     })
     checkCharacterPair(matrixSs: Matrix<string>): MatrixResult<string, ThrowError, TError> {
@@ -106,7 +107,7 @@ export class CheckProxy<ThrowError extends boolean, TError extends ErrorExtends<
 
     @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true,
+        multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [ai82SWithCheckCharacterPairParameterDescriptor]
     })
     hasValidCheckCharacterPair(matrixSs: Matrix<string>): MatrixResult<boolean, ThrowError, TError> {

@@ -5,6 +5,19 @@ export default {
     Proxy: {
         matrixMustBeArray: "Input matrix must be one-dimensional"
     },
+    Categories: {
+        utility: "Utility",
+        transformation: "Transformation",
+        string: "String",
+        GS1: {
+            checkCharacter: "Check character",
+            identifierValidation: "Identifier validation",
+            identifierCreation: "Identifier creation",
+            variableMeasure: "Variable measure",
+            prefix: "Prefix",
+            service: "Service"
+        }
+    },
     IdentifierCreatorProxy: {
         prefixDefinitionMustBeOneDimensional: "Prefix definition must be a one-dimensional matrix",
         prefixDefinitionMustHaveMaximumThreeElements: "Prefix definition must have a maximum of 3 elements",
@@ -17,21 +30,21 @@ export default {
         invalidIdentifierType: "Invalid identifier type \"{{identifierType}}\""
     },
     Parameters: {
-        spillMatrix: {
-            name: "matrix",
-            description: "One-dimensional matrix to spill."
+        spillArray: {
+            name: "array",
+            description: "Array to spill."
         },
         spillMaximumWidth: {
             name: "maximumWidth",
-            description: "Maximum width into which to spill the matrix. If not provided, the remaining sheet width is used."
+            description: "Maximum width into which to spill the array. If not provided, the remaining sheet width is used."
         },
         spillMaximumHeight: {
             name: "maximumHeight",
-            description: "Maximum height into which to spill the matrix. If not provided, the remaining sheet height is used."
+            description: "Maximum height into which to spill the array. If not provided, the remaining sheet height is used."
         },
         domain: {
             name: "domain",
-            description: "Transformation domain. Valid input values are from zero to domain-1."
+            description: "Transformation domain. Valid input values are from *0* to *domain-1*."
         },
         value: {
             name: "value",
@@ -43,7 +56,7 @@ export default {
         },
         count: {
             name: "count",
-            description: "Count of values to transform. If positive, values transformed are startValue to startValue+count-1. If negative, values transformed are startValue down to startValue+count+1."
+            description: "Count of values to transform. If positive, values transformed are *startValue* to *startValue+count-1*. If negative, values transformed are *startValue* down to *startValue+count+1*."
         },
         transformedValue: {
             name: "transformedValue",
@@ -71,19 +84,19 @@ export default {
         },
         exclusionNone: {
             name: "exclusion",
-            description: "String values to exclude. The only valid value is 0 (no exclusions)."
+            description: "String values to exclude. The only valid value is *0* (no exclusions)."
         },
         exclusionFirstZero: {
             name: "exclusion",
-            description: "String values to exclude. Valid values are 0 (no exclusions) and 1 (strings starting with 0 excluded)."
+            description: "String values to exclude. Valid values are *0* (no exclusions) and *1* (strings starting with 0 excluded)."
         },
         exclusionAllNumeric: {
             name: "exclusion",
-            description: "String values to exclude. Valid values are 0 (no exclusions) and 2 (strings that are all numeric excluded)."
+            description: "String values to exclude. Valid values are *0* (no exclusions) and *2* (strings that are all numeric excluded)."
         },
         exclusionAny: {
             name: "exclusion",
-            description: "String values to exclude. Valid values are 0 (no exclusions), 1 (strings starting with 0 excluded), and 2 (strings that are all numeric excluded)."
+            description: "String values to exclude. Valid values are *0* (no exclusions), *1* (strings starting with 0 excluded), and *2* (strings that are all numeric excluded)."
         },
         length: {
             name: "length",
@@ -163,7 +176,7 @@ export default {
         },
         gtinLevel: {
             name: "level",
-            description: "Level at which to validate the GTIN. Valid values are 0 (any), 1 (retail consumer trade item), and 2 (other than retail consumer trade item level)."
+            description: "Level at which to validate the GTIN. Valid values are *0* (any), *1* (retail consumer trade item), and *2* (other than retail consumer trade item level)."
         },
         prefix: {
             name: "prefix",
@@ -171,7 +184,7 @@ export default {
         },
         prefixType: {
             name: "prefixType",
-            description: "Prefix type. Valid values are 0 (GS1 Company Prefix), 1 (U.P.C. Company Prefix), and 2 (GS1 Prefix)."
+            description: "Prefix type. Valid values are *0* (GS1 Company Prefix), *1* (U.P.C. Company Prefix), and *2* (GS1 Prefix)."
         },
         tweakFactor: {
             name: "tweakFactor",
@@ -183,11 +196,11 @@ export default {
         },
         prefixDefinitionAny: {
             name: "prefixDefinition",
-            description: "Prefix definition, either a simple GS1 Company Prefix (as a string) or the result of a call to definePrefix. Any prefix type is supported."
+            description: "Prefix definition, either a simple GS1 Company Prefix (as a string) or the result of a call to *definePrefix*. Any prefix type is supported."
         },
         prefixDefinitionGS1UPC: {
             name: "prefixDefinition",
-            description: "Prefix definition, either a simple GS1 Company Prefix (as a string) or the result of a call to definePrefix. Only prefix types 0 (GS1 Company Prefix) and 1 (U.P.C. Company Prefix) are supported."
+            description: "Prefix definition, either a simple GS1 Company Prefix (as a string) or the result of a call to *definePrefix*. Only prefix types *0* (GS1 Company Prefix) and *1* (U.P.C. Company Prefix) are supported."
         },
         sparse: {
             name: "sparse",

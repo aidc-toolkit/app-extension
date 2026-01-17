@@ -1,6 +1,6 @@
 import type { Nullishable } from "@aidc-toolkit/core";
 import { RegExpValidator } from "@aidc-toolkit/utility";
-import { type ParameterDescriptor, Types } from "../descriptor.js";
+import { Multiplicities, type ParameterDescriptor, Types } from "../descriptor.js";
 import { proxy } from "../proxy.js";
 import type { ErrorExtends, Matrix } from "../type.js";
 import { validateSParameterDescriptor } from "./string-descriptor.js";
@@ -9,14 +9,14 @@ import { StringProxy } from "./string-proxy.js";
 const regExpParameterDescriptor: ParameterDescriptor = {
     name: "regExp",
     type: Types.String,
-    isMatrix: false,
+    multiplicity: Multiplicities.Singleton,
     isRequired: true
 };
 
 const errorMessageParameterDescriptor: ParameterDescriptor = {
     name: "errorMessage",
     type: Types.String,
-    isMatrix: false,
+    multiplicity: Multiplicities.Singleton,
     isRequired: false
 };
 
@@ -26,7 +26,7 @@ const errorMessageParameterDescriptor: ParameterDescriptor = {
 export class RegExpProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends StringProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
     @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true,
+        multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [regExpParameterDescriptor, validateSParameterDescriptor, errorMessageParameterDescriptor]
     })
     validate(regExp: string, matrixSs: Matrix<string>, errorMessage: Nullishable<string>): Matrix<string> {
@@ -40,7 +40,7 @@ export class RegExpProxy<ThrowError extends boolean, TError extends ErrorExtends
 
     @proxy.describeMethod({
         type: Types.Boolean,
-        isMatrix: true,
+        multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [regExpParameterDescriptor, validateSParameterDescriptor]
     })
     isValid(regExp: string, matrixSs: Matrix<string>): Matrix<boolean> {

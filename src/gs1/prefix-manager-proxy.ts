@@ -8,7 +8,7 @@ import {
 } from "@aidc-toolkit/gs1";
 import type { Logger } from "tslog";
 import type { AppExtension } from "../app-extension.js";
-import { type ExtendsParameterDescriptor, type ParameterDescriptor, Types } from "../descriptor.js";
+import { type ExtendsParameterDescriptor, Multiplicities, type ParameterDescriptor, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
 import { proxy } from "../proxy.js";
 import type { ErrorExtends, Matrix, MatrixResult, SingletonResult } from "../type.js";
@@ -18,21 +18,21 @@ import { validateIdentifierType } from "./identifier-type.js";
 const prefixParameterDescriptor: ParameterDescriptor = {
     name: "prefix",
     type: Types.String,
-    isMatrix: false,
+    multiplicity: Multiplicities.Singleton,
     isRequired: true
 };
 
 const prefixTypeParameterDescriptor: ParameterDescriptor = {
     name: "prefixType",
     type: Types.Number,
-    isMatrix: false,
+    multiplicity: Multiplicities.Singleton,
     isRequired: false
 };
 
 const tweakFactorParameterDescriptor: ParameterDescriptor = {
     name: "tweakFactor",
     type: Types.Number,
-    isMatrix: false,
+    multiplicity: Multiplicities.Singleton,
     isRequired: false
 };
 
@@ -125,7 +125,8 @@ class AppExtensionGCPLengthCache<ThrowError extends boolean, TError extends Erro
 }
 
 @proxy.describeClass(false, {
-    namespace: "GS1"
+    namespace: "GS1",
+    category: "prefix"
 })
 export class PrefixManagerProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
     readonly #gcpLengthCache: GCPLengthCache;
@@ -138,7 +139,7 @@ export class PrefixManagerProxy<ThrowError extends boolean, TError extends Error
 
     @proxy.describeMethod({
         type: Types.Any,
-        isMatrix: true,
+        multiplicity: Multiplicities.SingletonArray,
         parameterDescriptors: [prefixParameterDescriptor, prefixTypeParameterDescriptor, tweakFactorParameterDescriptor]
     })
     definePrefix(prefix: string, prefixType: Nullishable<PrefixType>, tweakFactor: Nullishable<number>): Matrix<unknown> {
@@ -161,7 +162,7 @@ export class PrefixManagerProxy<ThrowError extends boolean, TError extends Error
 
     @proxy.describeMethod({
         type: Types.Number,
-        isMatrix: true,
+        multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [identifierTypeParameterDescriptor, gcpLengthIdentifierParameterDescriptor]
     })
     async gcpLength(identifierType: string, matrixIdentifiers: Matrix<string>): Promise<MatrixResult<number, ThrowError, TError>> {
@@ -174,7 +175,7 @@ export class PrefixManagerProxy<ThrowError extends boolean, TError extends Error
 
     @proxy.describeMethod({
         type: Types.String,
-        isMatrix: false,
+        multiplicity: Multiplicities.Singleton,
         parameterDescriptors: []
     })
     async gcpLengthDateTime(): Promise<SingletonResult<string, ThrowError, TError>> {
@@ -185,7 +186,7 @@ export class PrefixManagerProxy<ThrowError extends boolean, TError extends Error
 
     @proxy.describeMethod({
         type: Types.String,
-        isMatrix: false,
+        multiplicity: Multiplicities.Singleton,
         parameterDescriptors: []
     })
     async gcpLengthDisclaimer(): Promise<SingletonResult<string, ThrowError, TError>> {

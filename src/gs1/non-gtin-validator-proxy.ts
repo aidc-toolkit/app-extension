@@ -9,7 +9,6 @@ import {
 } from "./identifier-validator-proxy.js";
 
 @proxy.describeClass(false, {
-    namespace: "GS1",
     methodInfix: "GLN"
 })
 export class GLNValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonSerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
@@ -19,7 +18,6 @@ export class GLNValidatorProxy<ThrowError extends boolean, TError extends ErrorE
 }
 
 @proxy.describeClass(false, {
-    namespace: "GS1",
     methodInfix: "SSCC"
 })
 export class SSCCValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonSerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
@@ -29,7 +27,6 @@ export class SSCCValidatorProxy<ThrowError extends boolean, TError extends Error
 }
 
 @proxy.describeClass(false, {
-    namespace: "GS1",
     methodInfix: "GRAI"
 })
 export class GRAIValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends SerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
@@ -39,7 +36,6 @@ export class GRAIValidatorProxy<ThrowError extends boolean, TError extends Error
 }
 
 @proxy.describeClass(false, {
-    namespace: "GS1",
     methodInfix: "GIAI"
 })
 export class GIAIValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
@@ -49,7 +45,6 @@ export class GIAIValidatorProxy<ThrowError extends boolean, TError extends Error
 }
 
 @proxy.describeClass(false, {
-    namespace: "GS1",
     methodInfix: "GSRN"
 })
 export class GSRNValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonSerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
@@ -59,7 +54,6 @@ export class GSRNValidatorProxy<ThrowError extends boolean, TError extends Error
 }
 
 @proxy.describeClass(false, {
-    namespace: "GS1",
     methodInfix: "GDTI"
 })
 export class GDTIValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends SerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
@@ -69,7 +63,6 @@ export class GDTIValidatorProxy<ThrowError extends boolean, TError extends Error
 }
 
 @proxy.describeClass(false, {
-    namespace: "GS1",
     methodInfix: "GINC"
 })
 export class GINCValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
@@ -79,7 +72,6 @@ export class GINCValidatorProxy<ThrowError extends boolean, TError extends Error
 }
 
 @proxy.describeClass(false, {
-    namespace: "GS1",
     methodInfix: "GSIN"
 })
 export class GSINValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonSerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
@@ -89,7 +81,6 @@ export class GSINValidatorProxy<ThrowError extends boolean, TError extends Error
 }
 
 @proxy.describeClass(false, {
-    namespace: "GS1",
     methodInfix: "GCN"
 })
 export class GCNValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends SerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
@@ -99,7 +90,6 @@ export class GCNValidatorProxy<ThrowError extends boolean, TError extends ErrorE
 }
 
 @proxy.describeClass(false, {
-    namespace: "GS1",
     methodInfix: "CPID"
 })
 export class CPIDValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
@@ -109,7 +99,6 @@ export class CPIDValidatorProxy<ThrowError extends boolean, TError extends Error
 }
 
 @proxy.describeClass(false, {
-    namespace: "GS1",
     methodInfix: "GMN"
 })
 export class GMNValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {

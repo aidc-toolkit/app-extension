@@ -1,6 +1,6 @@
 import { isNullish, type Nullishable } from "@aidc-toolkit/core";
 import { verifiedByGS1 } from "@aidc-toolkit/gs1";
-import { type ExtendsParameterDescriptor, type ParameterDescriptor, Types } from "../descriptor.js";
+import { type ExtendsParameterDescriptor, Multiplicities, type ParameterDescriptor, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
 import { proxy } from "../proxy.js";
 import type { ErrorExtends, Matrix, MatrixResult } from "../type.js";
@@ -15,24 +15,25 @@ const hyperlinkIdentifierParameterDescriptor: ExtendsParameterDescriptor = {
 const hyperlinkTextParameterDescriptor: ParameterDescriptor = {
     name: "hyperlinkText",
     type: Types.String,
-    isMatrix: false,
+    multiplicity: Multiplicities.Singleton,
     isRequired: false
 };
 
 const hyperlinkDetailsParameterDescriptor: ParameterDescriptor = {
     name: "hyperlinkDetails",
     type: Types.String,
-    isMatrix: false,
+    multiplicity: Multiplicities.Singleton,
     isRequired: false
 };
 
 @proxy.describeClass(false, {
-    namespace: "GS1"
+    namespace: "GS1",
+    category: "service"
 })
 export class ServiceProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
     @proxy.describeMethod({
         type: Types.Any,
-        isMatrix: true,
+        multiplicity: Multiplicities.Matrix,
         requiresContext: true,
         parameterDescriptors: [
             identifierTypeParameterDescriptor,

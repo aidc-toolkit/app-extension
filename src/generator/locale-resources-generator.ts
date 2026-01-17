@@ -102,6 +102,18 @@ class LocaleResourcesGenerator extends Generator {
     /**
      * @inheritDoc
      */
+    protected override createNamespace(): void {
+    }
+
+    /**
+     * @inheritDoc
+     */
+    protected override createCategory(): void {
+    }
+
+    /**
+     * @inheritDoc
+     */
     protected override createProxyObject(): void {
     }
 

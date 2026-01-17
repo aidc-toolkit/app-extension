@@ -1,6 +1,6 @@
 import type { Nullishable } from "@aidc-toolkit/core";
 import { mapIterable, Sequence, Transformer } from "@aidc-toolkit/utility";
-import { type ExtendsParameterDescriptor, type ParameterDescriptor, Types } from "../descriptor.js";
+import { type ExtendsParameterDescriptor, Multiplicities, type ParameterDescriptor, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
 import { proxy } from "../proxy.js";
 import type { ErrorExtends, Matrix, MatrixResult } from "../type.js";
@@ -14,7 +14,7 @@ import {
 const domainParameterDescriptor: ParameterDescriptor = {
     name: "domain",
     type: Types.Number,
-    isMatrix: false,
+    multiplicity: Multiplicities.Singleton,
     isRequired: true
 };
 
@@ -24,12 +24,13 @@ const transformedValueParameterDescriptor: ExtendsParameterDescriptor = {
 };
 
 @proxy.describeClass(false, {
+    category: "transformation",
     methodInfix: "Transform"
 })
 export class TransformerProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
     @proxy.describeMethod({
         type: Types.Number,
-        isMatrix: true,
+        multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [domainParameterDescriptor, valueParameterDescriptor, tweakParameterDescriptor]
     })
     forward(domain: number | bigint, matrixValues: Matrix<number | bigint>, tweak: Nullishable<number | bigint>): MatrixResult<TBigInt, ThrowError, TError> {
@@ -43,7 +44,7 @@ export class TransformerProxy<ThrowError extends boolean, TError extends ErrorEx
     @proxy.describeMethod({
         infixBefore: "Sequence",
         type: Types.Number,
-        isMatrix: true,
+        multiplicity: Multiplicities.Array,
         parameterDescriptors: [domainParameterDescriptor, startValueParameterDescriptor, countParameterDescriptor, tweakParameterDescriptor]
     })
     forwardSequence(domain: number | bigint, startValue: number, count: number, tweak: Nullishable<number | bigint>): MatrixResult<TBigInt, ThrowError, TError> {
@@ -56,7 +57,7 @@ export class TransformerProxy<ThrowError extends boolean, TError extends ErrorEx
 
     @proxy.describeMethod({
         type: Types.Number,
-        isMatrix: true,
+        multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [domainParameterDescriptor, transformedValueParameterDescriptor, tweakParameterDescriptor]
     })
     reverse(domain: number | bigint, matrixTransformedValues: Matrix<number | bigint>, tweak: Nullishable<number | bigint>): MatrixResult<TBigInt, ThrowError, TError> {

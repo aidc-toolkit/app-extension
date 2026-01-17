@@ -11,7 +11,7 @@ import {
     Sequence
 } from "@aidc-toolkit/utility";
 import type { AppExtension } from "../app-extension.js";
-import { type ExtendsParameterDescriptor, type ParameterDescriptor, Types } from "../descriptor.js";
+import { type ExtendsParameterDescriptor, Multiplicities, type ParameterDescriptor, Types } from "../descriptor.js";
 import { expandParameterDescriptor, proxy } from "../proxy.js";
 import type { ErrorExtends, Matrix, MatrixResult } from "../type.js";
 import {
@@ -31,7 +31,7 @@ import {
 const lengthParameterDescriptor: ParameterDescriptor = {
     name: "length",
     type: Types.Number,
-    isMatrix: false,
+    multiplicity: Multiplicities.Singleton,
     isRequired: true
 };
 
@@ -52,7 +52,7 @@ export abstract class CharacterSetValidatorProxy<ThrowError extends boolean, TEr
 
     @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true,
+        multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [validateSParameterDescriptor, exclusionNoneParameterDescriptor]
     })
     validate(matrixSs: Matrix<string>, exclusion: Nullishable<Exclusion>): Matrix<string> {
@@ -63,7 +63,7 @@ export abstract class CharacterSetValidatorProxy<ThrowError extends boolean, TEr
 
     @proxy.describeMethod({
         type: Types.Boolean,
-        isMatrix: true,
+        multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [validateSParameterDescriptor, exclusionNoneParameterDescriptor]
     })
     isValid(matrixSs: Matrix<string>, exclusion: Nullishable<Exclusion>): Matrix<boolean> {
@@ -83,7 +83,7 @@ export abstract class CharacterSetCreatorProxy<ThrowError extends boolean, TErro
 
     @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true,
+        multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [lengthParameterDescriptor, valueParameterDescriptor, exclusionNoneParameterDescriptor, tweakParameterDescriptor]
     })
     create(length: number, matrixValues: Matrix<number | bigint>, exclusion: Nullishable<Exclusion>, tweak: Nullishable<number | bigint>): MatrixResult<string, ThrowError, TError> {
@@ -98,7 +98,7 @@ export abstract class CharacterSetCreatorProxy<ThrowError extends boolean, TErro
     @proxy.describeMethod({
         infixBefore: "Sequence",
         type: Types.String,
-        isMatrix: true,
+        multiplicity: Multiplicities.Array,
         parameterDescriptors: [lengthParameterDescriptor, startValueParameterDescriptor, countParameterDescriptor, exclusionNoneParameterDescriptor, tweakParameterDescriptor]
     })
     createSequence(length: number, startValue: number, count: number, exclusion: Nullishable<Exclusion>, tweak: Nullishable<number | bigint>): MatrixResult<string, ThrowError, TError> {
@@ -114,7 +114,7 @@ export abstract class CharacterSetCreatorProxy<ThrowError extends boolean, TErro
 
     @proxy.describeMethod({
         type: Types.Number,
-        isMatrix: true,
+        multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [valueForSParameterDescriptor, exclusionNoneParameterDescriptor, tweakParameterDescriptor]
     })
     valueFor(matrixSs: Matrix<string>, exclusion: Nullishable<Exclusion>, tweak: Nullishable<number | bigint>): MatrixResult<TBigInt, ThrowError, TError> {

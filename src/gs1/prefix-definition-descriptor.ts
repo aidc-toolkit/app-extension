@@ -1,9 +1,9 @@
-import { type ExtendsParameterDescriptor, type ParameterDescriptor, Types } from "../descriptor.js";
+import { type ExtendsParameterDescriptor, Multiplicities, type ParameterDescriptor, Types } from "../descriptor.js";
 
 const prefixDefinitionParameterDescriptor: ParameterDescriptor = {
     name: "prefixDefinition",
     type: Types.Any,
-    isMatrix: true,
+    multiplicity: Multiplicities.SingletonArray,
     isRequired: true
 };
 

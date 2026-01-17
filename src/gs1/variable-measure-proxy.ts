@@ -1,5 +1,5 @@
 import { VariableMeasure } from "@aidc-toolkit/gs1";
-import { type ParameterDescriptor, Types } from "../descriptor.js";
+import { Multiplicities, type ParameterDescriptor, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
 import { proxy } from "../proxy.js";
 import type { ErrorExtends, Matrix, MatrixResult } from "../type.js";
@@ -7,38 +7,39 @@ import type { ErrorExtends, Matrix, MatrixResult } from "../type.js";
 const rcnFormatParameterDescriptor: ParameterDescriptor = {
     name: "rcnFormat",
     type: Types.String,
-    isMatrix: false,
+    multiplicity: Multiplicities.Singleton,
     isRequired: true
 };
 
 const rcnParameterDescriptor: ParameterDescriptor = {
     name: "rcn",
     type: Types.String,
-    isMatrix: true,
+    multiplicity: Multiplicities.Array,
     isRequired: true
 };
 
 const rcnItemReferenceParameterDescriptor: ParameterDescriptor = {
     name: "rcnItemReference",
     type: Types.Number,
-    isMatrix: false,
+    multiplicity: Multiplicities.Singleton,
     isRequired: true
 };
 
 const rcnPriceOrWeightParameterDescriptor: ParameterDescriptor = {
     name: "rcnPriceOrWeight",
     type: Types.Number,
-    isMatrix: true,
+    multiplicity: Multiplicities.Matrix,
     isRequired: true
 };
 
 @proxy.describeClass(false, {
-    namespace: "GS1"
+    namespace: "GS1",
+    category: "variableMeasure"
 })
 export class VariableMeasureProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
     @proxy.describeMethod({
         type: Types.Number,
-        isMatrix: true,
+        multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [rcnFormatParameterDescriptor, rcnParameterDescriptor]
     })
     parseVariableMeasureRCN(format: string, matrixRCNs: Matrix<string>): MatrixResult<number, ThrowError, TError> {
@@ -51,7 +52,7 @@ export class VariableMeasureProxy<ThrowError extends boolean, TError extends Err
 
     @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true,
+        multiplicity: Multiplicities.Matrix,
         ignoreInfix: true,
         parameterDescriptors: [rcnFormatParameterDescriptor, rcnItemReferenceParameterDescriptor, rcnPriceOrWeightParameterDescriptor]
     })

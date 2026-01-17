@@ -1,7 +1,7 @@
 import type { Nullishable } from "@aidc-toolkit/core";
 import type { GTINCreator, GTINType } from "@aidc-toolkit/gs1";
 import type { AppExtension } from "../app-extension.js";
-import { Types } from "../descriptor.js";
+import { Multiplicities, Types } from "../descriptor.js";
 import { expandParameterDescriptor, proxy } from "../proxy.js";
 import type { ErrorExtends, Matrix, MatrixResult } from "../type.js";
 import { valueParameterDescriptor } from "../utility/transformer-descriptor.js";
@@ -13,7 +13,6 @@ import {
 } from "./prefix-definition-descriptor.js";
 
 @proxy.describeClass(false, {
-    namespace: "GS1",
     methodInfix: "GTIN",
     replacementParameterDescriptors: [
         {
@@ -29,7 +28,7 @@ export class GTINCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
 
     @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true,
+        multiplicity: Multiplicities.Matrix,
         ignoreInfix: true,
         parameterDescriptors: [indicatorDigitParameterDescriptor, prefixDefinitionAnyParameterDescriptor, valueParameterDescriptor, sparseParameterDescriptor]
     })

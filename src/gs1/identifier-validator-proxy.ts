@@ -11,7 +11,7 @@ import type {
     SerializableNumericIdentifierType
 } from "@aidc-toolkit/gs1";
 import type { AppExtension } from "../app-extension.js";
-import { type ExtendsParameterDescriptor, Types } from "../descriptor.js";
+import { type ExtendsParameterDescriptor, Multiplicities, Types } from "../descriptor.js";
 import { proxy } from "../proxy.js";
 import type { ErrorExtends, Matrix, MatrixResult } from "../type.js";
 import { exclusionAllNumericParameterDescriptor } from "../utility/character-set-descriptor.js";
@@ -27,9 +27,14 @@ const validateIdentifierParameterDescriptor: ExtendsParameterDescriptor = {
 const splitIdentifierParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: identifierParameterDescriptor,
     sortOrder: 1,
-    name: "splitIdentifier"
+    name: "splitIdentifier",
+    multiplicity: Multiplicities.Array
 };
 
+@proxy.describeClass(true, {
+    namespace: "GS1",
+    category: "identifierValidation"
+})
 abstract class IdentifierValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt, TIdentifierType extends IdentifierType> extends StringProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
     readonly #validator: IdentifierTypeValidator<TIdentifierType>;
 
@@ -44,13 +49,11 @@ abstract class IdentifierValidatorProxy<ThrowError extends boolean, TError exten
     }
 }
 
-@proxy.describeClass(true, {
-    namespace: "GS1"
-})
+@proxy.describeClass(true)
 abstract class NumericIdentifierValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt, TNumericIdentifierType extends NumericIdentifierType> extends IdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, TNumericIdentifierType> {
     @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true,
+        multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [validateIdentifierParameterDescriptor]
     })
     validate(matrixIdentifiers: Matrix<string>): Matrix<string> {
@@ -59,7 +62,7 @@ abstract class NumericIdentifierValidatorProxy<ThrowError extends boolean, TErro
 
     @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true,
+        multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [validateIdentifierParameterDescriptor]
     })
     isValid(matrixIdentifiers: Matrix<string>): Matrix<boolean> {
@@ -76,13 +79,11 @@ abstract class NonGTINNumericIdentifierValidatorProxy<ThrowError extends boolean
 export abstract class NonSerializableNumericIdentifierValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonGTINNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, NonSerializableNumericIdentifierType> {
 }
 
-@proxy.describeClass(true, {
-    namespace: "GS1"
-})
+@proxy.describeClass(true)
 export abstract class SerializableNumericIdentifierValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonGTINNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, SerializableNumericIdentifierType> {
     @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true,
+        multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [splitIdentifierParameterDescriptor]
     })
     split(matrixIdentifiers: Matrix<string>): MatrixResult<string, ThrowError, TError> {
@@ -94,13 +95,11 @@ export abstract class SerializableNumericIdentifierValidatorProxy<ThrowError ext
     }
 }
 
-@proxy.describeClass(true, {
-    namespace: "GS1"
-})
+@proxy.describeClass(true)
 export abstract class NonNumericIdentifierValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends IdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, NonNumericIdentifierType> {
     @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true,
+        multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [validateIdentifierParameterDescriptor, exclusionAllNumericParameterDescriptor]
     })
     validate(matrixIdentifiers: Matrix<string>, exclusion: Nullishable<NonNumericIdentifierValidation["exclusion"]>): Matrix<string> {
@@ -111,7 +110,7 @@ export abstract class NonNumericIdentifierValidatorProxy<ThrowError extends bool
 
     @proxy.describeMethod({
         type: Types.String,
-        isMatrix: true,
+        multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [validateIdentifierParameterDescriptor, exclusionAllNumericParameterDescriptor]
     })
     isValid(matrixIdentifiers: Matrix<string>, exclusion: Nullishable<NonNumericIdentifierValidation["exclusion"]>): Matrix<boolean> {

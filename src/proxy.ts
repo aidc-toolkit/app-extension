@@ -7,12 +7,13 @@ import {
 } from "@aidc-toolkit/core";
 import type { Logger } from "tslog";
 import type { AppExtension } from "./app-extension.js";
-import type {
-    ClassDescriptor,
-    ExtendsParameterDescriptor,
-    MethodDescriptor,
-    ParameterDescriptor,
-    ReplacementParameterDescriptor
+import {
+    type ClassDescriptor,
+    type ExtendsParameterDescriptor,
+    type MethodDescriptor,
+    Multiplicities,
+    type ParameterDescriptor,
+    type ReplacementParameterDescriptor
 } from "./descriptor.js";
 import { LibProxy } from "./lib-proxy.js";
 import type { ErrorExtends } from "./type.js";
@@ -94,8 +95,9 @@ interface DecoratorMethodDescriptor extends Omit<InterimMethodDescriptor, "name"
 /**
  * Subset of class descriptor used during decoration process.
  */
-type InterimClassDescriptor =
-    Omit<ClassDescriptor, "name" | "namespaceClassName" | "objectName" | "methodDescriptors">;
+interface InterimClassDescriptor extends Omit<ClassDescriptor, "name" | "category" | "namespaceClassName" | "objectName" | "methodDescriptors"> {
+    readonly category?: string;
+}
 
 /**
  * Subset of class descriptor used in call to decorator.
@@ -168,15 +170,20 @@ interface TargetLogger {
  */
 export class Proxy {
     /**
-     * Abstract class descriptors map, keyed on declaration class name. Abstract classes are not used directly by target
+     * Abstract class descriptors map, keyed on declaration class. Abstract classes are not used directly by target
      * applications.
      */
-    readonly #abstractClassDescriptorsMap = new Map<string, ClassDescriptor>();
+    readonly #abstractClassDescriptorsMap = new Map<typeof LibProxy, ClassDescriptor>();
 
     /**
-     * Concrete class descriptors map, keyed on declaration class name.
+     * Concrete class descriptors map, keyed on declaration class.
      */
-    readonly #concreteClassDescriptorsMap = new Map<string, ClassDescriptor>();
+    readonly #concreteClassDescriptorsMap = new Map<typeof LibProxy, ClassDescriptor>();
+
+    /**
+     * Namespace class names set for duplicate detection.
+     */
+    readonly #namespaceClassNamesSet = new Set<string>();
 
     /**
      * Interim object.
@@ -232,42 +239,39 @@ export class Proxy {
         this.#interim = interim;
 
         return (Target: TProxyClassConstructor, context: ClassDecoratorContext<TProxyClassConstructor>) => {
-            const name = context.name;
+            const className = context.name;
 
             // Validate that class descriptor is applied within an appropriate class.
-            if (typeof name !== "string") {
-                throw new Error(`${String(name)} has an invalid name`);
+            if (className === undefined) {
+                throw new Error("Class has no name");
             }
-
-            const namespacePrefix = decoratorClassDescriptor.namespace === undefined ? "" : `${decoratorClassDescriptor.namespace}.`;
-            const namespaceClassName = `${namespacePrefix}${name}`;
 
             const abstractClassDescriptorsMap = this.#abstractClassDescriptorsMap;
             const concreteClassDescriptorsMap = this.#concreteClassDescriptorsMap;
 
-            if (abstractClassDescriptorsMap.has(namespaceClassName) || concreteClassDescriptorsMap.has(namespaceClassName)) {
-                throw new Error(`Duplicate class ${namespaceClassName}`);
-            }
-
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Class hierarchy is known.
-            let baseClassType: typeof LibProxy = Target as unknown as typeof LibProxy;
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Target is known to be of type LibProxy.
+            const targetClassType = Target as unknown as typeof LibProxy;
+            let baseClassType = targetClassType;
             let baseClassDescriptor: ClassDescriptor | undefined;
 
             do {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Class hierarchy is known.
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Class hierarchy is known to stop at LibProxy.
                 baseClassType = Object.getPrototypeOf(baseClassType) as typeof LibProxy;
 
-                const namespaceBaseClassName = `${namespacePrefix}${baseClassType.name}`;
-
-                // Look first within the namespace and then in no namespace, in both abstract class descriptors map and concrete class descriptors map.
-                baseClassDescriptor =
-                    abstractClassDescriptorsMap.get(namespaceBaseClassName) ?? abstractClassDescriptorsMap.get(baseClassType.name) ??
-                    concreteClassDescriptorsMap.get(namespaceBaseClassName) ?? concreteClassDescriptorsMap.get(baseClassType.name);
+                // Look in both abstract class descriptors map and concrete class descriptors map.
+                baseClassDescriptor = abstractClassDescriptorsMap.get(baseClassType) ?? concreteClassDescriptorsMap.get(baseClassType);
             } while (baseClassType !== LibProxy && baseClassDescriptor === undefined);
+
+            let namespace = interimClassDescriptor.namespace;
+            let category = interimClassDescriptor.category;
 
             let interimMethodDescriptors: InterimMethodDescriptor[];
 
             if (baseClassDescriptor !== undefined) {
+                // Inherit namespace and category from base class if not explicitly defined.
+                namespace ??= baseClassDescriptor.namespace;
+                category ??= baseClassDescriptor.category;
+
                 const baseClassMethodDescriptors = baseClassDescriptor.methodDescriptors;
                 const replaceParameterDescriptors = decoratorClassDescriptor.replacementParameterDescriptors;
 
@@ -285,6 +289,19 @@ export class Proxy {
             } else {
                 interimMethodDescriptors = [];
             }
+
+            const namespacePrefix = namespace === undefined ? "" : `${namespace}.`;
+            const namespaceClassName = `${namespacePrefix}${className}`;
+
+            if (this.#namespaceClassNamesSet.has(namespaceClassName)) {
+                throw new Error(`Duplicate class ${namespaceClassName}`);
+            }
+
+            if (category === undefined) {
+                throw new Error(`Missing category for ${namespaceClassName}`);
+            }
+
+            this.#namespaceClassNamesSet.add(namespaceClassName);
 
             // Replace base class method descriptors with matching names or append new method descriptor.
             for (const classInterimMethodDescriptor of interim.methodDescriptors) {
@@ -353,14 +370,16 @@ export class Proxy {
             }
 
             const classDescriptor: ClassDescriptor = {
-                name,
                 ...interimClassDescriptor,
+                name: className,
+                namespace,
+                category,
                 namespaceClassName,
                 objectName: `${objectNameGroups["namespaceFirstWord"].toLowerCase()}${objectNameGroups["namespaceRemaining"]}${objectNameGroups["className"]}`,
                 methodDescriptors
             };
 
-            (isAbstract ? abstractClassDescriptorsMap : concreteClassDescriptorsMap).set(namespaceClassName, classDescriptor);
+            (isAbstract ? abstractClassDescriptorsMap : concreteClassDescriptorsMap).set(targetClassType, classDescriptor);
 
             const methodDescriptorsMap = new Map<string, MethodDescriptor>();
 
@@ -388,8 +407,8 @@ export class Proxy {
                         const methodDescriptor = methodDescriptorsMap.get(methodName)!;
 
                         return {
-                            namespace: decoratorClassDescriptor.namespace,
-                            className: name,
+                            namespace,
+                            className,
                             methodName,
                             functionName: methodDescriptor.functionName,
                             parameters: methodDescriptor.parameterDescriptors.map((parameterDescriptor, index) => ({
@@ -435,19 +454,24 @@ export class Proxy {
             // Expand all parameter descriptors.
             const parameterDescriptors = decoratorMethodDescriptor.parameterDescriptors.map((decoratorParameterDescriptor) => {
                 const parameterDescriptor = expandParameterDescriptor(decoratorParameterDescriptor);
+                const parameterName = parameterDescriptor.name;
 
                 if (!parameterDescriptor.isRequired) {
                     anyOptional = true;
                 } else if (anyOptional) {
-                    throw new Error(`Parameter ${parameterDescriptor.name} descriptor of method ${name} is required but prior parameter descriptor is optional`);
+                    throw new Error(`Parameter ${parameterName} descriptor of method ${name} is required but prior parameter descriptor is optional`);
+                }
+
+                if ((parameterDescriptor.multiplicity === Multiplicities.Array || parameterDescriptor.multiplicity === Multiplicities.Matrix) && decoratorMethodDescriptor.multiplicity !== Multiplicities.Matrix) {
+                    throw new Error(`Parameter ${parameterName} descriptor of method ${name} is array or matrix but method descriptor is not matrix`);
                 }
 
                 return parameterDescriptor;
             });
 
             this.#interim.methodDescriptors.push({
-                name,
                 ...decoratorMethodDescriptor,
+                name,
                 parameterDescriptors
             });
 
@@ -489,10 +513,10 @@ export class Proxy {
     }
 
     /**
-     * Get the class descriptors map.
+     * Get the class descriptors.
      */
-    get classDescriptorsMap(): Map<string, ClassDescriptor> {
-        return this.#concreteClassDescriptorsMap;
+    get classDescriptors(): MapIterator<ClassDescriptor> {
+        return this.#concreteClassDescriptorsMap.values();
     }
 }
 
