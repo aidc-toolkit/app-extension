@@ -1,7 +1,7 @@
 import { getLogger, I18nEnvironments, type Promisable } from "@aidc-toolkit/core";
 import type { DefaultNamespace, ParseKeys } from "i18next";
 import type { Logger } from "tslog";
-import { AppUtilityProxy } from "../app-utility-proxy.js";
+import { AppHelperProxy } from "../app-helper-proxy.js";
 import type { ClassDescriptor, MethodDescriptor } from "../descriptor.js";
 import * as GS1 from "../gs1/index.js";
 import { appExtensionResourceBundle, i18nAppExtensionInit, i18nextAppExtension } from "../locale/i18n.js";
@@ -17,7 +17,7 @@ import * as Utility from "../utility/index.js";
 function registerProxies(..._proxies: unknown[]): void {
 }
 
-registerProxies(AppUtilityProxy, Utility, GS1);
+registerProxies(AppHelperProxy, Utility, GS1);
 
 /**
  * Localization.

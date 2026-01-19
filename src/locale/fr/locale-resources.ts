@@ -6,7 +6,7 @@ export default {
         matrixMustBeArray: "La matrice d'entrée doit être unidimensionnelle"
     },
     Categories: {
-        utility: "Utilitaire",
+        helper: "Auxiliaire",
         transformation: "Transformation",
         string: "Chaîne de caractères",
         GS1: {

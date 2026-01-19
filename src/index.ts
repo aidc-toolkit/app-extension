@@ -23,7 +23,7 @@ export * from "./app-extension.js";
 export * from "./lib-proxy.js";
 
 export * from "./descriptor.js";
-export * from "./app-utility-proxy.js";
+export * from "./app-helper-proxy.js";
 export * from "./utility/index.js";
 export * as GS1 from "./gs1/index.js";
 

@@ -6,7 +6,7 @@ export default {
         matrixMustBeArray: "Input matrix must be one-dimensional"
     },
     Categories: {
-        utility: "Utility",
+        helper: "Helper",
         transformation: "Transformation",
         string: "String",
         GS1: {

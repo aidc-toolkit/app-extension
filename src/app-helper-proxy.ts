@@ -65,9 +65,9 @@ interface MaximumDimensions {
  * Type to which big integer is mapped.
  */
 @proxy.describeClass(false, {
-    category: "utility"
+    category: "helper"
 })
-export class AppUtilityProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+export class AppHelperProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
     /**
      * Get the version.
      *
