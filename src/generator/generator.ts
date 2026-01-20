@@ -1,6 +1,7 @@
-import { getLogger, I18nEnvironments, type Promisable } from "@aidc-toolkit/core";
+import { getLogger, I18nEnvironments, phaseURL, type Promisable } from "@aidc-toolkit/core";
 import type { DefaultNamespace, ParseKeys } from "i18next";
 import type { Logger } from "tslog";
+import packageConfiguration from "../../package.json" with { type: "json" };
 import { AppHelperProxy } from "../app-helper-proxy.js";
 import type { ClassDescriptor, MethodDescriptor } from "../descriptor.js";
 import * as GS1 from "../gs1/index.js";
@@ -59,11 +60,6 @@ export interface FunctionLocalization extends Localization {
  */
 export abstract class Generator {
     /**
-     * Documentation base URL.
-     */
-    static readonly #DOCUMENTATION_BASE_URL = "https://aidc-toolkit.com/";
-
-    /**
      * Documentation path, optionally preceded by locale.
      */
     static readonly #DOCUMENTATION_PATH = "app-extension/";
@@ -72,6 +68,11 @@ export abstract class Generator {
      * Logger.
      */
     readonly #logger = getLogger();
+
+    /**
+     * Base URL.
+     */
+    readonly #baseURL: string;
 
     /**
      * Locales.
@@ -90,6 +91,7 @@ export abstract class Generator {
      * Include localizations if true.
      */
     constructor(includeLocalizations = true) {
+        this.#baseURL = phaseURL(packageConfiguration.version, "http://10.211.55.2:5173");
         this.#locales = includeLocalizations ? Object.keys(appExtensionResourceBundle) : [];
         this.#defaultLocale = this.#locales[0] ?? "";
     }
@@ -266,7 +268,7 @@ export abstract class Generator {
                                 [locale, Generator.#generateLocalization<FunctionLocalization>(locale, `Functions.${methodDescriptor.namespaceFunctionName}`, (locale, localization) => ({
                                     ...localization,
                                     namespaceFunctionName: `${namespacePrefix}${localization.name}`,
-                                    documentationURL: `${Generator.#DOCUMENTATION_BASE_URL}${locale === this.defaultLocale ? "" : `${locale}/`}${Generator.#DOCUMENTATION_PATH}${namespacePath}${localization.name}.html`,
+                                    documentationURL: `${this.#baseURL}/${locale === this.defaultLocale ? "" : `${locale}/`}${Generator.#DOCUMENTATION_PATH}${namespacePath}${localization.name}.html`,
                                     parametersMap: new Map(methodDescriptor.parameterDescriptors.map(parameterDescriptor =>
                                         // eslint-disable-next-line max-nested-callbacks -- Callback is empty.
                                         [parameterDescriptor.name, Generator.#generateLocalization(locale, `Parameters.${parameterDescriptor.name}`, (_locale, localization) => localization)]
