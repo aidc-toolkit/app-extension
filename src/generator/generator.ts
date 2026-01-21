@@ -147,10 +147,13 @@ export abstract class Generator {
     /**
      * Create a proxy object for a class.
      *
+     * @param objectName
+     * Object name, derived from namespace and class name.
+     *
      * @param classDescriptor
      * Class descriptor.
      */
-    protected abstract createProxyObject(classDescriptor: ClassDescriptor): void;
+    protected abstract createProxyObject(objectName: string, classDescriptor: ClassDescriptor): void;
 
     /**
      * Create a proxy function for a class and method.
@@ -260,8 +263,35 @@ export abstract class Generator {
 
                     this.createCategory(namespace, category, categoryLocalizationsMap);
 
+                    const namespaceClassNamesSet = new Set<string>();
+
                     for (const classDescriptor of classDescriptors) {
-                        this.createProxyObject(classDescriptor);
+                        const namespaceClassName = classDescriptor.namespaceClassName;
+
+                        if (namespaceClassNamesSet.has(namespaceClassName)) {
+                            throw new Error(`Duplicate class ${namespaceClassName}`);
+                        }
+
+                        namespaceClassNamesSet.add(namespaceClassName);
+
+                        // First capture group is:
+                        // - one or more uppercase letters followed by zero or more numbers; or
+                        // - single uppercase letter followed by zero or more characters except uppercase letters or period.
+                        //
+                        // Second capture group is:
+                        // - single uppercase letter followed by zero or more characters except period; or
+                        // - zero characters (empty string).
+                        //
+                        // Third capture group, separated by optional period, is:
+                        // - single uppercase letter followed by zero or more characters (remainder of string); or
+                        // - zero characters (empty string).
+                        const objectNameGroups = /^(?<namespaceFirstWord>[A-Z]+[0-9]*|[A-Z][^A-Z.]*)(?<namespaceRemaining>[A-Z][^.]*|)\.?(?<className>[A-Z].*|)$/u.exec(namespaceClassName)?.groups;
+
+                        if (objectNameGroups === undefined) {
+                            throw new Error(`${namespaceClassName} is not a valid namespace-qualified class name`);
+                        }
+
+                        this.createProxyObject(`${objectNameGroups["namespaceFirstWord"].toLowerCase()}${objectNameGroups["namespaceRemaining"]}${objectNameGroups["className"]}`, classDescriptor);
 
                         for (const methodDescriptor of classDescriptor.methodDescriptors) {
                             const functionLocalizationsMap = new Map(this.locales.map(locale =>

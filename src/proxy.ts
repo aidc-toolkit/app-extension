@@ -181,11 +181,6 @@ export class Proxy {
     readonly #concreteClassDescriptorsMap = new Map<typeof LibProxy, ClassDescriptor>();
 
     /**
-     * Namespace class names set for duplicate detection.
-     */
-    readonly #namespaceClassNamesSet = new Set<string>();
-
-    /**
      * Interim object.
      */
     #interim: Interim | undefined = undefined;
@@ -293,15 +288,9 @@ export class Proxy {
             const namespacePrefix = namespace === undefined ? "" : `${namespace}.`;
             const namespaceClassName = `${namespacePrefix}${className}`;
 
-            if (this.#namespaceClassNamesSet.has(namespaceClassName)) {
-                throw new Error(`Duplicate class ${namespaceClassName}`);
-            }
-
             if (category === undefined) {
                 throw new Error(`Missing category for ${namespaceClassName}`);
             }
-
-            this.#namespaceClassNamesSet.add(namespaceClassName);
 
             // Replace base class method descriptors with matching names or append new method descriptor.
             for (const classInterimMethodDescriptor of interim.methodDescriptors) {
@@ -352,30 +341,12 @@ export class Proxy {
                 methodDescriptors.push(methodDescriptor);
             }
 
-            // First capture group is:
-            // - one or more uppercase letters followed by zero or more numbers; or
-            // - single uppercase letter followed by zero or more characters except uppercase letters or period.
-            //
-            // Second capture group is:
-            // - single uppercase letter followed by zero or more characters except period; or
-            // - zero characters (empty string).
-            //
-            // Third capture group, separated by optional period, is:
-            // - single uppercase letter followed by zero or more characters (remainder of string); or
-            // - zero characters (empty string).
-            const objectNameGroups = /^(?<namespaceFirstWord>[A-Z]+[0-9]*|[A-Z][^A-Z.]*)(?<namespaceRemaining>[A-Z][^.]*|)\.?(?<className>[A-Z].*|)$/u.exec(namespaceClassName)?.groups;
-
-            if (objectNameGroups === undefined) {
-                throw new Error(`${namespaceClassName} is not a valid namespace-qualified class name`);
-            }
-
             const classDescriptor: ClassDescriptor = {
                 ...interimClassDescriptor,
                 name: className,
                 namespace,
                 category,
                 namespaceClassName,
-                objectName: `${objectNameGroups["namespaceFirstWord"].toLowerCase()}${objectNameGroups["namespaceRemaining"]}${objectNameGroups["className"]}`,
                 methodDescriptors
             };
 

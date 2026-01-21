@@ -215,11 +215,6 @@ export interface ClassDescriptor extends Descriptor {
     readonly namespaceClassName: string;
 
     /**
-     * Object name.
-     */
-    readonly objectName: string;
-
-    /**
      * Method descriptors.
      */
     readonly methodDescriptors: readonly MethodDescriptor[];
