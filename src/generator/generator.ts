@@ -1,7 +1,7 @@
 import { getLogger, I18nEnvironments, phaseURL, type Promisable } from "@aidc-toolkit/core";
 import type { DefaultNamespace, ParseKeys } from "i18next";
+import * as fs from "node:fs";
 import type { Logger } from "tslog";
-import localResources from "../../config/resources.local.json" with { type: "json" };
 import packageConfiguration from "../../package.json" with { type: "json" };
 import { AppHelperProxy } from "../app-helper-proxy.js";
 import type { ClassDescriptor, MethodDescriptor } from "../descriptor.js";
@@ -20,6 +20,15 @@ function registerProxies(..._proxies: unknown[]): void {
 }
 
 registerProxies(AppHelperProxy, Utility, GS1);
+
+const LOCAL_RESOURCES_FILE = "config/resources.local.json";
+
+/**
+ * Local resources.
+ */
+interface LocalResources {
+    alphaURL: string;
+}
 
 /**
  * Localization.
@@ -92,6 +101,9 @@ export abstract class Generator {
      * Include localizations if true.
      */
     constructor(includeLocalizations = true) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- File must exist and have this type.
+        const localResources = JSON.parse(fs.readFileSync(LOCAL_RESOURCES_FILE).toString()) as LocalResources;
+
         this.#baseURL = phaseURL(packageConfiguration.version, localResources.alphaURL);
         this.#locales = includeLocalizations ? Object.keys(appExtensionResourceBundle) : [];
         this.#defaultLocale = this.#locales[0] ?? "";
