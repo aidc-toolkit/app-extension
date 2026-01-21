@@ -2,4 +2,5 @@
 /.npmrc
 /node_modules/
 /dist/
+/config/*.local.json
 *.tsbuildinfo

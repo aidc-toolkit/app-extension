@@ -1,6 +1,7 @@
 import { getLogger, I18nEnvironments, phaseURL, type Promisable } from "@aidc-toolkit/core";
 import type { DefaultNamespace, ParseKeys } from "i18next";
 import type { Logger } from "tslog";
+import localResources from "../../config/resources.local.json" with { type: "json" };
 import packageConfiguration from "../../package.json" with { type: "json" };
 import { AppHelperProxy } from "../app-helper-proxy.js";
 import type { ClassDescriptor, MethodDescriptor } from "../descriptor.js";
@@ -91,7 +92,7 @@ export abstract class Generator {
      * Include localizations if true.
      */
     constructor(includeLocalizations = true) {
-        this.#baseURL = phaseURL(packageConfiguration.version, "http://10.211.55.2:5173");
+        this.#baseURL = phaseURL(packageConfiguration.version, localResources.alphaURL);
         this.#locales = includeLocalizations ? Object.keys(appExtensionResourceBundle) : [];
         this.#defaultLocale = this.#locales[0] ?? "";
     }
