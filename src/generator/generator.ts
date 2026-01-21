@@ -26,9 +26,14 @@ registerProxies(AppHelperProxy, Utility, GS1);
 const CONFIGURATION_DIRECTORY = "config";
 
 /**
- * Local resources file, expected to be present in all repositories that use the generator.
+ * Key to local resources file, expected to be present in all repositories that use the generator.
  */
 const LOCAL_RESOURCES_KEY = "resources.local";
+
+/**
+ * Default alpha URL if no local resources file is found.
+ */
+const DEFAULT_ALPHA_URL = "http://localhost:5173";
 
 /**
  * Local resources.
@@ -228,7 +233,7 @@ export abstract class Generator {
             new LocalAppDataStorage(CONFIGURATION_DIRECTORY).read(LOCAL_RESOURCES_KEY)
         ).then(resources =>
             // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- File must exist and have this type.
-            phaseURL(packageConfiguration.version, (resources as LocalResources).alphaURL)
+            phaseURL(packageConfiguration.version, resources !== undefined ? (resources as LocalResources).alphaURL : DEFAULT_ALPHA_URL)
         );
 
         this.initialize();
