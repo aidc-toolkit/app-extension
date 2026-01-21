@@ -1,6 +1,5 @@
-import { getLogger, I18nEnvironments, phaseURL, type Promisable } from "@aidc-toolkit/core";
+import { getLogger, I18nEnvironments, LocalAppDataStorage, phaseURL, type Promisable } from "@aidc-toolkit/core";
 import type { DefaultNamespace, ParseKeys } from "i18next";
-import * as fs from "node:fs";
 import type { Logger } from "tslog";
 import packageConfiguration from "../../package.json" with { type: "json" };
 import { AppHelperProxy } from "../app-helper-proxy.js";
@@ -21,7 +20,15 @@ function registerProxies(..._proxies: unknown[]): void {
 
 registerProxies(AppHelperProxy, Utility, GS1);
 
-const LOCAL_RESOURCES_FILE = "config/resources.local.json";
+/**
+ * Configuration directory, expected to be present in all repositories that use the generator.
+ */
+const CONFIGURATION_DIRECTORY = "config";
+
+/**
+ * Local resources file, expected to be present in all repositories that use the generator.
+ */
+const LOCAL_RESOURCES_KEY = "resources.local";
 
 /**
  * Local resources.
@@ -80,11 +87,6 @@ export abstract class Generator {
     readonly #logger = getLogger();
 
     /**
-     * Base URL.
-     */
-    readonly #baseURL: string;
-
-    /**
      * Locales.
      */
     readonly #locales: readonly string[];
@@ -101,10 +103,6 @@ export abstract class Generator {
      * Include localizations if true.
      */
     constructor(includeLocalizations = true) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- File must exist and have this type.
-        const localResources = JSON.parse(fs.readFileSync(LOCAL_RESOURCES_FILE).toString()) as LocalResources;
-
-        this.#baseURL = phaseURL(packageConfiguration.version, localResources.alphaURL);
         this.#locales = includeLocalizations ? Object.keys(appExtensionResourceBundle) : [];
         this.#defaultLocale = this.#locales[0] ?? "";
     }
@@ -226,6 +224,13 @@ export abstract class Generator {
 
         await i18nAppExtensionInit(I18nEnvironments.CLI);
 
+        const baseURL = await LocalAppDataStorage.then(async LocalAppDataStorage =>
+            new LocalAppDataStorage(CONFIGURATION_DIRECTORY).read(LOCAL_RESOURCES_KEY)
+        ).then(resources =>
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- File must exist and have this type.
+            phaseURL(packageConfiguration.version, (resources as LocalResources).alphaURL)
+        );
+
         this.initialize();
 
         const namespaceHierarchy = new Map<string | undefined, Map<string, ClassDescriptor[]>>();
@@ -311,7 +316,7 @@ export abstract class Generator {
                                 [locale, Generator.#generateLocalization<FunctionLocalization>(locale, `Functions.${methodDescriptor.namespaceFunctionName}`, (locale, localization) => ({
                                     ...localization,
                                     namespaceFunctionName: `${namespacePrefix}${localization.name}`,
-                                    documentationURL: `${this.#baseURL}/${locale === this.defaultLocale ? "" : `${locale}/`}${Generator.#DOCUMENTATION_PATH}${namespacePath}${localization.name}.html`,
+                                    documentationURL: `${baseURL}/${locale === this.defaultLocale ? "" : `${locale}/`}${Generator.#DOCUMENTATION_PATH}${namespacePath}${localization.name}.html`,
                                     parametersMap: new Map(methodDescriptor.parameterDescriptors.map(parameterDescriptor =>
                                         // eslint-disable-next-line max-nested-callbacks -- Callback is empty.
                                         [parameterDescriptor.name, Generator.#generateLocalization(locale, `Parameters.${parameterDescriptor.name}`, (_locale, localization) => localization)]
