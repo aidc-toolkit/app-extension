@@ -1,4 +1,4 @@
-import { getLogger, I18nEnvironments, LocalAppDataStorage, phaseURL, type Promisable } from "@aidc-toolkit/core";
+import { ALPHA_BASE_URL, baseURL, getLogger, I18nEnvironments, type Promisable } from "@aidc-toolkit/core";
 import type { DefaultNamespace, ParseKeys } from "i18next";
 import type { Logger } from "tslog";
 import packageConfiguration from "../../package.json" with { type: "json" };
@@ -19,28 +19,6 @@ function registerProxies(..._proxies: unknown[]): void {
 }
 
 registerProxies(AppHelperProxy, Utility, GS1);
-
-/**
- * Configuration directory, expected to be present in all repositories that use the generator.
- */
-const CONFIGURATION_DIRECTORY = "config";
-
-/**
- * Key to local resources file, expected to be present in all repositories that use the generator.
- */
-const LOCAL_RESOURCES_KEY = "resources.local";
-
-/**
- * Default alpha URL if no local resources file is found.
- */
-const DEFAULT_ALPHA_URL = "http://localhost:5173";
-
-/**
- * Local resources.
- */
-interface LocalResources {
-    alphaURL: string;
-}
 
 /**
  * Localization.
@@ -136,7 +114,7 @@ export abstract class Generator {
     /**
      * Initialize the generation of the output.
      */
-    protected abstract initialize(): void;
+    protected abstract initialize(): Promisable<void>;
 
     /**
      * Create a namespace.
@@ -229,14 +207,9 @@ export abstract class Generator {
 
         await i18nAppExtensionInit(I18nEnvironments.CLI);
 
-        const baseURL = await LocalAppDataStorage.then(async LocalAppDataStorage =>
-            new LocalAppDataStorage(CONFIGURATION_DIRECTORY).read(LOCAL_RESOURCES_KEY)
-        ).then(resources =>
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- File must exist and have this type.
-            phaseURL(packageConfiguration.version, resources !== undefined ? (resources as LocalResources).alphaURL : DEFAULT_ALPHA_URL)
-        );
+        const documentationBaseURL = baseURL(packageConfiguration.version, await ALPHA_BASE_URL);
 
-        this.initialize();
+        await this.initialize();
 
         const namespaceHierarchy = new Map<string | undefined, Map<string, ClassDescriptor[]>>();
 
@@ -321,7 +294,7 @@ export abstract class Generator {
                                 [locale, Generator.#generateLocalization<FunctionLocalization>(locale, `Functions.${methodDescriptor.namespaceFunctionName}`, (locale, localization) => ({
                                     ...localization,
                                     namespaceFunctionName: `${namespacePrefix}${localization.name}`,
-                                    documentationURL: `${baseURL}/${locale === this.defaultLocale ? "" : `${locale}/`}${Generator.#DOCUMENTATION_PATH}${namespacePath}${localization.name}.html`,
+                                    documentationURL: `${documentationBaseURL}/${locale === this.defaultLocale ? "" : `${locale}/`}${Generator.#DOCUMENTATION_PATH}${namespacePath}${localization.name}.html`,
                                     parametersMap: new Map(methodDescriptor.parameterDescriptors.map(parameterDescriptor =>
                                         // eslint-disable-next-line max-nested-callbacks -- Callback is empty.
                                         [parameterDescriptor.name, Generator.#generateLocalization(locale, `Parameters.${parameterDescriptor.name}`, (_locale, localization) => localization)]
