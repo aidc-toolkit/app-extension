@@ -1,7 +1,6 @@
 import { ALPHA_BASE_URL, baseURL, getLogger, I18nEnvironments, type Promisable } from "@aidc-toolkit/core";
 import type { DefaultNamespace, ParseKeys } from "i18next";
 import type { Logger } from "tslog";
-import packageConfiguration from "../../package.json" with { type: "json" };
 import { AppHelperProxy } from "../app-helper-proxy.js";
 import type { ClassDescriptor, MethodDescriptor } from "../descriptor.js";
 import * as GS1 from "../gs1/index.js";
@@ -70,6 +69,11 @@ export abstract class Generator {
     readonly #logger = getLogger();
 
     /**
+     * Package version.
+     */
+    readonly #version: string;
+
+    /**
      * Locales.
      */
     readonly #locales: readonly string[];
@@ -82,10 +86,15 @@ export abstract class Generator {
     /**
      * Constructor.
      *
+     * @param version
+     * Package version.
+     *
      * @param includeLocalizations
      * Include localizations if true.
      */
-    constructor(includeLocalizations = true) {
+    constructor(version: string, includeLocalizations = true) {
+        this.#version = version;
+
         this.#locales = includeLocalizations ? Object.keys(appExtensionResourceBundle) : [];
         this.#defaultLocale = this.#locales[0] ?? "";
     }
@@ -95,6 +104,13 @@ export abstract class Generator {
      */
     get logger(): Logger<object> {
         return this.#logger;
+    }
+
+    /**
+     * Get the package version.
+     */
+    get version(): string {
+        return this.#version;
     }
 
     /**
@@ -207,7 +223,7 @@ export abstract class Generator {
 
         await i18nAppExtensionInit(I18nEnvironments.CLI);
 
-        const documentationBaseURL = baseURL(packageConfiguration.version, await ALPHA_BASE_URL);
+        const documentationBaseURL = baseURL(this.version, await ALPHA_BASE_URL);
 
         await this.initialize();
 
