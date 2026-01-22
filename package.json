@@ -1,6 +1,6 @@
 {
   "name": "@aidc-toolkit/app-extension",
-  "version": "1.0.37-beta",
+  "version": "1.0.38-alpha",
   "description": "Application extension framework for AIDC Toolkit",
   "type": "module",
   "main": "dist/index.js",
@@ -29,11 +29,11 @@
     "generate-locale-resources": "tsx src/generator/locale-resources-generator.ts"
   },
   "devDependencies": {
-    "@aidc-toolkit/dev": "1.0.34-beta"
+    "@aidc-toolkit/dev": "1.0.35-alpha.202601220308"
   },
   "dependencies": {
-    "@aidc-toolkit/core": "1.0.35-beta",
-    "@aidc-toolkit/gs1": "1.0.35-beta",
-    "@aidc-toolkit/utility": "1.0.35-beta"
+    "@aidc-toolkit/core": "1.0.36-alpha.202601220308",
+    "@aidc-toolkit/gs1": "1.0.36-alpha.202601220309",
+    "@aidc-toolkit/utility": "1.0.36-alpha.202601220309"
   }
 }
