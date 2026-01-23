@@ -1,4 +1,4 @@
-import { ALPHA_BASE_URL, baseURL, getLogger, I18nEnvironments, type Promisable } from "@aidc-toolkit/core";
+import { ALPHA_URL, getLogger, I18nEnvironments, type Promisable, websiteURL } from "@aidc-toolkit/core";
 import type { DefaultNamespace, ParseKeys } from "i18next";
 import type { Logger } from "tslog";
 import { AppHelperProxy } from "../app-helper-proxy.js";
@@ -223,7 +223,7 @@ export abstract class Generator {
 
         await i18nAppExtensionInit(I18nEnvironments.CLI);
 
-        const documentationBaseURL = baseURL(this.version, await ALPHA_BASE_URL);
+        const documentationBaseURL = websiteURL(this.version, true, await ALPHA_URL);
 
         await this.initialize();
 
