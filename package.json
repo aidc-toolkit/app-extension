@@ -1,9 +1,13 @@
 {
   "name": "@aidc-toolkit/app-extension",
-  "version": "1.0.42-beta",
+  "version": "1.0.43-alpha",
   "description": "Application extension framework for AIDC Toolkit",
   "type": "module",
   "main": "dist/index.js",
+  "exports": {
+    ".": "./dist/index.js",
+    "./generator": "./dist/generator/index.js"
+  },
   "homepage": "https://aidc-toolkit.com",
   "repository": {
     "type": "git",

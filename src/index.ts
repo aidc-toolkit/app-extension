@@ -27,6 +27,3 @@ export * from "./descriptor.js";
 export * from "./app-helper-proxy.js";
 export * from "./utility/index.js";
 export * as GS1 from "./gs1/index.js";
-
-export * from "./generator/index.js";
-export { expandParameterDescriptor } from "./proxy.js";
