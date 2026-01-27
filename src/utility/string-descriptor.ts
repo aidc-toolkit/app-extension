@@ -1,13 +1,13 @@
-import { type ParameterDescriptor, Type } from "../descriptor.js";
+import { type ExtendsParameterDescriptor, Multiplicities, type ParameterDescriptor, Types } from "../descriptor.js";
 
 export const sParameterDescriptor: ParameterDescriptor = {
     name: "s",
-    type: Type.String,
-    isMatrix: true,
+    type: Types.String,
+    multiplicity: Multiplicities.Matrix,
     isRequired: true
 };
 
-export const validateSParameterDescriptor: ParameterDescriptor = {
+export const validateSParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: sParameterDescriptor,
     name: "validateS"
 };

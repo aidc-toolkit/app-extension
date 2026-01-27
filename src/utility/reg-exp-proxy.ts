@@ -1,51 +1,49 @@
+import type { Nullishable } from "@aidc-toolkit/core";
 import { RegExpValidator } from "@aidc-toolkit/utility";
-import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Type } from "../descriptor.js";
-import type { ErrorExtends, Matrix, MatrixResultError, Nullishable } from "../types.js";
+import { Multiplicities, type ParameterDescriptor, Types } from "../descriptor.js";
+import { proxy } from "../proxy.js";
+import type { ErrorExtends, Matrix } from "../type.js";
 import { validateSParameterDescriptor } from "./string-descriptor.js";
 import { StringProxy } from "./string-proxy.js";
 
 const regExpParameterDescriptor: ParameterDescriptor = {
     name: "regExp",
-    type: Type.String,
-    isMatrix: false,
+    type: Types.String,
+    multiplicity: Multiplicities.Singleton,
     isRequired: true
 };
 
 const errorMessageParameterDescriptor: ParameterDescriptor = {
     name: "errorMessage",
-    type: Type.String,
-    isMatrix: false,
+    type: Types.String,
+    multiplicity: Multiplicities.Singleton,
     isRequired: false
 };
 
-@ProxyClass({
+@proxy.describeClass(false, {
     methodInfix: "RegExp"
 })
-export class RegExpProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends StringProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    @ProxyMethod({
-        type: Type.String,
-        isMatrix: true
+export class RegExpProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends StringProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+    @proxy.describeMethod({
+        type: Types.String,
+        multiplicity: Multiplicities.Matrix,
+        parameterDescriptors: [regExpParameterDescriptor, validateSParameterDescriptor, errorMessageParameterDescriptor]
     })
-    validate(
-        @ProxyParameter(regExpParameterDescriptor) regExp: string,
-        @ProxyParameter(validateSParameterDescriptor) matrixSs: Matrix<string>,
-        @ProxyParameter(errorMessageParameterDescriptor) errorMessage: Nullishable<string>
-    ): MatrixResultError<string, ThrowError, TError> {
+    validate(regExp: string, matrixSs: Matrix<string>, errorMessage: Nullishable<string>): Matrix<string> {
         return this.validateString(new class extends RegExpValidator {
             protected override createErrorMessage(s: string): string {
-                return errorMessage ?? super.createErrorMessage(s);
+                // Replace {{s}} with the invalid string.
+                return errorMessage?.replace(/\{\{s\}\}/ug, s) ?? super.createErrorMessage(s);
             }
-        }(new RegExp(regExp)), matrixSs);
+        }(new RegExp(regExp, "u")), matrixSs);
     }
 
-    @ProxyMethod({
-        type: Type.Boolean,
-        isMatrix: true
+    @proxy.describeMethod({
+        type: Types.Boolean,
+        multiplicity: Multiplicities.Matrix,
+        parameterDescriptors: [regExpParameterDescriptor, validateSParameterDescriptor]
     })
-    isValid(
-        @ProxyParameter(regExpParameterDescriptor) regExp: string,
-        @ProxyParameter(validateSParameterDescriptor) matrixSs: Matrix<string>
-    ): MatrixResultError<boolean, ThrowError, TError> {
+    isValid(regExp: string, matrixSs: Matrix<string>): Matrix<boolean> {
         return this.isValidString(this.validate(regExp, matrixSs, undefined));
     }
 }

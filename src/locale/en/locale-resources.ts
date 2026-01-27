@@ -1,34 +1,50 @@
-export const localeStrings = {
+export default {
     AppExtension: {
         sequenceCountMustBeLessThanOrEqualTo: "Sequence count {{sequenceCount, number}} must be less than or equal to {{maximumSequenceCount, number}}"
     },
     Proxy: {
-        vSpillMustBeHorizontalArray: "Input must be a horizontal array",
-        hSpillNotAVerticalArray: "Input must be a vertical array"
+        matrixMustBeArray: "Input matrix must be one-dimensional"
     },
-    IdentificationKeyCreatorProxy: {
+    Categories: {
+        helper: "Helper",
+        transformation: "Transformation",
+        string: "String",
+        GS1: {
+            checkCharacter: "Check character",
+            identifierValidation: "Identifier validation",
+            identifierCreation: "Identifier creation",
+            variableMeasure: "Variable measure",
+            prefix: "Prefix",
+            service: "Service"
+        }
+    },
+    IdentifierCreatorProxy: {
         prefixDefinitionMustBeOneDimensional: "Prefix definition must be a one-dimensional matrix",
         prefixDefinitionMustHaveMaximumThreeElements: "Prefix definition must have a maximum of 3 elements",
         prefixMustBeString: "Prefix must be a string",
-        prefixTypeMustBeNumber: "Prefix type must be a number",
+        prefixTypeMustBeNumber: "Prefix type must be a number in the range of 0 to {{maximumPrefixType, number}}",
+        invalidPrefixType: "Invalid prefix type",
         tweakFactorMustBeNumber: "Tweak factor must be a number"
     },
+    ServiceProxy: {
+        invalidIdentifierType: "Invalid identifier type \"{{identifierType}}\""
+    },
     Parameters: {
-        spillMatrix: {
-            name: "matrix",
-            description: "One-dimensional matrix to spill."
+        spillArray: {
+            name: "array",
+            description: "Array to spill."
         },
         spillMaximumWidth: {
             name: "maximumWidth",
-            description: "Maximum width into which to spill the matrix. If not provided, the remaining width is used."
+            description: "Maximum width into which to spill the array. If not provided, the remaining sheet width is used."
         },
         spillMaximumHeight: {
             name: "maximumHeight",
-            description: "Maximum height into which to spill the matrix. If not provided, the remaining height is used."
+            description: "Maximum height into which to spill the array. If not provided, the remaining sheet height is used."
         },
         domain: {
             name: "domain",
-            description: "Transformation domain. Valid input values are from zero to domain-1."
+            description: "Transformation domain. Valid input values are from *0* to *domain-1*."
         },
         value: {
             name: "value",
@@ -40,7 +56,7 @@ export const localeStrings = {
         },
         count: {
             name: "count",
-            description: "Count of values to transform. If positive, values transformed are startValue to startValue+count-1. If negative, values transformed are startValue down to startValue+count+1."
+            description: "Count of values to transform. If positive, values transformed are *startValue* to *startValue+count-1*. If negative, values transformed are *startValue* down to *startValue+count+1*."
         },
         transformedValue: {
             name: "transformedValue",
@@ -68,19 +84,19 @@ export const localeStrings = {
         },
         exclusionNone: {
             name: "exclusion",
-            description: "String values to exclude. The only valid value is 0 (no exclusions)."
+            description: "String values to exclude. The only valid value is *0* (no exclusions)."
         },
         exclusionFirstZero: {
             name: "exclusion",
-            description: "String values to exclude. Valid values are 0 (no exclusions) and 1 (strings starting with 0 excluded)."
+            description: "String values to exclude. Valid values are *0* (no exclusions) and *1* (strings starting with 0 excluded)."
         },
         exclusionAllNumeric: {
             name: "exclusion",
-            description: "String values to exclude. Valid values are 0 (no exclusions) and 2 (strings that are all numeric excluded)."
+            description: "String values to exclude. Valid values are *0* (no exclusions) and *2* (strings that are all numeric excluded)."
         },
         exclusionAny: {
             name: "exclusion",
-            description: "String values to exclude. Valid values are 0 (no exclusions), 1 (strings starting with 0 excluded), and 2 (strings that are all numeric excluded)."
+            description: "String values to exclude. Valid values are *0* (no exclusions), *1* (strings starting with 0 excluded), and *2* (strings that are all numeric excluded)."
         },
         length: {
             name: "length",
@@ -98,6 +114,10 @@ export const localeStrings = {
             name: "s",
             description: "Numeric string with check digit."
         },
+        checkDigit: {
+            name: "checkDigit",
+            description: "Check digit."
+        },
         ai82S: {
             name: "s",
             description: "GS1 AI encodable character set 82 string."
@@ -106,9 +126,13 @@ export const localeStrings = {
             name: "s",
             description: "GS1 AI encodable character set 82 string with check character pair."
         },
-        validateIdentificationKey: {
-            name: "identificationKey",
-            description: "Identification key to validate."
+        validateIdentifier: {
+            name: "identifier",
+            description: "Identifier to validate."
+        },
+        splitIdentifier: {
+            name: "splitIdentifier",
+            description: "Identifier to split."
         },
         zeroSuppressibleGTIN12: {
             name: "gtin12",
@@ -134,9 +158,17 @@ export const localeStrings = {
             name: "gtin14",
             description: "GTIN-14 to validate."
         },
-        baseIdentificationKey: {
-            name: "baseIdentificationKey",
-            description: "Base identification key."
+        baseIdentifier: {
+            name: "baseIdentifier",
+            description: "Base identifier."
+        },
+        hyperlinkIdentifier: {
+            name: "identifier",
+            description: "Identifier for which to create hyperlink."
+        },
+        gcpLengthIdentifier: {
+            name: "identifier",
+            description: "Identifier for which to get the GS1 Company Prefix length."
         },
         indicatorDigit: {
             name: "indicatorDigit",
@@ -144,7 +176,7 @@ export const localeStrings = {
         },
         gtinLevel: {
             name: "level",
-            description: "Level at which to validate the GTIN. Valid values are 0 (any), 1 (retail consumer trade item), and 2 (other than retail consumer trade item level)."
+            description: "Level at which to validate the GTIN. Valid values are *0* (any), *1* (retail consumer trade item), and *2* (other than retail consumer trade item level)."
         },
         prefix: {
             name: "prefix",
@@ -152,19 +184,19 @@ export const localeStrings = {
         },
         prefixType: {
             name: "prefixType",
-            description: "Prefix type. Valid values are 0 (GS1 Company Prefix), 1 (U.P.C. Company Prefix), and 2 (GS1 Prefix)."
+            description: "Prefix type. Valid values are *0* (GS1 Company Prefix), *1* (U.P.C. Company Prefix), and *2* (GS1 Prefix)."
         },
         tweakFactor: {
             name: "tweakFactor",
-            description: "Tweak factor, used to support the creation of sparse identification keys. The default tweak factor is based on the GS1 Company Prefix, and is usually sufficient for obfuscation. This allows more control over the encryption when higher security is required."
+            description: "Tweak factor, used to support the creation of sparse identifiers. The default tweak factor is based on the GS1 Company Prefix, and is usually sufficient for obfuscation. This allows more control over the encryption when higher security is required."
         },
         prefixDefinitionAny: {
             name: "prefixDefinition",
-            description: "Prefix definition, either a simple GS1 Company Prefix (as a string) or the result of a call to definePrefix. Any prefix type is supported."
+            description: "Prefix definition, either a simple GS1 Company Prefix (as a string) or the result of a call to *definePrefix*. Any prefix type is supported."
         },
         prefixDefinitionGS1UPC: {
             name: "prefixDefinition",
-            description: "Prefix definition, either a simple GS1 Company Prefix (as a string) or the result of a call to definePrefix. Only prefix types 0 (GS1 Company Prefix) and 1 (U.P.C. Company Prefix) are supported."
+            description: "Prefix definition, either a simple GS1 Company Prefix (as a string) or the result of a call to *definePrefix*. Only prefix types *0* (GS1 Company Prefix) and *1* (U.P.C. Company Prefix) are supported."
         },
         sparse: {
             name: "sparse",
@@ -176,7 +208,35 @@ export const localeStrings = {
         },
         reference: {
             name: "reference",
-            description: "Reference portion of identification key."
+            description: "Reference portion of identifier."
+        },
+        rcnFormat: {
+            name: "format",
+            description: "Restricted Circulation Number format."
+        },
+        rcn: {
+            name: "rcn",
+            description: "Restricted Circulation Number to parse."
+        },
+        rcnItemReference: {
+            name: "itemReference",
+            description: "Item reference."
+        },
+        rcnPriceOrWeight: {
+            name: "priceOrWeight",
+            description: "Price or weight (whole number only)."
+        },
+        identifierType: {
+            name: "identifierType",
+            description: "Identifier type (GTIN, GLN, SSCC, ...)."
+        },
+        hyperlinkText: {
+            name: "text",
+            description: "Text for hyperlink. If not provided, the identifier is used."
+        },
+        hyperlinkDetails: {
+            name: "details",
+            description: "Details to display when hovering over hyperlink."
         }
     },
     Functions: {
@@ -184,13 +244,9 @@ export const localeStrings = {
             name: "version",
             description: "Get the version of the AIDC Toolkit."
         },
-        vSpill: {
-            name: "vSpill",
-            description: "Spill a horizontal array vertically to fit within a given maximum width and height."
-        },
-        hSpill: {
-            name: "hSpill",
-            description: "Spill a vertical array horizontally to fit within a given maximum height and width."
+        spill: {
+            name: "spill",
+            description: "Spill a one-dimensional matrix to fit a rectangle within a given maximum height and width."
         },
         forwardTransform: {
             name: "forwardTransform",
@@ -333,6 +389,14 @@ export const localeStrings = {
                 name: "valueForAI39",
                 description: "Get the value for a GS1 AI 39 encodable character set string."
             },
+            validateAI64: {
+                name: "validateAI64",
+                description: "Validate a GS1 AI 64 encodable character set string."
+            },
+            isValidAI64: {
+                name: "isValidAI64",
+                description: "Determine if a string is GS1 AI 64 encodable character set."
+            },
             checkDigit: {
                 name: "checkDigit",
                 description: "Calculate the check digit for a numeric string."
@@ -341,13 +405,13 @@ export const localeStrings = {
                 name: "hasValidCheckDigit",
                 description: "Determine if a string has a valid check digit."
             },
-            fourDigitPriceWeightCheckDigit: {
-                name: "fourDigitPriceWeightCheckDigit",
-                description: "Calculate the check digit for a four-digit price or weight."
+            priceOrWeightCheckDigit: {
+                name: "priceOrWeightCheckDigit",
+                description: "Calculate the check digit for a price or weight."
             },
-            fiveDigitPriceWeightCheckDigit: {
-                name: "fiveDigitPriceWeightCheckDigit",
-                description: "Calculate the check digit for a five-digit price or weight."
+            isValidPriceOrWeightCheckDigit: {
+                name: "isValidPriceOrWeightCheckDigit",
+                description: "Determine if a price or weight check digit is valid."
             },
             checkCharacterPair: {
                 name: "checkCharacterPair",
@@ -361,13 +425,25 @@ export const localeStrings = {
                 name: "validateGTIN13",
                 description: "Validate a GTIN-13."
             },
+            isValidGTIN13: {
+                name: "isValidGTIN13",
+                description: "Determine if a GTIN-13 is valid."
+            },
             validateGTIN12: {
                 name: "validateGTIN12",
                 description: "Validate a GTIN-12."
             },
+            isValidGTIN12: {
+                name: "isValidGTIN12",
+                description: "Determine if a GTIN-12 is valid."
+            },
             validateGTIN8: {
                 name: "validateGTIN8",
                 description: "Validate a GTIN-8."
+            },
+            isValidGTIN8: {
+                name: "isValidGTIN8",
+                description: "Determine if a GTIN-8 is valid."
             },
             zeroSuppressGTIN12: {
                 name: "zeroSuppressGTIN12",
@@ -387,59 +463,123 @@ export const localeStrings = {
             },
             validateGTIN: {
                 name: "validateGTIN",
-                description: "Validate any GTIN."
+                description: "Validate a GTIN of any length."
+            },
+            isValidGTIN: {
+                name: "isValidGTIN",
+                description: "Determine if a GTIN of any length is valid."
             },
             validateGTIN14: {
                 name: "validateGTIN14",
                 description: "Validate a GTIN-14."
             },
+            isValidGTIN14: {
+                name: "isValidGTIN14",
+                description: "Determine if a GTIN-14 is valid."
+            },
             validateGLN: {
                 name: "validateGLN",
                 description: "Validate a GLN."
+            },
+            isValidGLN: {
+                name: "isValidGLN",
+                description: "Determine if a GLN is valid."
             },
             validateSSCC: {
                 name: "validateSSCC",
                 description: "Validate an SSCC."
             },
+            isValidSSCC: {
+                name: "isValidSSCC",
+                description: "Determine if an SSCC is valid."
+            },
             validateGRAI: {
                 name: "validateGRAI",
                 description: "Validate a GRAI."
+            },
+            isValidGRAI: {
+                name: "isValidGRAI",
+                description: "Determine if a GRAI is valid."
+            },
+            splitGRAI: {
+                name: "splitGRAI",
+                description: "Split a GRAI into its base identifier and serial component."
             },
             validateGIAI: {
                 name: "validateGIAI",
                 description: "Validate a GIAI."
             },
+            isValidGIAI: {
+                name: "isValidGIAI",
+                description: "Determine if a GIAI is valid."
+            },
             validateGSRN: {
                 name: "validateGSRN",
                 description: "Validate a GSRN."
+            },
+            isValidGSRN: {
+                name: "isValidGSRN",
+                description: "Determine if a GSRN is valid."
             },
             validateGDTI: {
                 name: "validateGDTI",
                 description: "Validate a GDTI."
             },
+            isValidGDTI: {
+                name: "isValidGDTI",
+                description: "Determine if a GDTI is valid."
+            },
+            splitGDTI: {
+                name: "splitGDTI",
+                description: "Split a GDTI into its base identifier and serial component."
+            },
             validateGINC: {
                 name: "validateGINC",
                 description: "Validate a GINC."
+            },
+            isValidGINC: {
+                name: "isValidGINC",
+                description: "Determine if a GINC is valid."
             },
             validateGSIN: {
                 name: "validateGSIN",
                 description: "Validate a GSIN."
             },
+            isValidGSIN: {
+                name: "isValidGSIN",
+                description: "Determine if a GSIN is valid."
+            },
             validateGCN: {
                 name: "validateGCN",
                 description: "Validate a GCN."
+            },
+            isValidGCN: {
+                name: "isValidGCN",
+                description: "Determine if a GCN is valid."
+            },
+            splitGCN: {
+                name: "splitGCN",
+                description: "Split a GCN into its base identifier and serial component."
             },
             validateCPID: {
                 name: "validateCPID",
                 description: "Validate a CPID."
             },
+            isValidCPID: {
+                name: "isValidCPID",
+                description: "Determine if a CPID is valid."
+            },
             validateGMN: {
                 name: "validateGMN",
                 description: "Validate a GMN."
             },
+            isValidGMN: {
+                name: "isValidGMN",
+                description: "Determine if a GMN is valid."
+            },
             definePrefix: {
                 name: "definePrefix",
-                description: "Define a prefix for use in GS1 identification key creation functions."
+                description: "Define a prefix for use in GS1 identifier creation functions."
             },
             createGTIN: {
                 name: "createGTIN",
@@ -580,6 +720,30 @@ export const localeStrings = {
             createGMN: {
                 name: "createGMN",
                 description: "Create a GMN."
+            },
+            parseVariableMeasureRCN: {
+                name: "parseVariableMeasureRCN",
+                description: "Parse a Restricted Circulation Number (RCN) using a variable measure trade item format."
+            },
+            createVariableMeasureRCN: {
+                name: "createVariableMeasureRCN",
+                description: "Create a variable measure Restricted Circulation Number (RCN)."
+            },
+            verifiedByGS1: {
+                name: "verifiedByGS1",
+                description: "Create a Verified by GS1 hyperlink."
+            },
+            gcpLengthOf: {
+                name: "gcpLengthOf",
+                description: "Get the length of a GS1 Company Prefix for an identifier."
+            },
+            gcpLengthDateTime: {
+                name: "gcpLengthDateTime",
+                description: "Get the date and time the GS1 Company Prefix length data was last updated."
+            },
+            gcpLengthDisclaimer: {
+                name: "gcpLengthDisclaimer",
+                description: "Get the disclaimer for the GS1 Company Prefix length data."
             }
         }
     }

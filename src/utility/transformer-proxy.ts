@@ -1,7 +1,9 @@
-import { Sequence, Transformer, mapIterable } from "@aidc-toolkit/utility";
-import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Type } from "../descriptor.js";
+import type { Nullishable } from "@aidc-toolkit/core";
+import { mapIterable, Sequence, Transformer } from "@aidc-toolkit/utility";
+import { type ExtendsParameterDescriptor, Multiplicities, type ParameterDescriptor, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
-import type { ErrorExtends, Matrix, MatrixResultError, Nullishable, ResultError } from "../types.js";
+import { proxy } from "../proxy.js";
+import type { ErrorExtends, Matrix, MatrixResult } from "../type.js";
 import {
     countParameterDescriptor,
     startValueParameterDescriptor,
@@ -11,61 +13,58 @@ import {
 
 const domainParameterDescriptor: ParameterDescriptor = {
     name: "domain",
-    type: Type.Number,
-    isMatrix: false,
+    type: Types.Number,
+    multiplicity: Multiplicities.Singleton,
     isRequired: true
 };
 
-const transformedValueParameterDescriptor: ParameterDescriptor = {
+const transformedValueParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: valueParameterDescriptor,
     name: "transformedValue"
 };
 
-@ProxyClass({
+@proxy.describeClass(false, {
+    category: "transformation",
     methodInfix: "Transform"
 })
-export class TransformerProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    @ProxyMethod({
-        type: Type.Number,
-        isMatrix: true
+export class TransformerProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+    @proxy.describeMethod({
+        type: Types.Number,
+        multiplicity: Multiplicities.Matrix,
+        parameterDescriptors: [domainParameterDescriptor, valueParameterDescriptor, tweakParameterDescriptor]
     })
-    forward(
-        @ProxyParameter(domainParameterDescriptor) domain: number | bigint,
-        @ProxyParameter(valueParameterDescriptor) matrixValues: Matrix<number | bigint>,
-        @ProxyParameter(tweakParameterDescriptor) tweak: Nullishable<number | bigint>
-    ): MatrixResultError<ResultError<TBigInt, ThrowError, TError>, ThrowError, TError> {
-        const transformer = Transformer.get(domain, tweak ?? undefined);
-
-        return this.mapMatrix(matrixValues, value => this.mapBigInt(transformer.forward(value)));
+    forward(domain: number | bigint, matrixValues: Matrix<number | bigint>, tweak: Nullishable<number | bigint>): MatrixResult<TBigInt, ThrowError, TError> {
+        return this.setUpMatrixResult(() =>
+            Transformer.get(domain, tweak ?? undefined),
+        matrixValues, (transformer, value) =>
+            this.mapBigInt(transformer.forward(value))
+        );
     }
 
-    @ProxyMethod({
+    @proxy.describeMethod({
         infixBefore: "Sequence",
-        type: Type.Number,
-        isMatrix: true
+        type: Types.Number,
+        multiplicity: Multiplicities.Array,
+        parameterDescriptors: [domainParameterDescriptor, startValueParameterDescriptor, countParameterDescriptor, tweakParameterDescriptor]
     })
-    forwardSequence(
-        @ProxyParameter(domainParameterDescriptor) domain: number | bigint,
-        @ProxyParameter(startValueParameterDescriptor) startValue: number,
-        @ProxyParameter(countParameterDescriptor) count: number,
-        @ProxyParameter(tweakParameterDescriptor) tweak: Nullishable<number | bigint>
-    ): Matrix<ResultError<TBigInt, ThrowError, TError>> {
-        this.appExtension.validateSequenceCount(count);
+    forwardSequence(domain: number | bigint, startValue: number, count: number, tweak: Nullishable<number | bigint>): MatrixResult<TBigInt, ThrowError, TError> {
+        return this.iterableResult(() => {
+            this.appExtension.validateSequenceCount(count);
 
-        return LibProxy.matrixResult(mapIterable(Transformer.get(domain, tweak ?? undefined).forward(new Sequence(startValue, count)), value => this.mapBigInt(value)));
+            return mapIterable(Transformer.get(domain, tweak ?? undefined).forward(new Sequence(startValue, count)), value => this.mapBigInt(value));
+        });
     }
 
-    @ProxyMethod({
-        type: Type.Number,
-        isMatrix: true
+    @proxy.describeMethod({
+        type: Types.Number,
+        multiplicity: Multiplicities.Matrix,
+        parameterDescriptors: [domainParameterDescriptor, transformedValueParameterDescriptor, tweakParameterDescriptor]
     })
-    reverse(
-        @ProxyParameter(domainParameterDescriptor) domain: number | bigint,
-        @ProxyParameter(transformedValueParameterDescriptor) matrixTransformedValues: Matrix<number | bigint>,
-        @ProxyParameter(tweakParameterDescriptor) tweak: Nullishable<number | bigint>
-    ): MatrixResultError<ResultError<TBigInt, ThrowError, TError>, ThrowError, TError> {
-        const transformer = Transformer.get(domain, tweak ?? undefined);
-
-        return this.mapMatrix(matrixTransformedValues, transformedValue => this.mapBigInt(transformer.reverse(transformedValue)));
+    reverse(domain: number | bigint, matrixTransformedValues: Matrix<number | bigint>, tweak: Nullishable<number | bigint>): MatrixResult<TBigInt, ThrowError, TError> {
+        return this.setUpMatrixResult(() =>
+            Transformer.get(domain, tweak ?? undefined),
+        matrixTransformedValues, (transformer, transformedValue) =>
+            this.mapBigInt(transformer.reverse(transformedValue))
+        );
     }
 }

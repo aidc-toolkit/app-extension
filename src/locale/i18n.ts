@@ -1,32 +1,30 @@
-import { i18nAssertValidResources, i18nCoreInit, type I18NEnvironment } from "@aidc-toolkit/core";
-import { gs1Resources, i18nGS1Init } from "@aidc-toolkit/gs1";
-import { i18nUtilityInit, utilityResources } from "@aidc-toolkit/utility";
-import i18next, { type i18n } from "i18next";
-import { localeStrings as enLocaleStrings } from "./en/locale-strings.js";
-import { localeStrings as frLocaleStrings } from "./fr/locale-strings.js";
+import { i18nCoreInit, type I18nEnvironment, i18nInit } from "@aidc-toolkit/core";
+import { i18nGS1Init } from "@aidc-toolkit/gs1";
+import { i18nUtilityInit } from "@aidc-toolkit/utility";
+import i18next, { type i18n, type Resource } from "i18next";
+import enLocaleResources from "./en/locale-resources.js";
+import frLocaleResources from "./fr/locale-resources.js";
 
 export const appExtensionNS = "aidct_app_extension";
 
 /**
- * Locale strings type is extracted from the English locale strings object.
+ * Locale resources type is extracted from the English locale resources object.
  */
-export type AppExtensionLocaleStrings = typeof enLocaleStrings;
-
-i18nAssertValidResources(enLocaleStrings, "fr", frLocaleStrings);
+export type AppExtensionLocaleResources = typeof enLocaleResources;
 
 /**
- * App extension resources.
+ * App extension resource bundle.
  */
-export const appExtensionResources = {
+export const appExtensionResourceBundle: Resource = {
     en: {
-        aidct_app_extension: enLocaleStrings
+        aidct_app_extension: enLocaleResources
     },
     fr: {
-        aidct_app_extension: frLocaleStrings
+        aidct_app_extension: frLocaleResources
     }
 };
 
-// Explicit type is necessary to work around bug in type discovery with linked packages.
+// Explicit type is necessary because type can't be inferred without additional references.
 export const i18nextAppExtension: i18n = i18next.createInstance();
 
 /**
@@ -39,10 +37,8 @@ export const i18nextAppExtension: i18n = i18next.createInstance();
  * Debug setting.
  *
  * @returns
- * Void promise.
+ * App extension resource bundle.
  */
-export async function i18nAppExtensionInit(environment: I18NEnvironment, debug = false): Promise<void> {
-    await i18nUtilityInit(environment, debug);
-    await i18nGS1Init(environment, debug);
-    await i18nCoreInit(i18nextAppExtension, environment, debug, appExtensionNS, utilityResources, gs1Resources, appExtensionResources);
+export async function i18nAppExtensionInit(environment: I18nEnvironment, debug = false): Promise<Resource> {
+    return i18nInit(i18nextAppExtension, environment, debug, appExtensionNS, appExtensionResourceBundle, i18nCoreInit, i18nUtilityInit, i18nGS1Init);
 }

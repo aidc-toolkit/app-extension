@@ -1,34 +1,50 @@
-export const localeStrings = {
+export default {
     AppExtension: {
         sequenceCountMustBeLessThanOrEqualTo: "Le nombre de séquences {{sequenceCount, number}} doit être inférieur ou égal à {{maximumSequenceCount, number}}"
     },
     Proxy: {
-        vSpillMustBeHorizontalArray: "L'entrée doit être un tableau horizontal",
-        hSpillNotAVerticalArray: "L'entrée doit être un tableau vertical"
+        matrixMustBeArray: "La matrice d'entrée doit être unidimensionnelle"
     },
-    IdentificationKeyCreatorProxy: {
+    Categories: {
+        helper: "Auxiliaire",
+        transformation: "Transformation",
+        string: "Chaîne de caractères",
+        GS1: {
+            checkCharacter: "Caractère de contrôle",
+            identifierValidation: "Validation d'identifiants",
+            identifierCreation: "Création d'identifiants",
+            variableMeasure: "Mesure variable",
+            prefix: "Préfixe",
+            service: "Service"
+        }
+    },
+    IdentifierCreatorProxy: {
         prefixDefinitionMustBeOneDimensional: "La définition du préfixe doit être une matrice unidimensionnelle",
         prefixDefinitionMustHaveMaximumThreeElements: "La définition du préfixe doit comporter un maximum de 3 éléments",
         prefixMustBeString: "Le préfixe doit être une chaîne",
-        prefixTypeMustBeNumber: "Le type de préfixe doit être un nombre",
+        prefixTypeMustBeNumber: "Le type de préfixe doit être un nombre compris entre 0 et {{maximumPrefixType, number}}",
+        invalidPrefixType: "Type de préfixe invalide",
         tweakFactorMustBeNumber: "Le facteur de réglage doit être un nombre"
     },
+    ServiceProxy: {
+        invalidIdentifierType: "Type d'identifiant invalide «{{identifierType}}»"
+    },
     Parameters: {
-        spillMatrix: {
-            name: "matrice",
-            description: "Matrice unidimensionnelle à renverser."
+        spillArray: {
+            name: "tableau",
+            description: "Tableau à renverser."
         },
         spillMaximumWidth: {
             name: "largeurMaximale",
-            description: "Largeur maximale dans laquelle déverser la matrice. Si non fournie, la largeur restante est utilisée."
+            description: "Largeur maximale dans laquelle déverser le tableau. Si non fournie, la largeur restante de la feuille est utilisée."
         },
         spillMaximumHeight: {
             name: "hauteurMaximale",
-            description: "Hauteur maximale dans laquelle déverser la matrice. Si non fournie, la hauteur restante est utilisée."
+            description: "Hauteur maximale dans laquelle déverser le tableau. Si non fournie, la hauteur restante de la feuille est utilisée."
         },
         domain: {
             name: "domaine",
-            description: "Domaine de transformation. Les valeurs d'entrée valides vont de zéro au domaine-1."
+            description: "Domaine de transformation. Les valeurs d'entrée valides vont de *0* au *domaine-1*."
         },
         value: {
             name: "valeur",
@@ -40,7 +56,7 @@ export const localeStrings = {
         },
         count: {
             name: "compte",
-            description: "Nombre de valeurs à transformer. Si positive, les valeurs transformées vont de valeurInitiale ascendante à valeurInitiale+compte-1. Si négative, les valeurs transformées vont de valeurInitiale descendant à valeurInitiale+compte+1."
+            description: "Nombre de valeurs à transformer. Si positive, les valeurs transformées vont de *valeurInitiale* ascendante à *valeurInitiale+compte-1*. Si négative, les valeurs transformées vont de *valeurInitiale* descendant à *valeurInitiale+compte+1*."
         },
         transformedValue: {
             name: "valeurTransformee",
@@ -68,19 +84,19 @@ export const localeStrings = {
         },
         exclusionNone: {
             name: "exclusion",
-            description: "Valeurs de chaîne à exclure. La seule valeur valide est 0 (aucune exclusion)."
+            description: "Valeurs de chaîne à exclure. La seule valeur valide est *0* (aucune exclusion)."
         },
         exclusionFirstZero: {
             name: "exclusion",
-            description: "Valeurs de chaîne à exclure. Les valeurs valides sont 0 (aucune exclusion) et 1 (chaînes commençant par 0 exclues)."
+            description: "Valeurs de chaîne à exclure. Les valeurs valides sont *0* (aucune exclusion) et *1* (chaînes commençant par 0 exclues)."
         },
         exclusionAllNumeric: {
             name: "exclusion",
-            description: "Valeurs de chaîne à exclure. Les valeurs valides sont 0 (aucune exclusion) et 2 (chaînes entièrement numériques exclues)."
+            description: "Valeurs de chaîne à exclure. Les valeurs valides sont *0* (aucune exclusion) et *2* (chaînes entièrement numériques exclues)."
         },
         exclusionAny: {
             name: "exclusion",
-            description: "Valeurs de chaîne à exclure. Les valeurs valides sont 0 (aucune exclusion), 1 (chaînes commençant par 0 exclues) et 2 (chaînes toutes numériques exclues)."
+            description: "Valeurs de chaîne à exclure. Les valeurs valides sont *0* (aucune exclusion), *1* (chaînes commençant par 0 exclues) et *2* (chaînes toutes numériques exclues)."
         },
         length: {
             name: "longueur",
@@ -98,6 +114,10 @@ export const localeStrings = {
             name: "c",
             description: "Chaîne numérique avec chiffre de contrôle."
         },
+        checkDigit: {
+            name: "chiffreDeControle",
+            description: "Chiffre de contrôle."
+        },
         ai82S: {
             name: "c",
             description: "Chaîne de caractères GS1 AI 82."
@@ -106,9 +126,13 @@ export const localeStrings = {
             name: "c",
             description: "Chaîne de caractères GS1 AI 82 avec paire de caractères de contrôle."
         },
-        validateIdentificationKey: {
+        validateIdentifier: {
             name: "cleDIdentification",
             description: "Clé d'identification à valider."
+        },
+        splitIdentifier: {
+            name: "splitIdentifier",
+            description: "Identifiant à diviser."
         },
         zeroSuppressibleGTIN12: {
             name: "gtin12",
@@ -134,9 +158,17 @@ export const localeStrings = {
             name: "gtin14",
             description: "GTIN-14 à valider."
         },
-        baseIdentificationKey: {
+        baseIdentifier: {
             name: "cleDIdentificationDeBase",
             description: "Clé d'identification de base."
+        },
+        hyperlinkIdentifier: {
+            name: "identifiant",
+            description: "Identifiant pour lequel créer un lien hypertexte."
+        },
+        gcpLengthIdentifier: {
+            name: "identifiant",
+            description: "Identifiant pour lequel obtenir la longueur du préfixe d'entreprise GS1."
         },
         indicatorDigit: {
             name: "indicatorDigit",
@@ -144,7 +176,7 @@ export const localeStrings = {
         },
         gtinLevel: {
             name: "niveau",
-            description: "Niveau auquel valider le GTIN. Les valeurs valides sont 0 (n'importe lequel), 1 (article commercial de consommation au détail) et 2 (autre que le niveau de l'article commercial de consommation au détail)."
+            description: "Niveau auquel valider le GTIN. Les valeurs valides sont *0* (n'importe lequel), *1* (article commercial de consommation au détail) et *2* (autre que le niveau de l'article commercial de consommation au détail)."
         },
         prefix: {
             name: "prefixe",
@@ -152,7 +184,7 @@ export const localeStrings = {
         },
         prefixType: {
             name: "typeDePréfixe",
-            description: "Type de préfixe. Les valeurs valides sont 0 (préfixe d'entreprise GS1), 1 (préfixe d'entreprise U.P.C.) et 2 (préfixe GS1)."
+            description: "Type de préfixe. Les valeurs valides sont *0* (préfixe d'entreprise GS1), *1* (préfixe d'entreprise U.P.C.) et *2* (préfixe GS1)."
         },
         tweakFactor: {
             name: "facteurDeReglage",
@@ -160,11 +192,11 @@ export const localeStrings = {
         },
         prefixDefinitionAny: {
             name: "prefixeDefinition",
-            description: "Définition de préfixe, soit un préfixe d'entreprise simple GS1 (sous forme de chaîne), soit le résultat d'un appel à definePrefix. Tout type de préfixe est pris en charge."
+            description: "Définition de préfixe, soit un préfixe d'entreprise simple GS1 (sous forme de chaîne), soit le résultat d'un appel à *definisserPrefixe*. Tout type de préfixe est pris en charge."
         },
         prefixDefinitionGS1UPC: {
             name: "prefixeDefinition",
-            description: "Définition de préfixe, soit un préfixe d'entreprise simple GS1 (sous forme de chaîne), soit le résultat d'un appel à definePrefix. Seuls les types de préfixes 0 (préfixe d'entreprise GS1) et 1 (préfixe d'entreprise U.P.C.) sont pris en charge."
+            description: "Définition de préfixe, soit un préfixe d'entreprise simple GS1 (sous forme de chaîne), soit le résultat d'un appel à *definisserPrefixe*. Seuls les types de préfixes *0* (préfixe d'entreprise GS1) et *1* (préfixe d'entreprise U.P.C.) sont pris en charge."
         },
         sparse: {
             name: "clairsemee",
@@ -177,6 +209,34 @@ export const localeStrings = {
         reference: {
             name: "reference",
             description: "Partie de référence de la clé d'identification."
+        },
+        rcnFormat: {
+            name: "format",
+            description: "Format de numéro de diffusion restreinte."
+        },
+        rcn: {
+            name: "rcn",
+            description: "Numéro de diffusion restreint à analyser."
+        },
+        rcnItemReference: {
+            name: "referenceDArticle",
+            description: "Référence d'article."
+        },
+        rcnPriceOrWeight: {
+            name: "prixOuPoids",
+            description: "Prix ou poids (nombre entier uniquement)."
+        },
+        identifierType: {
+            name: "typeDIdentifiant",
+            description: "Type d'identifiant (GTIN, GLN, SSCC, ...)."
+        },
+        hyperlinkText: {
+            name: "texte",
+            description: "Texte du lien hypertexte. À défaut, l'identifiant est utilisé."
+        },
+        hyperlinkDetails: {
+            name: "details",
+            description: "Détails à afficher au survol du lien hypertexte."
         }
     },
     Functions: {
@@ -184,13 +244,9 @@ export const localeStrings = {
             name: "version",
             description: "Obtener la version de la boîte à outils AIDC."
         },
-        vSpill: {
-            name: "vDeverser",
-            description: "Déverser un tableau horizontal verticalement pour l'adapter à une largeur et une hauteur maximales données."
-        },
-        hSpill: {
-            name: "hDeverser",
-            description: "Déverser un tableau vertical horizontalement pour l'adapter à une hauteur et une largeur maximales données."
+        spill: {
+            name: "deverser",
+            description: "Déverser une matrice unidimensionnelle pour l'adapter à un rectangle dont la hauteur et la largeur maximales sont données."
         },
         forwardTransform: {
             name: "transformerAvant",
@@ -333,6 +389,14 @@ export const localeStrings = {
                 name: "valeurDeAI39",
                 description: "Obtenez la valeur d'une chaîne de caractères GS1 AI 39."
             },
+            validateAI64: {
+                name: "validerAI64",
+                description: "Valider une chaîne de caractères GS1 AI 64."
+            },
+            isValidAI64: {
+                name: "estValideAI64",
+                description: "Déterminer si une chaîne est un jeu de caractères GS1 AI 64."
+            },
             checkDigit: {
                 name: "chiffreDeControle",
                 description: "Calculer le chiffre de contrôle pour une chaîne numérique."
@@ -341,13 +405,13 @@ export const localeStrings = {
                 name: "aChiffreDeControleValide",
                 description: "Déterminer si une chaîne a un chiffre de contrôle valide."
             },
-            fourDigitPriceWeightCheckDigit: {
-                name: "prixPoidsAQuatreChiffresChiffreDeControle",
-                description: "Calculer le chiffre de contrôle pour un prix ou un poids à quatre chiffres."
+            priceOrWeightCheckDigit: {
+                name: "chiffreDeControlePrixOuPoids",
+                description: "Calculer le chiffre de contrôle pour un prix ou un poids."
             },
-            fiveDigitPriceWeightCheckDigit: {
-                name: "prixPoidsACinqChiffresChiffreDeControle",
-                description: "Calculer le chiffre de contrôle pour un prix ou un poids à cinq chiffres."
+            isValidPriceOrWeightCheckDigit: {
+                name: "estChiffreDeControlePrixOuPoidsValide",
+                description: "Déterminer si un chiffre de contrôle de prix ou de poids est valide."
             },
             checkCharacterPair: {
                 name: "paireDeCaracteresDeControle",
@@ -361,13 +425,25 @@ export const localeStrings = {
                 name: "validerGTIN13",
                 description: "Valider un GTIN-13."
             },
+            isValidGTIN13: {
+                name: "estValideGTIN13",
+                description: "Déterminer si un GTIN-13 est valide."
+            },
             validateGTIN12: {
                 name: "validerGTIN12",
                 description: "Valider un GTIN-12."
             },
+            isValidGTIN12: {
+                name: "estValideGTIN12",
+                description: "Déterminer si un GTIN-12 est valide."
+            },
             validateGTIN8: {
                 name: "validerGTIN8",
                 description: "Valider un GTIN-8."
+            },
+            isValidGTIN8: {
+                name: "estValideGTIN8",
+                description: "Déterminer si un GTIN-8 est valide."
             },
             zeroSuppressGTIN12: {
                 name: "supprimerZeroGTIN12",
@@ -387,55 +463,119 @@ export const localeStrings = {
             },
             validateGTIN: {
                 name: "validerGTIN",
-                description: "Validez n'importe quel GTIN."
+                description: "Valider un GTIN de n'importe quelle longueur."
+            },
+            isValidGTIN: {
+                name: "estValideGTIN",
+                description: "Déterminer si un GTIN, quelle que soit sa longueur, est valide."
             },
             validateGTIN14: {
                 name: "validerGTIN14",
                 description: "Valider un GTIN-14."
             },
+            isValidGTIN14: {
+                name: "estValideGTIN14",
+                description: "Déterminer si un GTIN-14 est valide."
+            },
             validateGLN: {
                 name: "validerGLN",
                 description: "Valider un GLN."
+            },
+            isValidGLN: {
+                name: "estValideGLN",
+                description: "Déterminer si un GLN est valide."
             },
             validateSSCC: {
                 name: "validerSSCC",
                 description: "Valider un SSCC."
             },
+            isValidSSCC: {
+                name: "estValideSSCC",
+                description: "Déterminer si un SSCC est valide."
+            },
             validateGRAI: {
                 name: "validerGRAI",
                 description: "Valider un GRAI."
+            },
+            isValidGRAI: {
+                name: "estValideGRAI",
+                description: "Déterminer si un GRAI est valide."
+            },
+            splitGRAI: {
+                name: "splitGRAI",
+                description: "Séparer un GRAI en son identifiant de base et son composant sériel."
             },
             validateGIAI: {
                 name: "validerGIAI",
                 description: "Valider un GIAI."
             },
+            isValidGIAI: {
+                name: "estValideGIAI",
+                description: "Déterminer si un GIAI est valide."
+            },
             validateGSRN: {
                 name: "validerGSRN",
                 description: "Valider un GSRN."
+            },
+            isValidGSRN: {
+                name: "estValideGSRN",
+                description: "Déterminer si un GSRN est valide."
             },
             validateGDTI: {
                 name: "validerGDTI",
                 description: "Valider un GDTI."
             },
+            isValidGDTI: {
+                name: "estValideGDTI",
+                description: "Déterminer si un GDTI est valide."
+            },
+            splitGDTI: {
+                name: "splitGDTI",
+                description: "Séparer un GDTI en son identifiant de base et son composant sériel."
+            },
             validateGINC: {
                 name: "validerGINC",
                 description: "Valider un GINC."
+            },
+            isValidGINC: {
+                name: "estValideGINC",
+                description: "Déterminer si un GINC est valide."
             },
             validateGSIN: {
                 name: "validerGSIN",
                 description: "Valider un GSIN."
             },
+            isValidGSIN: {
+                name: "estValideGSIN",
+                description: "Déterminer si un GSIN est valide."
+            },
             validateGCN: {
                 name: "validerGCN",
                 description: "Valider un GCN."
+            },
+            isValidGCN: {
+                name: "estValideGCN",
+                description: "Déterminer si un GCN est valide."
+            },
+            splitGCN: {
+                name: "splitGCN",
+                description: "Séparer un GCN en son identifiant de base et son composant sériel."
             },
             validateCPID: {
                 name: "validerCPID",
                 description: "Valider un CPID."
             },
+            isValidCPID: {
+                name: "estValideCPID",
+                description: "Déterminer si un CPID est valide."
+            },
             validateGMN: {
                 name: "validerGMN",
                 description: "Valider un GMN."
+            },
+            isValidGMN: {
+                name: "estValideGMN",
+                description: "Déterminer si un GMN est valide."
             },
             definePrefix: {
                 name: "definisserPrefixe",
@@ -580,6 +720,30 @@ export const localeStrings = {
             createGMN: {
                 name: "creerGMN",
                 description: "Créer un GMN."
+            },
+            parseVariableMeasureRCN: {
+                name: "parseVariableMeasureRCN",
+                description: "Analyser un numéro de diffusion restreinte (RCN) à l'aide d'un format d'article commercial à mesure variable."
+            },
+            createVariableMeasureRCN: {
+                name: "creerMesureVariableRCN",
+                description: "Créer un numéro de diffusion restreinte (RCN) à l'aide d'un format d'article commercial à mesure variable."
+            },
+            verifiedByGS1: {
+                name: "verifiedByGS1",
+                description: "Créer un lien hypertexte «Vérifié par GS1»."
+            },
+            gcpLengthOf: {
+                name: "longueurGCPDe",
+                description: "Obtenez la longueur du préfixe d'entreprise GS1 pour un identifiant."
+            },
+            gcpLengthDateTime: {
+                name: "dateHeureLongueurGCP",
+                description: "Obtenez la date et l'heure de la dernière mise à jour des données relatives à la longueur du préfixe d'entreprise GS1."
+            },
+            gcpLengthDisclaimer: {
+                name: "avertissementLongueurGCP",
+                description: "Obtenez l'avertissement relatif aux données sur la longueur des préfixes d'entreprise GS1."
             }
         }
     }

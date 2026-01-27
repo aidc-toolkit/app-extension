@@ -1,27 +1,27 @@
-import { type ParameterDescriptor, Type } from "../descriptor.js";
+import { type ExtendsParameterDescriptor, Multiplicities, type ParameterDescriptor, Types } from "../descriptor.js";
 
 export const valueParameterDescriptor: ParameterDescriptor = {
     name: "value",
-    type: Type.Number,
-    isMatrix: true,
+    type: Types.Number,
+    multiplicity: Multiplicities.Matrix,
     isRequired: true
 };
 
-export const startValueParameterDescriptor: ParameterDescriptor = {
+export const startValueParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: valueParameterDescriptor,
     name: "startValue",
-    isMatrix: false
+    multiplicity: Multiplicities.Singleton
 };
 
-export const countParameterDescriptor: ParameterDescriptor = {
+export const countParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: valueParameterDescriptor,
     name: "count",
-    isMatrix: false
+    multiplicity: Multiplicities.Singleton
 };
 
 export const tweakParameterDescriptor: ParameterDescriptor = {
     name: "tweak",
-    type: Type.Number,
-    isMatrix: false,
+    type: Types.Number,
+    multiplicity: Multiplicities.Singleton,
     isRequired: false
 };

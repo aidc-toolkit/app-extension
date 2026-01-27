@@ -2,108 +2,115 @@ import {
     checkCharacterPair,
     checkDigit,
     hasValidCheckCharacterPair,
-    hasValidCheckDigit, hasValidPriceWeightCheckDigit,
-    priceWeightCheckDigit
+    hasValidCheckDigit,
+    isValidPriceOrWeightCheckDigit,
+    priceOrWeightCheckDigit
 } from "@aidc-toolkit/gs1";
-import { type ParameterDescriptor, ProxyClass, ProxyMethod, ProxyParameter, Type } from "../descriptor.js";
+import { type ExtendsParameterDescriptor, Multiplicities, type ParameterDescriptor, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
-import type { ErrorExtends, Matrix, MatrixResultError } from "../types.js";
+import { proxy } from "../proxy.js";
+import type { ErrorExtends, Matrix, MatrixResult, SingletonResult } from "../type.js";
 
 const checkSParameterDescriptor: ParameterDescriptor = {
     name: "checkS",
-    type: Type.String,
-    isMatrix: true,
+    type: Types.String,
+    multiplicity: Multiplicities.Matrix,
     isRequired: true
 };
 
-const numericSParameterDescriptor: ParameterDescriptor = {
+const numericSParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: checkSParameterDescriptor,
     name: "numericS"
 };
 
-const numericSFourOrFiveDigitsParameterDescriptor: ParameterDescriptor = {
+const numericSFourOrFiveDigitsParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: numericSParameterDescriptor,
     sortOrder: 0,
     name: "numericSFourOrFiveDigits"
 };
 
-const numericSWithCheckDigitParameterDescriptor: ParameterDescriptor = {
+const numericSWithCheckDigitParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: numericSParameterDescriptor,
     sortOrder: 1,
     name: "numericSWithCheckDigit"
 };
 
-const ai82SParameterDescriptor: ParameterDescriptor = {
+const checkDigitParameterDescriptor: ExtendsParameterDescriptor = {
+    extendsDescriptor: numericSParameterDescriptor,
+    sortOrder: 2,
+    name: "checkDigit",
+    multiplicity: Multiplicities.Singleton
+};
+
+const ai82SParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: checkSParameterDescriptor,
     name: "ai82S"
 };
 
-const ai82SWithCheckCharacterPairParameterDescriptor: ParameterDescriptor = {
+const ai82SWithCheckCharacterPairParameterDescriptor: ExtendsParameterDescriptor = {
     extendsDescriptor: ai82SParameterDescriptor,
     name: "ai82SWithCheckCharacterPair"
 };
 
-@ProxyClass({
-    namespace: "GS1"
+@proxy.describeClass(false, {
+    namespace: "GS1",
+    category: "checkCharacter"
 })
-export class CheckProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TBigInt> {
-    @ProxyMethod({
-        type: Type.String,
-        isMatrix: true
+export class CheckProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+    @proxy.describeMethod({
+        type: Types.String,
+        multiplicity: Multiplicities.Matrix,
+        parameterDescriptors: [numericSParameterDescriptor]
     })
-    checkDigit(
-        @ProxyParameter(numericSParameterDescriptor) matrixSs: Matrix<string>
-    ): MatrixResultError<string, ThrowError, TError> {
-        return this.mapMatrix(matrixSs, s => checkDigit(s));
+    checkDigit(matrixSs: Matrix<string>): MatrixResult<string, ThrowError, TError> {
+        return this.matrixResult(matrixSs, s => checkDigit(s));
     }
 
-    @ProxyMethod({
-        type: Type.String,
-        isMatrix: true
+    @proxy.describeMethod({
+        type: Types.String,
+        multiplicity: Multiplicities.Matrix,
+        parameterDescriptors: [numericSWithCheckDigitParameterDescriptor]
     })
-    hasValidCheckDigit(
-        @ProxyParameter(numericSWithCheckDigitParameterDescriptor) matrixSs: Matrix<string>
-    ): MatrixResultError<boolean, ThrowError, TError> {
-        return this.mapMatrix(matrixSs, s => hasValidCheckDigit(s));
+    hasValidCheckDigit(matrixSs: Matrix<string>): MatrixResult<boolean, ThrowError, TError> {
+        return this.matrixResult(matrixSs, s => hasValidCheckDigit(s));
     }
 
-    @ProxyMethod({
-        type: Type.String,
-        isMatrix: true
+    @proxy.describeMethod({
+        type: Types.String,
+        multiplicity: Multiplicities.Matrix,
+        parameterDescriptors: [numericSFourOrFiveDigitsParameterDescriptor]
     })
-    priceWeightCheckDigit(
-        @ProxyParameter(numericSFourOrFiveDigitsParameterDescriptor) matrixSs: Matrix<string>
-    ): MatrixResultError<string, ThrowError, TError> {
-        return this.mapMatrix(matrixSs, s => priceWeightCheckDigit(s));
+    priceOrWeightCheckDigit(matrixSs: Matrix<string>): MatrixResult<string, ThrowError, TError> {
+        return this.matrixResult(matrixSs, s => priceOrWeightCheckDigit(s));
     }
 
-    @ProxyMethod({
-        type: Type.String,
-        isMatrix: true
+    @proxy.describeMethod({
+        type: Types.String,
+        multiplicity: Multiplicities.Singleton,
+        parameterDescriptors: [{
+            ...numericSFourOrFiveDigitsParameterDescriptor,
+            multiplicity: Multiplicities.Singleton
+        }, checkDigitParameterDescriptor]
     })
-    hasValidPriceWeightCheckDigit(
-        @ProxyParameter(numericSWithCheckDigitParameterDescriptor) matrixSs: Matrix<string>
-    ): MatrixResultError<boolean, ThrowError, TError> {
-        return this.mapMatrix(matrixSs, s => hasValidPriceWeightCheckDigit(s));
+    isValidPriceOrWeightCheckDigit(s: string, checkDigit: string): SingletonResult<boolean, ThrowError, TError> {
+        return this.singletonResult(() => isValidPriceOrWeightCheckDigit(s, checkDigit));
     }
 
-    @ProxyMethod({
-        type: Type.String,
-        isMatrix: true
+    @proxy.describeMethod({
+        type: Types.String,
+        multiplicity: Multiplicities.Matrix,
+        parameterDescriptors: [ai82SParameterDescriptor]
     })
-    checkCharacterPair(
-        @ProxyParameter(ai82SParameterDescriptor) matrixSs: Matrix<string>
-    ): MatrixResultError<string, ThrowError, TError> {
-        return this.mapMatrix(matrixSs, s => checkCharacterPair(s));
+    checkCharacterPair(matrixSs: Matrix<string>): MatrixResult<string, ThrowError, TError> {
+        return this.matrixResult(matrixSs, s => checkCharacterPair(s));
     }
 
-    @ProxyMethod({
-        type: Type.String,
-        isMatrix: true
+    @proxy.describeMethod({
+        type: Types.String,
+        multiplicity: Multiplicities.Matrix,
+        parameterDescriptors: [ai82SWithCheckCharacterPairParameterDescriptor]
     })
-    hasValidCheckCharacterPair(
-        @ProxyParameter(ai82SWithCheckCharacterPairParameterDescriptor) matrixSs: Matrix<string>
-    ): MatrixResultError<boolean, ThrowError, TError> {
-        return this.mapMatrix(matrixSs, s => hasValidCheckCharacterPair(s));
+    hasValidCheckCharacterPair(matrixSs: Matrix<string>): MatrixResult<boolean, ThrowError, TError> {
+        return this.matrixResult(matrixSs, s => hasValidCheckCharacterPair(s));
     }
 }
