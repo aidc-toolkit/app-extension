@@ -163,6 +163,7 @@ export class PrefixManagerProxy<ThrowError extends boolean, TError extends Error
     @proxy.describeMethod({
         type: Types.Number,
         multiplicity: Multiplicities.Matrix,
+        isAsync: true,
         parameterDescriptors: [identifierTypeParameterDescriptor, gcpLengthIdentifierParameterDescriptor]
     })
     async gcpLength(identifierType: string, matrixIdentifiers: Matrix<string>): Promise<MatrixResult<number, ThrowError, TError>> {
@@ -176,6 +177,7 @@ export class PrefixManagerProxy<ThrowError extends boolean, TError extends Error
     @proxy.describeMethod({
         type: Types.String,
         multiplicity: Multiplicities.Singleton,
+        isAsync: true,
         parameterDescriptors: []
     })
     async gcpLengthDateTime(): Promise<SingletonResult<string, ThrowError, TError>> {
@@ -187,6 +189,7 @@ export class PrefixManagerProxy<ThrowError extends boolean, TError extends Error
     @proxy.describeMethod({
         type: Types.String,
         multiplicity: Multiplicities.Singleton,
+        isAsync: true,
         parameterDescriptors: []
     })
     async gcpLengthDisclaimer(): Promise<SingletonResult<string, ThrowError, TError>> {

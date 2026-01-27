@@ -139,29 +139,34 @@ export interface ReplacementParameterDescriptor {
  */
 export interface MethodDescriptor extends TypeDescriptor {
     /**
-     * If true, application-specific invocation context is required.
+     * If true, method is asynchronous.
      */
-    readonly requiresContext?: boolean;
+    readonly isAsync?: true;
 
     /**
      * If true, function is hidden from user interface.
      */
-    readonly isHidden?: boolean;
+    readonly isHidden?: true;
+
+    /**
+     * If true, application-specific invocation context is required.
+     */
+    readonly requiresContext?: true;
 
     /**
      * If true, function is volatile and should be reevaluated regularly.
      */
-    readonly isVolatile?: boolean;
+    readonly isVolatile?: true;
 
     /**
      * If true, function opens a stream that updates asynchronously.
      */
-    readonly isStream?: boolean;
+    readonly isStream?: true;
 
     /**
      * If true, method infix is ignored.
      */
-    readonly ignoreInfix?: boolean;
+    readonly ignoreInfix?: true;
 
     /**
      * String before which method infix appears. If undefined, infix is appended to the method name. Ignored if

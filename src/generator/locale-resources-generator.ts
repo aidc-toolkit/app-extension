@@ -195,7 +195,7 @@ class LocaleResourcesGenerator extends Generator {
      */
     protected override createProxyFunction(classDescriptor: ClassDescriptor, methodDescriptor: MethodDescriptor): void {
         // Hidden functions aren't localized.
-        if (!(methodDescriptor.isHidden ?? false)) {
+        if (methodDescriptor.isHidden !== true) {
             // Add any parameters that are not already known.
             for (const parameterDescriptor of methodDescriptor.parameterDescriptors) {
                 this.#saveParameterSequence(parameterDescriptor, true);

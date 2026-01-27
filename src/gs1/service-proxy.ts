@@ -34,6 +34,7 @@ export class ServiceProxy<ThrowError extends boolean, TError extends ErrorExtend
     @proxy.describeMethod({
         type: Types.Any,
         multiplicity: Multiplicities.Matrix,
+        isAsync: true,
         requiresContext: true,
         parameterDescriptors: [
             identifierTypeParameterDescriptor,

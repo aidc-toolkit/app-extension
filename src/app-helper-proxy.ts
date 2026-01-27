@@ -143,9 +143,10 @@ export class AppHelperProxy<ThrowError extends boolean, TError extends ErrorExte
      * Matrix spilled within maximum height and maximum width.
      */
     @proxy.describeMethod({
-        requiresContext: true,
         type: Types.Any,
         multiplicity: Multiplicities.Matrix,
+        isAsync: true,
+        requiresContext: true,
         parameterDescriptors: [spillArrayParameterDescriptor, spillMaximumHeightParameterDescriptor, spillMaximumWidthParameterDescriptor]
     })
     async spill(arrayValues: Matrix<unknown>, maximumHeight: Nullishable<number>, maximumWidth: Nullishable<number>, invocationContext: Nullishable<TInvocationContext>): Promise<MatrixResult<unknown, ThrowError, TError>> {
@@ -267,9 +268,9 @@ export class AppHelperProxy<ThrowError extends boolean, TError extends ErrorExte
      */
     @proxy.describeMethod({
         type: Types.String,
+        multiplicity: Multiplicities.Array,
         isHidden: true,
         isStream: true,
-        multiplicity: Multiplicities.Array,
         parameterDescriptors: [{
             name: "logLevel",
             type: Types.String,
