@@ -126,6 +126,7 @@ export class GCPLengthProxy<ThrowError extends boolean, TError extends ErrorExte
         type: Types.Number,
         multiplicity: Multiplicities.Matrix,
         isAsync: true,
+        titleCaseStart: 3,
         parameterDescriptors: [identifierTypeParameterDescriptor, gcpLengthIdentifierParameterDescriptor]
     })
     async gcpLengthOf(identifierType: string, matrixIdentifiers: Matrix<string>): Promise<MatrixResult<number, ThrowError, TError>> {
@@ -140,6 +141,7 @@ export class GCPLengthProxy<ThrowError extends boolean, TError extends ErrorExte
         type: Types.String,
         multiplicity: Multiplicities.Singleton,
         isAsync: true,
+        titleCaseStart: 3,
         parameterDescriptors: []
     })
     async gcpLengthDateTime(): Promise<SingletonResult<string, ThrowError, TError>> {
@@ -152,6 +154,7 @@ export class GCPLengthProxy<ThrowError extends boolean, TError extends ErrorExte
         type: Types.String,
         multiplicity: Multiplicities.Singleton,
         isAsync: true,
+        titleCaseStart: 3,
         parameterDescriptors: []
     })
     async gcpLengthDisclaimer(): Promise<SingletonResult<string, ThrowError, TError>> {

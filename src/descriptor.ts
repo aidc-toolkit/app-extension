@@ -164,6 +164,11 @@ export interface MethodDescriptor extends TypeDescriptor {
     readonly isStream?: true;
 
     /**
+     * Number of characters to capitalize at the start of the method name for title case; defaults to 1.
+     */
+    readonly titleCaseStart?: number;
+
+    /**
      * If true, method infix is ignored.
      */
     readonly ignoreInfix?: true;
