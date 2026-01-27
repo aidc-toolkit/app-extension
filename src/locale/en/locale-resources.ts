@@ -158,10 +158,6 @@ export default {
             name: "gtin14",
             description: "GTIN-14 to validate."
         },
-        gcpLengthIdentifier: {
-            name: "identifier",
-            description: "Identifier for which to get the GS1 Company Prefix length."
-        },
         baseIdentifier: {
             name: "baseIdentifier",
             description: "Base identifier."
@@ -169,6 +165,10 @@ export default {
         hyperlinkIdentifier: {
             name: "identifier",
             description: "Identifier for which to create hyperlink."
+        },
+        gcpLengthIdentifier: {
+            name: "identifier",
+            description: "Identifier for which to get the GS1 Company Prefix length."
         },
         indicatorDigit: {
             name: "indicatorDigit",
@@ -189,10 +189,6 @@ export default {
         tweakFactor: {
             name: "tweakFactor",
             description: "Tweak factor, used to support the creation of sparse identifiers. The default tweak factor is based on the GS1 Company Prefix, and is usually sufficient for obfuscation. This allows more control over the encryption when higher security is required."
-        },
-        identifierType: {
-            name: "identifierType",
-            description: "Identifier type (GTIN, GLN, SSCC, ...)."
         },
         prefixDefinitionAny: {
             name: "prefixDefinition",
@@ -229,6 +225,10 @@ export default {
         rcnPriceOrWeight: {
             name: "priceOrWeight",
             description: "Price or weight (whole number only)."
+        },
+        identifierType: {
+            name: "identifierType",
+            description: "Identifier type (GTIN, GLN, SSCC, ...)."
         },
         hyperlinkText: {
             name: "text",
@@ -581,18 +581,6 @@ export default {
                 name: "definePrefix",
                 description: "Define a prefix for use in GS1 identifier creation functions."
             },
-            gcpLength: {
-                name: "gcpLength",
-                description: "Get the length of a GS1 Company Prefix for an identifier."
-            },
-            gcpLengthDateTime: {
-                name: "gcpLengthDateTime",
-                description: "Get the date and time the GS1 Company Prefix length data was last updated."
-            },
-            gcpLengthDisclaimer: {
-                name: "gcpLengthDisclaimer",
-                description: "Get the disclaimer for the GS1 Company Prefix length data."
-            },
             createGTIN: {
                 name: "createGTIN",
                 description: "Create a GTIN."
@@ -744,6 +732,18 @@ export default {
             verifiedByGS1: {
                 name: "verifiedByGS1",
                 description: "Create a Verified by GS1 hyperlink."
+            },
+            gcpLengthOf: {
+                name: "gcpLengthOf",
+                description: "Get the length of a GS1 Company Prefix for an identifier."
+            },
+            gcpLengthDateTime: {
+                name: "gcpLengthDateTime",
+                description: "Get the date and time the GS1 Company Prefix length data was last updated."
+            },
+            gcpLengthDisclaimer: {
+                name: "gcpLengthDisclaimer",
+                description: "Get the disclaimer for the GS1 Company Prefix length data."
             }
         }
     }

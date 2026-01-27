@@ -30,7 +30,7 @@ const hyperlinkDetailsParameterDescriptor: ParameterDescriptor = {
     namespace: "GS1",
     category: "service"
 })
-export class ServiceProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+export class VerifiedByGS1Proxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
     @proxy.describeMethod({
         type: Types.Any,
         multiplicity: Multiplicities.Matrix,

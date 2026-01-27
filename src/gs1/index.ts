@@ -12,4 +12,6 @@ export * from "./non-gtin-creator-proxy.js";
 
 export * from "./variable-measure-proxy.js";
 
-export * from "./service-proxy.js";
+export * from "./verified-by-gs1-proxy.js";
+
+export * from "./gcp-length-proxy.js";

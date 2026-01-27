@@ -158,10 +158,6 @@ export default {
             name: "gtin14",
             description: "GTIN-14 à valider."
         },
-        gcpLengthIdentifier: {
-            name: "identifiant",
-            description: "Identifiant pour lequel obtenir la longueur du préfixe d'entreprise GS1."
-        },
         baseIdentifier: {
             name: "cleDIdentificationDeBase",
             description: "Clé d'identification de base."
@@ -169,6 +165,10 @@ export default {
         hyperlinkIdentifier: {
             name: "identifiant",
             description: "Identifiant pour lequel créer un lien hypertexte."
+        },
+        gcpLengthIdentifier: {
+            name: "identifiant",
+            description: "Identifiant pour lequel obtenir la longueur du préfixe d'entreprise GS1."
         },
         indicatorDigit: {
             name: "indicatorDigit",
@@ -189,10 +189,6 @@ export default {
         tweakFactor: {
             name: "facteurDeReglage",
             description: "Facteur de réglage, utilisé pour prendre en charge la création de clés d'identification éparses. Le facteur de réglage par défaut est basé sur le préfixe d'entreprise GS1 et est généralement suffisant pour l'obscurcissement. Cela permet un meilleur contrôle du cryptage lorsqu'une sécurité plus élevée est requise."
-        },
-        identifierType: {
-            name: "typeDIdentifiant",
-            description: "Type d'identifiant (GTIN, GLN, SSCC, ...)."
         },
         prefixDefinitionAny: {
             name: "prefixeDefinition",
@@ -229,6 +225,10 @@ export default {
         rcnPriceOrWeight: {
             name: "prixOuPoids",
             description: "Prix ou poids (nombre entier uniquement)."
+        },
+        identifierType: {
+            name: "typeDIdentifiant",
+            description: "Type d'identifiant (GTIN, GLN, SSCC, ...)."
         },
         hyperlinkText: {
             name: "texte",
@@ -581,18 +581,6 @@ export default {
                 name: "definisserPrefixe",
                 description: "Définisser un préfixe à utiliser dans les fonctions de création de clé d'identification GS1."
             },
-            gcpLength: {
-                name: "longueurGCPDe",
-                description: "Obtenez la longueur du préfixe d'entreprise GS1 pour un identifiant."
-            },
-            gcpLengthDateTime: {
-                name: "dateHeureLongueurGCP",
-                description: "Obtenez la date et l'heure de la dernière mise à jour des données relatives à la longueur du préfixe d'entreprise GS1."
-            },
-            gcpLengthDisclaimer: {
-                name: "avertissementLongueurGCP",
-                description: "Obtenez l'avertissement relatif aux données sur la longueur des préfixes d'entreprise GS1."
-            },
             createGTIN: {
                 name: "creerGTIN",
                 description: "Créer un GTIN."
@@ -744,6 +732,18 @@ export default {
             verifiedByGS1: {
                 name: "verifiedByGS1",
                 description: "Créer un lien hypertexte «Vérifié par GS1»."
+            },
+            gcpLengthOf: {
+                name: "longueurGCPDe",
+                description: "Obtenez la longueur du préfixe d'entreprise GS1 pour un identifiant."
+            },
+            gcpLengthDateTime: {
+                name: "dateHeureLongueurGCP",
+                description: "Obtenez la date et l'heure de la dernière mise à jour des données relatives à la longueur du préfixe d'entreprise GS1."
+            },
+            gcpLengthDisclaimer: {
+                name: "avertissementLongueurGCP",
+                description: "Obtenez l'avertissement relatif aux données sur la longueur des préfixes d'entreprise GS1."
             }
         }
     }
