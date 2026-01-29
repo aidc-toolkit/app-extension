@@ -6,6 +6,7 @@
   "main": "dist/index.js",
   "exports": {
     ".": "./dist/index.js",
+    "./gs1": "./dist/gs1/index.js",
     "./generator": "./dist/generator/index.js"
   },
   "homepage": "https://aidc-toolkit.com",
