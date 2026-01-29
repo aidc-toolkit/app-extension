@@ -29,7 +29,7 @@ class AppExtensionGCPLengthCache<ThrowError extends boolean, TError extends Erro
      * Application extension.
      */
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
-        super(appExtension.sharedAppDataStorage);
+        super(appExtension.sharedAppDataStorage, RemoteGCPLengthCache.DEFAULT_BASE_URL, appExtension.httpFetch);
 
         this.#logger = appExtension.logger;
     }

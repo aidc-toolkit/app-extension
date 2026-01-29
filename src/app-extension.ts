@@ -1,6 +1,7 @@
 import {
     type AppDataStorage,
     getLogger,
+    type HTTPFetch,
     type Hyperlink,
     LogLevels,
     MemoryTransport,
@@ -232,6 +233,11 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * Get application data storage shared across multiple documents.
      */
     abstract get sharedAppDataStorage(): AppDataStorage<boolean>;
+
+    /**
+     * Get HTTP fetch function.
+     */
+    abstract get httpFetch(): HTTPFetch;
 
     /**
      * Validate a sequence count against the maximum supported by application.
