@@ -65,13 +65,32 @@ abstract class IdentifierCreatorProxy<ThrowError extends boolean, TError extends
         if (reducedPrefixDefinition.length > 3) {
             throw new RangeError(i18nextAppExtension.t("IdentifierCreatorProxy.prefixDefinitionMustHaveMaximumThreeElements"));
         }
+
         const prefix = reducedPrefixDefinition[0];
 
         if (typeof prefix !== "string") {
             throw new RangeError(i18nextAppExtension.t("IdentifierCreatorProxy.prefixMustBeString"));
         }
 
-        const prefixTypeIndex = reducedPrefixDefinition[1] ?? 0;
+        /**
+         * Get a prefix definition value if not nullish, not zero, and not an empty string.
+         *
+         * @param index
+         * Index into prefix definition.
+         *
+         * @param defaultValue
+         * Default value.
+         *
+         * @returns
+         * Prefix definition value.
+         */
+        function getPrefixDefinitionValue(index: number, defaultValue: unknown): unknown {
+            const prefixDefinitionValue = reducedPrefixDefinition[index];
+
+            return !isNullish(prefixDefinitionValue) && prefixDefinitionValue !== 0 && prefixDefinitionValue !== "" ? prefixDefinitionValue : defaultValue;
+        }
+
+        const prefixTypeIndex = getPrefixDefinitionValue(1, 0);
 
         if (typeof prefixTypeIndex !== "number" || prefixTypeIndex < 0 || prefixTypeIndex >= IdentifierCreatorProxy.#PREFIX_TYPES.length) {
             throw new RangeError(i18nextAppExtension.t("IdentifierCreatorProxy.prefixTypeMustBeNumber", {
@@ -88,7 +107,7 @@ abstract class IdentifierCreatorProxy<ThrowError extends boolean, TError extends
 
         const prefixManager = PrefixManager.get(prefixType, prefix);
 
-        const tweakFactor = reducedPrefixDefinition[2];
+        const tweakFactor = getPrefixDefinitionValue(2, null);
 
         if (!isNullish(tweakFactor)) {
             if (typeof tweakFactor !== "number") {
