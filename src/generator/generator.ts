@@ -39,9 +39,9 @@ export interface Localization {
  */
 export interface FunctionLocalization extends Localization {
     /**
-     * Namespace function name.
+     * Name in title case.
      */
-    readonly namespaceFunctionName: string;
+    readonly titleCaseName: string;
 
     /**
      * Documentation URL.
@@ -205,14 +205,21 @@ export abstract class Generator {
      * @returns
      * Localization.
      */
-    static #generateLocalization<TLocalization extends Localization>(locale: string, key: string, localizationCallback: (locale: string, localization: Localization) => TLocalization): TLocalization {
+    static #generateLocalization<TLocalization extends Localization>(locale: string, key: string, localizationCallback: (locale: string, localization: Localization & Partial<TLocalization>) => TLocalization): TLocalization {
         const lngReturnObjectsOption = {
             lng: locale,
             returnObjects: true
         } as const;
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Localized key exists and return type is Localization.
-        return localizationCallback(locale, i18nextAppExtension.t(key as ParseKeys<DefaultNamespace, typeof lngReturnObjectsOption>, lngReturnObjectsOption) as Localization);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Assume localized key exists.
+        const parseKey = key as ParseKeys<DefaultNamespace, typeof lngReturnObjectsOption>;
+
+        if (!i18nextAppExtension.exists(parseKey, lngReturnObjectsOption)) {
+            throw new Error(`Missing localization for ${key} in ${locale}`);
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Localized key exists and return type is Localization & Partial<TLocalization>.
+        return localizationCallback(locale, i18nextAppExtension.t(key as ParseKeys<DefaultNamespace, typeof lngReturnObjectsOption>, lngReturnObjectsOption) as Localization & Partial<TLocalization>);
     }
 
     /**
@@ -278,7 +285,7 @@ export abstract class Generator {
                     const namespaceClassNamesSet = new Set<string>();
 
                     for (const classDescriptor of classDescriptors) {
-                        const namespaceClassName = classDescriptor.namespaceClassName;
+                        const namespaceClassName = `${namespacePrefix}${classDescriptor.name}`;
 
                         if (namespaceClassNamesSet.has(namespaceClassName)) {
                             throw new Error(`Duplicate class ${namespaceClassName}`);
@@ -306,17 +313,21 @@ export abstract class Generator {
                         this.createProxyObject(`${objectNameGroups["namespaceFirstWord"].toLowerCase()}${objectNameGroups["namespaceRemaining"]}${objectNameGroups["className"]}`, classDescriptor);
 
                         for (const methodDescriptor of classDescriptor.methodDescriptors) {
-                            const functionLocalizationsMap = new Map(this.locales.map(locale =>
-                                [locale, Generator.#generateLocalization<FunctionLocalization>(locale, `Functions.${methodDescriptor.namespaceFunctionName}`, (locale, localization) => ({
-                                    ...localization,
-                                    namespaceFunctionName: `${namespacePrefix}${localization.name}`,
-                                    documentationURL: `${documentationBaseURL}/${locale === this.defaultLocale ? "" : `${locale}/`}${Generator.#DOCUMENTATION_PATH}${namespacePath}${localization.name}.html`,
-                                    parametersMap: new Map(methodDescriptor.parameterDescriptors.map(parameterDescriptor =>
-                                        // eslint-disable-next-line max-nested-callbacks -- Callback is empty.
-                                        [parameterDescriptor.name, Generator.#generateLocalization(locale, `Parameters.${parameterDescriptor.name}`, (_locale, localization) => localization)]
-                                    ))
-                                }))]
-                            ));
+                            const functionLocalizationsMap = new Map(methodDescriptor.isHidden !== true ?
+                                this.locales.map(locale =>
+                                    [locale, Generator.#generateLocalization<FunctionLocalization>(locale, `Functions.${namespacePrefix}${methodDescriptor.functionName}`, (locale, localization) => ({
+                                        ...localization,
+                                        titleCaseName: localization.titleCaseName ?? `${localization.name.substring(0, 1).toUpperCase()}${localization.name.substring(1)}`,
+                                        documentationURL: `${documentationBaseURL}/${locale === this.defaultLocale ? "" : `${locale}/`}${Generator.#DOCUMENTATION_PATH}${namespacePath}${localization.name}.html`,
+                                        parametersMap: new Map(methodDescriptor.parameterDescriptors.map(parameterDescriptor =>
+                                            // eslint-disable-next-line max-nested-callbacks -- Callback is empty.
+                                            [parameterDescriptor.name, Generator.#generateLocalization(locale, `Parameters.${parameterDescriptor.name}`, (_locale, localization) => localization)]
+                                        ))
+                                    }))]
+                                ) :
+                                // Hidden methods are not localized.
+                                []
+                            );
 
                             this.createProxyFunction(classDescriptor, methodDescriptor, functionLocalizationsMap);
                         }

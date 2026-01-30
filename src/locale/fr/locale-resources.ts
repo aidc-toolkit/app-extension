@@ -735,14 +735,17 @@ export default {
             },
             gcpLengthOf: {
                 name: "longueurGCPDe",
+                titleCaseName: undefined,
                 description: "Obtenez la longueur du préfixe d'entreprise GS1 pour un identifiant."
             },
             gcpLengthDateTime: {
                 name: "dateHeureLongueurGCP",
+                titleCaseName: undefined,
                 description: "Obtenez la date et l'heure de la dernière mise à jour des données relatives à la longueur du préfixe d'entreprise GS1."
             },
             gcpLengthDisclaimer: {
                 name: "avertissementLongueurGCP",
+                titleCaseName: undefined,
                 description: "Obtenez l'avertissement relatif aux données sur la longueur des préfixes d'entreprise GS1."
             }
         }

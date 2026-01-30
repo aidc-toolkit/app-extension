@@ -164,11 +164,6 @@ export interface MethodDescriptor extends TypeDescriptor {
     readonly isStream?: true;
 
     /**
-     * Number of characters to capitalize at the start of the method name for title case; defaults to 1.
-     */
-    readonly titleCaseStart?: number;
-
-    /**
      * If true, method infix is ignored.
      */
     readonly ignoreInfix?: true;
@@ -188,11 +183,6 @@ export interface MethodDescriptor extends TypeDescriptor {
      * Function name with optional infix.
      */
     readonly functionName: string;
-
-    /**
-     * Function name in optional namespace with optional infix.
-     */
-    readonly namespaceFunctionName: string;
 }
 
 /**
@@ -218,11 +208,6 @@ export interface ClassDescriptor extends Descriptor {
      * Replacement parameter descriptors  for class hierarchies where parameter types can narrow
      */
     readonly replacementParameterDescriptors?: ReplacementParameterDescriptor[];
-
-    /**
-     * Class name in optional namespace.
-     */
-    readonly namespaceClassName: string;
 
     /**
      * Method descriptors.
