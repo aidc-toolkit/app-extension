@@ -731,7 +731,7 @@ export default {
             },
             verifiedByGS1: {
                 name: "verifiedByGS1",
-                description: "Créer un lien hypertexte «Vérifié par GS1»."
+                description: "Créer un lien hypertexte «Verified by GS1»."
             },
             gcpLengthOf: {
                 name: "longueurGCPDe",
