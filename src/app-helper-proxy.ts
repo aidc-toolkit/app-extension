@@ -31,6 +31,13 @@ const spillMaximumHeightParameterDescriptor: ExtendsParameterDescriptor = {
     name: "spillMaximumHeight"
 };
 
+const logLevelParameterDescriptor: ParameterDescriptor = {
+    name: "logLevel",
+    type: Types.String,
+    multiplicity: Multiplicities.Singleton,
+    isRequired: false
+};
+
 /**
  * Maximum dimensions.
  */
@@ -258,6 +265,42 @@ export class AppHelperProxy<ThrowError extends boolean, TError extends ErrorExte
     }
 
     /**
+     * Get the logger messages. This is a snapshot, with the option to change the log level for the next call.
+     *
+     * @param logLevelString
+     * Log level as string.
+     *
+     * @returns
+     * Logger messages.
+     */
+    @proxy.describeMethod({
+        type: Types.String,
+        multiplicity: Multiplicities.Array,
+        isHidden: true,
+        parameterDescriptors: [logLevelParameterDescriptor]
+    })
+    loggerMessages(logLevelString: Nullishable<string>): MatrixResult<string, ThrowError, TError> {
+        const appExtension = this.appExtension;
+
+        let logLevel: LogLevel | undefined = undefined;
+
+        if (!isNullish(logLevelString)) {
+            try {
+                logLevel = logLevelOf(logLevelString);
+            } catch {
+                // Ignore error.
+            }
+        }
+
+        // Set log level if required.
+        if (logLevel !== undefined) {
+            appExtension.logger.settings.minLevel = logLevel;
+        }
+
+        return appExtension.memoryTransport.messages.map(message => [message]);
+    }
+
+    /**
      * Get the logger messages as a stream.
      *
      * @param logLevelString
@@ -271,14 +314,9 @@ export class AppHelperProxy<ThrowError extends boolean, TError extends ErrorExte
         multiplicity: Multiplicities.Array,
         isHidden: true,
         isStream: true,
-        parameterDescriptors: [{
-            name: "logLevel",
-            type: Types.String,
-            multiplicity: Multiplicities.Singleton,
-            isRequired: false
-        }]
+        parameterDescriptors: [logLevelParameterDescriptor]
     })
-    loggerMessages(logLevelString: Nullishable<string>, streamingInvocationContext: Nullishable<TStreamingInvocationContext>): void {
+    loggerStream(logLevelString: Nullishable<string>, streamingInvocationContext: Nullishable<TStreamingInvocationContext>): void {
         if (isNullish(streamingInvocationContext)) {
             // Application error; no localization necessary.
             throw new Error("Streaming invocation context not provided by application");
