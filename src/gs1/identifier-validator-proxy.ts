@@ -61,7 +61,7 @@ abstract class NumericIdentifierValidatorProxy<ThrowError extends boolean, TErro
     }
 
     @proxy.describeMethod({
-        type: Types.String,
+        type: Types.Boolean,
         multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [validateIdentifierParameterDescriptor]
     })
@@ -109,7 +109,7 @@ export abstract class NonNumericIdentifierValidatorProxy<ThrowError extends bool
     }
 
     @proxy.describeMethod({
-        type: Types.String,
+        type: Types.Boolean,
         multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [validateIdentifierParameterDescriptor, exclusionAllNumericParameterDescriptor]
     })

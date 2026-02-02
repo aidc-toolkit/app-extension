@@ -155,18 +155,15 @@ export abstract class Generator {
     protected abstract createCategory(namespace: string | undefined, category: string, categoryLocalizationsMap: ReadonlyMap<string, string>): void;
 
     /**
-     * Create a proxy object for a class.
-     *
-     * @param objectName
-     * Object name, derived from namespace and class name.
+     * Create a proxy for a class.
      *
      * @param classDescriptor
      * Class descriptor.
      */
-    protected abstract createProxyObject(objectName: string, classDescriptor: ClassDescriptor): void;
+    protected abstract createClassProxy(classDescriptor: ClassDescriptor): void;
 
     /**
-     * Create a proxy function for a class and method.
+     * Create a proxy for a method.
      *
      * @param classDescriptor
      * Class descriptor.
@@ -177,7 +174,7 @@ export abstract class Generator {
      * @param functionLocalizationsMap
      * Function localizations map.
      */
-    protected abstract createProxyFunction(classDescriptor: ClassDescriptor, methodDescriptor: MethodDescriptor, functionLocalizationsMap: ReadonlyMap<string, FunctionLocalization>): void;
+    protected abstract createMethodProxy(classDescriptor: ClassDescriptor, methodDescriptor: MethodDescriptor, functionLocalizationsMap: ReadonlyMap<string, FunctionLocalization>): void;
 
     /**
      * Finalize the generation of the output.
@@ -293,31 +290,14 @@ export abstract class Generator {
 
                         namespaceClassNamesSet.add(namespaceClassName);
 
-                        // First capture group is:
-                        // - one or more uppercase letters followed by zero or more numbers; or
-                        // - single uppercase letter followed by zero or more characters except uppercase letters or period.
-                        //
-                        // Second capture group is:
-                        // - single uppercase letter followed by zero or more characters except period; or
-                        // - zero characters (empty string).
-                        //
-                        // Third capture group, separated by optional period, is:
-                        // - single uppercase letter followed by zero or more characters (remainder of string); or
-                        // - zero characters (empty string).
-                        const objectNameGroups = /^(?<namespaceFirstWord>[A-Z]+[0-9]*|[A-Z][^A-Z.]*)(?<namespaceRemaining>[A-Z][^.]*|)\.?(?<className>[A-Z].*|)$/u.exec(namespaceClassName)?.groups;
-
-                        if (objectNameGroups === undefined) {
-                            throw new Error(`${namespaceClassName} is not a valid namespace-qualified class name`);
-                        }
-
-                        this.createProxyObject(`${objectNameGroups["namespaceFirstWord"].toLowerCase()}${objectNameGroups["namespaceRemaining"]}${objectNameGroups["className"]}`, classDescriptor);
+                        this.createClassProxy(classDescriptor);
 
                         for (const methodDescriptor of classDescriptor.methodDescriptors) {
                             const functionLocalizationsMap = new Map(methodDescriptor.isHidden !== true ?
                                 this.locales.map(locale =>
                                     [locale, Generator.#generateLocalization<FunctionLocalization>(locale, `Functions.${namespacePrefix}${methodDescriptor.functionName}`, (locale, localization) => ({
                                         ...localization,
-                                        titleCaseName: localization.titleCaseName ?? `${localization.name.substring(0, 1).toUpperCase()}${localization.name.substring(1)}`,
+                                        titleCaseName: localization.titleCaseName ?? localization.name.replace(/^[a-z]/u, c => c.toUpperCase()),
                                         documentationURL: `${documentationBaseURL}/${locale === this.defaultLocale ? "" : `${locale}/`}${Generator.#DOCUMENTATION_PATH}${namespacePath}${localization.name}.html`,
                                         parametersMap: new Map(methodDescriptor.parameterDescriptors.map(parameterDescriptor =>
                                             // eslint-disable-next-line max-nested-callbacks -- Callback is empty.
@@ -329,7 +309,7 @@ export abstract class Generator {
                                 []
                             );
 
-                            this.createProxyFunction(classDescriptor, methodDescriptor, functionLocalizationsMap);
+                            this.createMethodProxy(classDescriptor, methodDescriptor, functionLocalizationsMap);
                         }
                     }
                 }

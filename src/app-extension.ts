@@ -8,6 +8,7 @@ import {
     type Promisable
 } from "@aidc-toolkit/core";
 import type { Logger } from "tslog";
+import type { LibProxy } from "./lib-proxy.js";
 import { i18nextAppExtension } from "./locale/i18n.js";
 import type { StreamingCancelledCallback, StreamingConsumerCallback } from "./streaming.js";
 import type { ErrorExtends, MatrixResult, SheetAddress, SheetRange, SingletonResult } from "./type.js";
@@ -75,6 +76,11 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * Logger memory transport.
      */
     readonly #memoryTransport: MemoryTransport<object>;
+
+    /**
+     * Proxies map for lazy loading and memory management.
+     */
+    readonly #proxiesMap = new WeakMap<object, LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>>();
 
     /**
      * Constructor.
@@ -154,6 +160,29 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * Get the maximum height supported by the application.
      */
     abstract get maximumHeight(): number;
+
+    /**
+     * Get a proxy instance. The use of a weak map ensures that proxies are loaded only as needed and may be garbage
+     * collected if required.
+     *
+     * @param ProxyConstructor
+     * Proxy constructor.
+     *
+     * @returns
+     * Proxy instance.
+     */
+    getProxy<T extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>>(ProxyConstructor: new (appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) => T): T {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type is managed in this method.
+        let proxy = this.#proxiesMap.get(ProxyConstructor) as T | undefined;
+
+        if (proxy === undefined) {
+            proxy = new ProxyConstructor(this);
+
+            this.#proxiesMap.set(ProxyConstructor, proxy);
+        }
+
+        return proxy;
+    }
 
     /**
      * Get the sheet address from an invocation context.

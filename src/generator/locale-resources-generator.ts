@@ -115,7 +115,7 @@ class LocaleResourcesGenerator extends Generator {
     /**
      * @inheritDoc
      */
-    protected override createProxyObject(): void {
+    protected override createClassProxy(): void {
     }
 
     /**
@@ -193,7 +193,7 @@ class LocaleResourcesGenerator extends Generator {
     /**
      * @inheritDoc
      */
-    protected override createProxyFunction(classDescriptor: ClassDescriptor, methodDescriptor: MethodDescriptor): void {
+    protected override createMethodProxy(classDescriptor: ClassDescriptor, methodDescriptor: MethodDescriptor): void {
         // Hidden functions aren't localized.
         if (methodDescriptor.isHidden !== true) {
             // Add any parameters that are not already known.
