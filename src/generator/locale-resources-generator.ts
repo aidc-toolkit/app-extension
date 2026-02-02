@@ -1,13 +1,13 @@
 import type { LocaleResources } from "@aidc-toolkit/core";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import packageConfiguration from "../../package.json" with { type: "json" };
 import type {
     ClassDescriptor,
     ExtendsParameterDescriptor,
     MethodDescriptor,
     ParameterDescriptor
 } from "../descriptor.js";
+import { VERSION } from "../version.js";
 import { Generator } from "./generator.js";
 
 /**
@@ -91,7 +91,7 @@ class LocaleResourcesGenerator extends Generator {
      * Constructor.
      */
     constructor() {
-        super(packageConfiguration.version, false);
+        super(VERSION, false);
     }
 
     /**
