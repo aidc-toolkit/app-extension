@@ -29,7 +29,7 @@ class AppExtensionGCPLengthCache<ThrowError extends boolean, TError extends Erro
      * Application extension.
      */
     constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
-        super(appExtension.sharedAppDataStorage);
+        super(appExtension.sharedAppDataStorage, RemoteGCPLengthCache.DEFAULT_BASE_URL, appExtension.httpFetch);
 
         this.#logger = appExtension.logger;
     }
@@ -126,7 +126,6 @@ export class GCPLengthProxy<ThrowError extends boolean, TError extends ErrorExte
         type: Types.Number,
         multiplicity: Multiplicities.Matrix,
         isAsync: true,
-        titleCaseStart: 3,
         parameterDescriptors: [identifierTypeParameterDescriptor, gcpLengthIdentifierParameterDescriptor]
     })
     async gcpLengthOf(identifierType: string, matrixIdentifiers: Matrix<string>): Promise<MatrixResult<number, ThrowError, TError>> {
@@ -141,7 +140,6 @@ export class GCPLengthProxy<ThrowError extends boolean, TError extends ErrorExte
         type: Types.String,
         multiplicity: Multiplicities.Singleton,
         isAsync: true,
-        titleCaseStart: 3,
         parameterDescriptors: []
     })
     async gcpLengthDateTime(): Promise<SingletonResult<string, ThrowError, TError>> {
@@ -154,7 +152,6 @@ export class GCPLengthProxy<ThrowError extends boolean, TError extends ErrorExte
         type: Types.String,
         multiplicity: Multiplicities.Singleton,
         isAsync: true,
-        titleCaseStart: 3,
         parameterDescriptors: []
     })
     async gcpLengthDisclaimer(): Promise<SingletonResult<string, ThrowError, TError>> {

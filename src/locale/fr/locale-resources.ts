@@ -27,7 +27,7 @@ export default {
         tweakFactorMustBeNumber: "Le facteur de réglage doit être un nombre"
     },
     ServiceProxy: {
-        invalidIdentifierType: "Type d'identifiant invalide «{{identifierType}}»"
+        invalidIdentifierType: "Type d'identifiant invalide « {{identifierType}} »"
     },
     Parameters: {
         spillArray: {
@@ -731,18 +731,21 @@ export default {
             },
             verifiedByGS1: {
                 name: "verifiedByGS1",
-                description: "Créer un lien hypertexte «Vérifié par GS1»."
+                description: "Créer un lien hypertexte « Verified by GS1 »."
             },
             gcpLengthOf: {
                 name: "longueurGCPDe",
+                titleCaseName: undefined,
                 description: "Obtenez la longueur du préfixe d'entreprise GS1 pour un identifiant."
             },
             gcpLengthDateTime: {
                 name: "dateHeureLongueurGCP",
+                titleCaseName: undefined,
                 description: "Obtenez la date et l'heure de la dernière mise à jour des données relatives à la longueur du préfixe d'entreprise GS1."
             },
             gcpLengthDisclaimer: {
                 name: "avertissementLongueurGCP",
+                titleCaseName: undefined,
                 description: "Obtenez l'avertissement relatif aux données sur la longueur des préfixes d'entreprise GS1."
             }
         }

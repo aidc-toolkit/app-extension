@@ -128,7 +128,7 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
     }
 
     @proxy.describeMethod({
-        type: Types.String,
+        type: Types.Boolean,
         multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [validateGTINParameterDescriptor, gtinLevelParameterDescriptor]
     })
@@ -148,7 +148,7 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
     }
 
     @proxy.describeMethod({
-        type: Types.String,
+        type: Types.Boolean,
         multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [validateGTIN14ParameterDescriptor]
     })

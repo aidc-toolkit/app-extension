@@ -1,13 +1,13 @@
 import type { LocaleResources } from "@aidc-toolkit/core";
 import * as fs from "node:fs";
 import * as path from "node:path";
-import packageConfiguration from "../../package.json" with { type: "json" };
 import type {
     ClassDescriptor,
     ExtendsParameterDescriptor,
     MethodDescriptor,
     ParameterDescriptor
 } from "../descriptor.js";
+import { VERSION } from "../version.js";
 import { Generator } from "./generator.js";
 
 /**
@@ -91,7 +91,7 @@ class LocaleResourcesGenerator extends Generator {
      * Constructor.
      */
     constructor() {
-        super(packageConfiguration.version, false);
+        super(VERSION, false);
     }
 
     /**
@@ -115,7 +115,7 @@ class LocaleResourcesGenerator extends Generator {
     /**
      * @inheritDoc
      */
-    protected override createProxyObject(): void {
+    protected override createClassProxy(): void {
     }
 
     /**
@@ -193,7 +193,7 @@ class LocaleResourcesGenerator extends Generator {
     /**
      * @inheritDoc
      */
-    protected override createProxyFunction(classDescriptor: ClassDescriptor, methodDescriptor: MethodDescriptor): void {
+    protected override createMethodProxy(classDescriptor: ClassDescriptor, methodDescriptor: MethodDescriptor): void {
         // Hidden functions aren't localized.
         if (methodDescriptor.isHidden !== true) {
             // Add any parameters that are not already known.
@@ -255,15 +255,17 @@ class LocaleResourcesGenerator extends Generator {
      * Merged locale resources.
      */
     #merge(logChanges: boolean, parentKey: string, sourceLocaleResources: LocaleResources, destinationLocaleResources: LocaleResources, addMissing: boolean): LocaleResources {
-        // Some entries at the top are not part of the generator output.
-        const deleteMissing = parentKey.length !== 0;
+        // Some entries at the root are not part of the generator output.
+        const atRoot = parentKey === "";
+
+        const atFunction = parentKey.startsWith("Functions.");
 
         const newDestinationLocaleResources: LocaleResources = {};
 
         // Copy over or delete any destination keys that are not in source.
         for (const [key, destinationValue] of Object.entries(destinationLocaleResources)) {
             if (!(key in sourceLocaleResources)) {
-                if (!deleteMissing) {
+                if (atRoot || (atFunction && key === "titleCaseName")) {
                     newDestinationLocaleResources[key] = destinationValue;
                 } else if (logChanges) {
                     this.logger.info(`Deleting ${parentKey}${key}...`);

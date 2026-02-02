@@ -735,14 +735,17 @@ export default {
             },
             gcpLengthOf: {
                 name: "gcpLengthOf",
+                titleCaseName: "GCPLengthOf",
                 description: "Get the length of a GS1 Company Prefix for an identifier."
             },
             gcpLengthDateTime: {
                 name: "gcpLengthDateTime",
+                titleCaseName: "GCPLengthDateTime",
                 description: "Get the date and time the GS1 Company Prefix length data was last updated."
             },
             gcpLengthDisclaimer: {
                 name: "gcpLengthDisclaimer",
+                titleCaseName: "GCPLengthDisclaimer",
                 description: "Get the disclaimer for the GS1 Company Prefix length data."
             }
         }

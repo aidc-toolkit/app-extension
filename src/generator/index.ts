@@ -16,3 +16,4 @@
  */
 
 export * from "./generator.js";
+export * from "./functions-generator.js";

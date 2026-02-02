@@ -1,4 +1,4 @@
-import { ALPHA_URL, getLogger, I18nEnvironments, type Promisable, websiteURL } from "@aidc-toolkit/core";
+import { ALPHA_URL, getLogger, I18nLanguageDetectors, type Promisable, websiteURL } from "@aidc-toolkit/core";
 import type { DefaultNamespace, ParseKeys } from "i18next";
 import type { Logger } from "tslog";
 import { AppHelperProxy } from "../app-helper-proxy.js";
@@ -39,9 +39,9 @@ export interface Localization {
  */
 export interface FunctionLocalization extends Localization {
     /**
-     * Namespace function name.
+     * Name in title case.
      */
-    readonly namespaceFunctionName: string;
+    readonly titleCaseName: string;
 
     /**
      * Documentation URL.
@@ -155,18 +155,15 @@ export abstract class Generator {
     protected abstract createCategory(namespace: string | undefined, category: string, categoryLocalizationsMap: ReadonlyMap<string, string>): void;
 
     /**
-     * Create a proxy object for a class.
-     *
-     * @param objectName
-     * Object name, derived from namespace and class name.
+     * Create a proxy for a class.
      *
      * @param classDescriptor
      * Class descriptor.
      */
-    protected abstract createProxyObject(objectName: string, classDescriptor: ClassDescriptor): void;
+    protected abstract createClassProxy(classDescriptor: ClassDescriptor): void;
 
     /**
-     * Create a proxy function for a class and method.
+     * Create a proxy for a method.
      *
      * @param classDescriptor
      * Class descriptor.
@@ -177,7 +174,7 @@ export abstract class Generator {
      * @param functionLocalizationsMap
      * Function localizations map.
      */
-    protected abstract createProxyFunction(classDescriptor: ClassDescriptor, methodDescriptor: MethodDescriptor, functionLocalizationsMap: ReadonlyMap<string, FunctionLocalization>): void;
+    protected abstract createMethodProxy(classDescriptor: ClassDescriptor, methodDescriptor: MethodDescriptor, functionLocalizationsMap: ReadonlyMap<string, FunctionLocalization>): void;
 
     /**
      * Finalize the generation of the output.
@@ -205,14 +202,21 @@ export abstract class Generator {
      * @returns
      * Localization.
      */
-    static #generateLocalization<TLocalization extends Localization>(locale: string, key: string, localizationCallback: (locale: string, localization: Localization) => TLocalization): TLocalization {
+    static #generateLocalization<TLocalization extends Localization>(locale: string, key: string, localizationCallback: (locale: string, localization: Localization & Partial<TLocalization>) => TLocalization): TLocalization {
         const lngReturnObjectsOption = {
             lng: locale,
             returnObjects: true
         } as const;
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Localized key exists and return type is Localization.
-        return localizationCallback(locale, i18nextAppExtension.t(key as ParseKeys<DefaultNamespace, typeof lngReturnObjectsOption>, lngReturnObjectsOption) as Localization);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Assume localized key exists.
+        const parseKey = key as ParseKeys<DefaultNamespace, typeof lngReturnObjectsOption>;
+
+        if (!i18nextAppExtension.exists(parseKey, lngReturnObjectsOption)) {
+            throw new Error(`Missing localization for ${key} in ${locale}`);
+        }
+
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Localized key exists and return type is Localization & Partial<TLocalization>.
+        return localizationCallback(locale, i18nextAppExtension.t(key as ParseKeys<DefaultNamespace, typeof lngReturnObjectsOption>, lngReturnObjectsOption) as Localization & Partial<TLocalization>);
     }
 
     /**
@@ -221,7 +225,7 @@ export abstract class Generator {
     async generate(): Promise<void> {
         let success = false;
 
-        await i18nAppExtensionInit(I18nEnvironments.CLI);
+        await i18nAppExtensionInit(I18nLanguageDetectors.CLI);
 
         const documentationBaseURL = websiteURL(this.version, true, await ALPHA_URL);
 
@@ -278,7 +282,7 @@ export abstract class Generator {
                     const namespaceClassNamesSet = new Set<string>();
 
                     for (const classDescriptor of classDescriptors) {
-                        const namespaceClassName = classDescriptor.namespaceClassName;
+                        const namespaceClassName = `${namespacePrefix}${classDescriptor.name}`;
 
                         if (namespaceClassNamesSet.has(namespaceClassName)) {
                             throw new Error(`Duplicate class ${namespaceClassName}`);
@@ -286,39 +290,26 @@ export abstract class Generator {
 
                         namespaceClassNamesSet.add(namespaceClassName);
 
-                        // First capture group is:
-                        // - one or more uppercase letters followed by zero or more numbers; or
-                        // - single uppercase letter followed by zero or more characters except uppercase letters or period.
-                        //
-                        // Second capture group is:
-                        // - single uppercase letter followed by zero or more characters except period; or
-                        // - zero characters (empty string).
-                        //
-                        // Third capture group, separated by optional period, is:
-                        // - single uppercase letter followed by zero or more characters (remainder of string); or
-                        // - zero characters (empty string).
-                        const objectNameGroups = /^(?<namespaceFirstWord>[A-Z]+[0-9]*|[A-Z][^A-Z.]*)(?<namespaceRemaining>[A-Z][^.]*|)\.?(?<className>[A-Z].*|)$/u.exec(namespaceClassName)?.groups;
-
-                        if (objectNameGroups === undefined) {
-                            throw new Error(`${namespaceClassName} is not a valid namespace-qualified class name`);
-                        }
-
-                        this.createProxyObject(`${objectNameGroups["namespaceFirstWord"].toLowerCase()}${objectNameGroups["namespaceRemaining"]}${objectNameGroups["className"]}`, classDescriptor);
+                        this.createClassProxy(classDescriptor);
 
                         for (const methodDescriptor of classDescriptor.methodDescriptors) {
-                            const functionLocalizationsMap = new Map(this.locales.map(locale =>
-                                [locale, Generator.#generateLocalization<FunctionLocalization>(locale, `Functions.${methodDescriptor.namespaceFunctionName}`, (locale, localization) => ({
-                                    ...localization,
-                                    namespaceFunctionName: `${namespacePrefix}${localization.name}`,
-                                    documentationURL: `${documentationBaseURL}/${locale === this.defaultLocale ? "" : `${locale}/`}${Generator.#DOCUMENTATION_PATH}${namespacePath}${localization.name}.html`,
-                                    parametersMap: new Map(methodDescriptor.parameterDescriptors.map(parameterDescriptor =>
-                                        // eslint-disable-next-line max-nested-callbacks -- Callback is empty.
-                                        [parameterDescriptor.name, Generator.#generateLocalization(locale, `Parameters.${parameterDescriptor.name}`, (_locale, localization) => localization)]
-                                    ))
-                                }))]
-                            ));
+                            const functionLocalizationsMap = new Map(methodDescriptor.isHidden !== true ?
+                                this.locales.map(locale =>
+                                    [locale, Generator.#generateLocalization<FunctionLocalization>(locale, `Functions.${namespacePrefix}${methodDescriptor.functionName}`, (locale, localization) => ({
+                                        ...localization,
+                                        titleCaseName: localization.titleCaseName ?? localization.name.replace(/^[a-z]/u, c => c.toUpperCase()),
+                                        documentationURL: `${documentationBaseURL}/${locale === this.defaultLocale ? "" : `${locale}/`}${Generator.#DOCUMENTATION_PATH}${namespacePath}${localization.name}.html`,
+                                        parametersMap: new Map(methodDescriptor.parameterDescriptors.map(parameterDescriptor =>
+                                            // eslint-disable-next-line max-nested-callbacks -- Callback is empty.
+                                            [parameterDescriptor.name, Generator.#generateLocalization(locale, `Parameters.${parameterDescriptor.name}`, (_locale, localization) => localization)]
+                                        ))
+                                    }))]
+                                ) :
+                                // Hidden methods are not localized.
+                                []
+                            );
 
-                            this.createProxyFunction(classDescriptor, methodDescriptor, functionLocalizationsMap);
+                            this.createMethodProxy(classDescriptor, methodDescriptor, functionLocalizationsMap);
                         }
                     }
                 }

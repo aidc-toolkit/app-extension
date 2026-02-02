@@ -83,7 +83,7 @@ type ClassMethodDecorator<TThis, TArguments extends unknown[], TReturn> =
 /**
  * Subset of method descriptor used during decoration process.
  */
-type InterimMethodDescriptor = Omit<MethodDescriptor, "functionName" | "namespaceFunctionName">;
+type InterimMethodDescriptor = Omit<MethodDescriptor, "functionName">;
 
 /**
  * Subset of method descriptor used in call to decorator.
@@ -95,7 +95,7 @@ interface DecoratorMethodDescriptor extends Omit<InterimMethodDescriptor, "name"
 /**
  * Subset of class descriptor used during decoration process.
  */
-interface InterimClassDescriptor extends Omit<ClassDescriptor, "name" | "category" | "namespaceClassName" | "objectName" | "methodDescriptors"> {
+interface InterimClassDescriptor extends Omit<ClassDescriptor, "name" | "category" | "objectName" | "methodDescriptors"> {
     readonly category?: string;
 }
 
@@ -330,15 +330,10 @@ export class Proxy {
                     functionName = `${methodName.substring(0, insertIndex)}${methodInfix}${methodName.substring(insertIndex)}`;
                 }
 
-                const namespaceFunctionName = `${namespacePrefix}${functionName}`;
-
-                const methodDescriptor = {
+                methodDescriptors.push({
                     ...interimMethodDescriptor,
-                    functionName,
-                    namespaceFunctionName
-                };
-
-                methodDescriptors.push(methodDescriptor);
+                    functionName
+                });
             }
 
             const classDescriptor: ClassDescriptor = {
@@ -346,7 +341,6 @@ export class Proxy {
                 name: className,
                 namespace,
                 category,
-                namespaceClassName,
                 methodDescriptors
             };
 

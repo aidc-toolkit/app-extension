@@ -67,7 +67,7 @@ export class CheckProxy<ThrowError extends boolean, TError extends ErrorExtends<
     }
 
     @proxy.describeMethod({
-        type: Types.String,
+        type: Types.Boolean,
         multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [numericSWithCheckDigitParameterDescriptor]
     })
@@ -85,7 +85,7 @@ export class CheckProxy<ThrowError extends boolean, TError extends ErrorExtends<
     }
 
     @proxy.describeMethod({
-        type: Types.String,
+        type: Types.Boolean,
         multiplicity: Multiplicities.Singleton,
         parameterDescriptors: [{
             ...numericSFourOrFiveDigitsParameterDescriptor,
@@ -106,7 +106,7 @@ export class CheckProxy<ThrowError extends boolean, TError extends ErrorExtends<
     }
 
     @proxy.describeMethod({
-        type: Types.String,
+        type: Types.Boolean,
         multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [ai82SWithCheckCharacterPairParameterDescriptor]
     })
