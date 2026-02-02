@@ -27,7 +27,7 @@ export default {
         tweakFactorMustBeNumber: "Le facteur de réglage doit être un nombre"
     },
     ServiceProxy: {
-        invalidIdentifierType: "Type d'identifiant invalide «{{identifierType}}»"
+        invalidIdentifierType: "Type d'identifiant invalide « {{identifierType}} »"
     },
     Parameters: {
         spillArray: {
@@ -731,7 +731,7 @@ export default {
             },
             verifiedByGS1: {
                 name: "verifiedByGS1",
-                description: "Créer un lien hypertexte «Verified by GS1»."
+                description: "Créer un lien hypertexte « Verified by GS1 »."
             },
             gcpLengthOf: {
                 name: "longueurGCPDe",
