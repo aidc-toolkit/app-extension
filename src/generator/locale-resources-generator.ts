@@ -255,15 +255,17 @@ class LocaleResourcesGenerator extends Generator {
      * Merged locale resources.
      */
     #merge(logChanges: boolean, parentKey: string, sourceLocaleResources: LocaleResources, destinationLocaleResources: LocaleResources, addMissing: boolean): LocaleResources {
-        // Some entries at the top are not part of the generator output.
-        const deleteMissing = parentKey.length !== 0;
+        // Some entries at the root are not part of the generator output.
+        const atRoot = parentKey === "";
+
+        const atFunction = parentKey.startsWith("Functions.");
 
         const newDestinationLocaleResources: LocaleResources = {};
 
         // Copy over or delete any destination keys that are not in source.
         for (const [key, destinationValue] of Object.entries(destinationLocaleResources)) {
             if (!(key in sourceLocaleResources)) {
-                if (!deleteMissing) {
+                if (atRoot || (atFunction && key === "titleCaseName")) {
                     newDestinationLocaleResources[key] = destinationValue;
                 } else if (logChanges) {
                     this.logger.info(`Deleting ${parentKey}${key}...`);
