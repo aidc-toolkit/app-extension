@@ -364,12 +364,13 @@ class LocaleResourcesGenerator extends Generator {
      * Output string.
      */
     static #buildOutput(prefix: string, value: LocaleResources | string, indentLevel: number): string {
-        return `${"    ".repeat(indentLevel)}${prefix} ${typeof value === "object" ?
-            `{\n${
-                Object.entries(value).map(entry => LocaleResourcesGenerator.#buildOutput(`${entry[0]}:`, entry[1], indentLevel + 1)).join(",\n")
-            }\n${"    ".repeat(indentLevel)}}` :
-            // JSON.stringify() will apply quotes as appropriate.
-            JSON.stringify(value)
+        return `${"    ".repeat(indentLevel)}${prefix} ${
+            typeof value === "object" ?
+                `{\n${
+                    Object.entries(value).map(entry => LocaleResourcesGenerator.#buildOutput(`${entry[0]}:`, entry[1], indentLevel + 1)).join(",\n")
+                }\n${"    ".repeat(indentLevel)}}` :
+                // JSON.stringify() will apply quotes as appropriate.
+                JSON.stringify(value)
         }`;
     }
 
