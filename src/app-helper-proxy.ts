@@ -75,6 +75,8 @@ interface MaximumDimensions {
     category: "helper"
 })
 export class AppHelperProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+    static readonly #LOGGER_STREAM_NAME = "loggerStream";
+
     /**
      * Get the version.
      *
@@ -329,7 +331,7 @@ export class AppHelperProxy<ThrowError extends boolean, TError extends ErrorExte
 
         const streamingConsumerCallback = appExtension.setUpStreaming<string>(streamingInvocationContext, () => {
             if (notificationCallbackAdded) {
-                appExtension.memoryTransport.removeNotificationCallback("loggerMessages");
+                appExtension.memoryTransport.removeNotificationCallback(AppHelperProxy.#LOGGER_STREAM_NAME);
             }
 
             if (previousLogLevel !== undefined) {
@@ -337,7 +339,7 @@ export class AppHelperProxy<ThrowError extends boolean, TError extends ErrorExte
             }
         });
 
-        if (appExtension.memoryTransport.addNotificationCallback("loggerMessages", (_message, messages) => {
+        if (appExtension.memoryTransport.addNotificationCallback(AppHelperProxy.#LOGGER_STREAM_NAME, (_message, messages) => {
             streamingConsumerCallback(this.iterableResult(() => messages));
         })) {
             notificationCallbackAdded = true;
@@ -359,7 +361,7 @@ export class AppHelperProxy<ThrowError extends boolean, TError extends ErrorExte
             }
         } else {
             // Diagnostic tool; localization not required.
-            streamingConsumerCallback([["Only one logger messages call allowable per workbook"]]);
+            streamingConsumerCallback([["Only one logger stream allowable per workbook"]]);
         }
     }
 }

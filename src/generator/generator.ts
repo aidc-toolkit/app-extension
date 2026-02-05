@@ -191,7 +191,7 @@ export abstract class Generator {
     protected abstract finalize(success: boolean): Promisable<void>;
 
     /**
-     * Generate a localization.
+     * Get a localization.
      *
      * @template TLocalization
      * Localization type.
@@ -208,7 +208,7 @@ export abstract class Generator {
      * @returns
      * Localization.
      */
-    static #generateLocalization<TLocalization extends Localization>(locale: string, key: string, localizationCallback: (locale: string, localization: Localization & Partial<TLocalization>) => TLocalization): TLocalization {
+    static #getLocalization<TLocalization extends Localization>(locale: string, key: string, localizationCallback: (locale: string, localization: Localization & Partial<TLocalization>) => TLocalization): TLocalization {
         const lngReturnObjectsOption = {
             lng: locale,
             returnObjects: true
@@ -305,13 +305,13 @@ export abstract class Generator {
                         for (const methodDescriptor of classDescriptor.methodDescriptors) {
                             const functionLocalizationsMap = new Map(methodDescriptor.isHidden !== true ?
                                 this.locales.map(locale =>
-                                    [locale, Generator.#generateLocalization<FunctionLocalization>(locale, `Functions.${namespacePrefix}${methodDescriptor.functionName}`, (locale, localization) => ({
+                                    [locale, Generator.#getLocalization<FunctionLocalization>(locale, `Functions.${namespacePrefix}${methodDescriptor.functionName}`, (locale, localization) => ({
                                         ...localization,
                                         titleCaseName: localization.titleCaseName ?? localization.name.replace(/^[a-z]/u, c => c.toUpperCase()),
                                         documentationURL: `${documentationBaseURL}/${locale === this.defaultLocale ? "" : `${locale}/`}${Generator.#DOCUMENTATION_PATH}${namespacePath}${localization.name}.html`,
                                         parametersMap: new Map(methodDescriptor.parameterDescriptors.map(parameterDescriptor =>
                                             // eslint-disable-next-line max-nested-callbacks -- Callback is empty.
-                                            [parameterDescriptor.name, Generator.#generateLocalization(locale, `Parameters.${parameterDescriptor.name}`, (_locale, localization) => localization)]
+                                            [parameterDescriptor.name, Generator.#getLocalization(locale, `Parameters.${parameterDescriptor.name}`, (_locale, localization) => localization)]
                                         ))
                                     }))]
                                 ) :
