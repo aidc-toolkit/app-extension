@@ -70,21 +70,21 @@ class LocaleResourcesGenerator extends Generator {
     readonly #parametersSequencer: ParametersSequencer = {};
 
     /**
-     * Parameters locale resources.
+     * Template parameters locale resources.
      */
-    readonly #parametersLocaleResources: LocaleResources = {};
+    readonly #templateParametersLocaleResources: LocaleResources = {};
 
     /**
-     * Functions locale resources.
+     * Template functions locale resources.
      */
-    readonly #functionsLocaleResources: LocaleResources = {};
+    readonly #templateFunctionsLocaleResources: LocaleResources = {};
 
     /**
-     * Locale resources.
+     * Template locale resources.
      */
-    readonly #LocaleResources: LocaleResources = {
-        Parameters: this.#parametersLocaleResources,
-        Functions: this.#functionsLocaleResources
+    readonly #templateLocaleResources: LocaleResources = {
+        Parameters: this.#templateParametersLocaleResources,
+        Functions: this.#templateFunctionsLocaleResources
     };
 
     /**
@@ -201,7 +201,7 @@ class LocaleResourcesGenerator extends Generator {
                 this.#saveParameterSequence(parameterDescriptor, true);
             }
 
-            let functionsLocaleResources = this.#functionsLocaleResources;
+            let functionsLocaleResources = this.#templateFunctionsLocaleResources;
 
             const namespace = classDescriptor.namespace;
 
@@ -234,68 +234,92 @@ class LocaleResourcesGenerator extends Generator {
     }
 
     /**
-     * Merge source locale resources into existing destination locale resources.
+     * Merge template locale resources into existing import locale resources.
      *
-     * @param logChanges
-     * If true, changes are logged. Limits output when processing multiple sources.
+     * @param mergedLocaleResources
+     * Merged locale resources.
+     *
+     * @param isDefaultLocale
+     * If true, locale being merged is the default.
      *
      * @param parentKey
      * Parent key for logging purposes.
      *
-     * @param sourceLocaleResources
-     * Source locale resources.
+     * @param templateLocaleResources
+     * Template locale resources.
      *
-     * @param destinationLocaleResources
-     * Destination locale resources.
+     * @param importLocaleResources
+     * Import locale resources.
      *
      * @param addMissing
      * Add missing if true; applies to locale resources that are not regional.
      *
      * @returns
-     * Merged locale resources.
+     * True if any changes.
      */
-    #merge(logChanges: boolean, parentKey: string, sourceLocaleResources: LocaleResources, destinationLocaleResources: LocaleResources, addMissing: boolean): LocaleResources {
+    #merge(mergedLocaleResources: LocaleResources, isDefaultLocale: boolean, parentKey: string, templateLocaleResources: LocaleResources, importLocaleResources: LocaleResources, addMissing: boolean): boolean {
+        let anyChanges = false;
+
         // Some entries at the root are not part of the generator output.
         const atRoot = parentKey === "";
 
-        const atFunction = parentKey.startsWith("Functions.");
+        if (parentKey.startsWith("Functions.") && "titleCaseName" in importLocaleResources && !("titleCaseName" in templateLocaleResources)) {
+            const description = templateLocaleResources["description"];
 
-        const newDestinationLocaleResources: LocaleResources = {};
+            const patchTemplateLocaleResources = templateLocaleResources;
 
-        // Copy over or delete any destination keys that are not in source.
-        for (const [key, destinationValue] of Object.entries(destinationLocaleResources)) {
-            if (!(key in sourceLocaleResources)) {
-                if (atRoot || (atFunction && key === "titleCaseName")) {
-                    newDestinationLocaleResources[key] = destinationValue;
-                } else if (logChanges) {
-                    this.logger.info(`Deleting ${parentKey}${key}...`);
+            // Patch template locale resources to preserve required position of titleCaseName.
+            delete patchTemplateLocaleResources["description"];
+            patchTemplateLocaleResources["titleCaseName"] = undefined;
+            patchTemplateLocaleResources["description"] = description;
+        }
+
+        const patchMergedLocaleResources = mergedLocaleResources;
+
+        // Copy over or delete any import keys that are not in template.
+        for (const [key, importValue] of Object.entries(importLocaleResources)) {
+            if (!(key in templateLocaleResources)) {
+                if (atRoot) {
+                    patchMergedLocaleResources[key] = importValue;
+                } else {
+                    if (isDefaultLocale) {
+                        this.logger.info(`Deleting ${parentKey}${key}...`);
+                    }
+
+                    anyChanges = true;
                 }
             }
         }
 
-        for (const [key, sourceValue] of Object.entries(sourceLocaleResources)) {
-            if (!(key in destinationLocaleResources)) {
+        for (const [key, templateValue] of Object.entries(templateLocaleResources)) {
+            if (!(key in importLocaleResources)) {
                 if (addMissing) {
-                    if (logChanges) {
+                    if (isDefaultLocale) {
                         this.logger.info(`Adding ${parentKey}${key}...`);
                     }
 
-                    newDestinationLocaleResources[key] = sourceValue;
+                    patchMergedLocaleResources[key] = templateValue;
+
+                    anyChanges = true;
                 }
             } else {
-                const destinationValue = destinationLocaleResources[key];
+                const importValue = importLocaleResources[key];
 
-                if (typeof sourceValue === "object" && typeof destinationValue === "object") {
-                    newDestinationLocaleResources[key] = this.#merge(logChanges, `${parentKey}${key}.`, sourceValue, destinationValue, addMissing);
-                } else if (typeof sourceValue === "string" && typeof destinationValue === "string") {
-                    newDestinationLocaleResources[key] = destinationValue;
+                if (typeof templateValue === "object" && typeof importValue === "object") {
+                    patchMergedLocaleResources[key] = {};
+
+                    if (this.#merge(patchMergedLocaleResources[key], isDefaultLocale, `${parentKey}${key}.`, templateValue, importValue, addMissing)) {
+                        anyChanges = true;
+                    }
+                } else if ((typeof templateValue === "string" || typeof templateValue === "undefined") && (typeof importValue === "string" || typeof importValue === "undefined" || typeof importValue === "object")) {
+                    patchMergedLocaleResources[key] = importValue;
                 } else {
                     throw new Error(`Mismatched types at ${parentKey}${key}`);
                 }
             }
         }
 
-        return newDestinationLocaleResources;
+        return anyChanges;
     }
 
     /**
@@ -336,7 +360,7 @@ class LocaleResourcesGenerator extends Generator {
 
         for (const [parameterName, parametersSequencerEntry] of entries) {
             if (parametersSequencerEntry.isUsed) {
-                this.#parametersLocaleResources[parameterName] = {
+                this.#templateParametersLocaleResources[parameterName] = {
                     name: parameterName,
                     description: "*** LOCALIZATION REQUIRED ***"
                 };
@@ -363,7 +387,7 @@ class LocaleResourcesGenerator extends Generator {
      * @returns
      * Output string.
      */
-    static #buildOutput(prefix: string, value: LocaleResources | string, indentLevel: number): string {
+    static #buildOutput(prefix: string, value: LocaleResources | string | undefined, indentLevel: number): string {
         return `${"    ".repeat(indentLevel)}${prefix} ${
             typeof value === "object" ?
                 `{\n${
@@ -381,18 +405,20 @@ class LocaleResourcesGenerator extends Generator {
         if (success) {
             this.#buildParametersLocaleResources(this.#parametersSequencer);
 
-            await Promise.all(fs.readdirSync(LocaleResourcesGenerator.#IMPORT_PATH, {
+            await Promise.all(await fs.promises.readdir(LocaleResourcesGenerator.#IMPORT_PATH, {
                 withFileTypes: true
-            }).filter(entry => entry.isDirectory()).map(async (entry) => {
+            }).then(entries => entries.filter(entry => entry.isDirectory()).map(async (entry) => {
                 const localeResourcesSource = path.resolve(LocaleResourcesGenerator.#IMPORT_PATH, entry.name, "locale-resources.ts");
 
-                return import(localeResourcesSource).then((module) => {
-                    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Module format is known.
-                    const localeResources = this.#merge(entry.name === "en", "", this.#LocaleResources, (module as LocaleResourcesModule).default, !entry.name.includes("-"));
+                return import(localeResourcesSource).then(async (module) => {
+                    const mergedLocaleResources: LocaleResources = {};
 
-                    fs.writeFileSync(localeResourcesSource, `${LocaleResourcesGenerator.#buildOutput("export default", localeResources, 0)};\n`);
+                    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Module format is known.
+                    return this.#merge(mergedLocaleResources, entry.name === "en", "", this.#templateLocaleResources, (module as LocaleResourcesModule).default, !entry.name.includes("-")) ?
+                        fs.promises.writeFile(localeResourcesSource, `${LocaleResourcesGenerator.#buildOutput("export default", mergedLocaleResources, 0)};\n`) :
+                        undefined;
                 });
-            }));
+            })));
         }
     }
 }
