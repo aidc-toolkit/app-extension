@@ -208,7 +208,7 @@ export abstract class SerializableNumericIdentifierCreatorProxy<ThrowError exten
         multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [prefixDefinitionGS1UPCParameterDescriptor, singleValueParameterDescriptor, serialComponentParameterDescriptor, sparseParameterDescriptor]
     })
-    createSerialized(prefixDefinition: Matrix<unknown>, value: number, matrixSerialComponents: Matrix<string>, sparse: Nullishable<boolean>): MatrixResult<string, ThrowError, TError> {
+    createSerialized(prefixDefinition: Matrix<unknown>, value: number | bigint, matrixSerialComponents: Matrix<string>, sparse: Nullishable<boolean>): MatrixResult<string, ThrowError, TError> {
         const sparseOrUndefined = sparse ?? undefined;
 
         return this.setUpMatrixResult(() =>
