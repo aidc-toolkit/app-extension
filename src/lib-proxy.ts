@@ -68,7 +68,7 @@ export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorE
      * Error if errors are not thrown.
      */
     #handleError<TResult>(e: unknown): SingletonResult<TResult, ThrowError, TError> {
-        let result: SingletonResult<TResult, ThrowError, TError>;
+        let result;
 
         if (e instanceof RangeError) {
             const error = this.#appExtension.mapRangeError(e);
@@ -98,12 +98,12 @@ export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorE
      * Callback return or error if errors are not thrown.
      */
     singletonResult<TResult>(callback: () => SingletonResult<TResult, ThrowError, TError>): SingletonResult<TResult, ThrowError, TError> {
-        let result: SingletonResult<TResult, ThrowError, TError>;
+        let result;
 
         try {
             result = callback();
         } catch (e: unknown) {
-            result = this.#handleError(e);
+            result = this.#handleError<TResult>(e);
         }
 
         return result;
@@ -155,7 +155,7 @@ export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorE
      * Matrix of callback results and errors if errors are not thrown.
      */
     protected setUpMatrixResult<TSetup, TValue, TResult>(setUpCallback: () => TSetup, matrixValues: Matrix<TValue>, valueCallback: (setup: TSetup, value: TValue) => SingletonResult<TResult, ThrowError, TError>): MatrixResult<TResult, ThrowError, TError> {
-        let result: MatrixResult<TResult, ThrowError, TError>;
+        let result;
 
         try {
             result = matrixValues.map(rowValues => rowValues.map(value => this.singletonResult(() => valueCallback(setUpCallback(), value))));
@@ -254,7 +254,7 @@ export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorE
      */
     protected matrixErrorResult<TValue>(matrixValues: Matrix<TValue>, callback: (value: TValue) => void): Matrix<string> {
         return matrixValues.map(rowValues => rowValues.map((value) => {
-            let result: string;
+            let result;
 
             try {
                 callback(value);
@@ -288,7 +288,7 @@ export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorE
      * Matrix of callback results.
      */
     protected iterableResult<TResult>(iterableCallback: () => Iterable<SingletonResult<TResult, ThrowError, TError>>): MatrixResult<TResult, ThrowError, TError> {
-        let result: MatrixResult<TResult, ThrowError, TError>;
+        let result;
 
         try {
             result = Array.from(mapIterable(iterableCallback(), result => [result]));

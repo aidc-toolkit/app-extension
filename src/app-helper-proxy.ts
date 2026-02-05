@@ -113,8 +113,8 @@ export class AppHelperProxy<ThrowError extends boolean, TError extends ErrorExte
         const maximumWidth = maximumDimensions.width;
         const maximumHeight = maximumDimensions.height;
 
-        let definedMaximumWidth: number;
-        let definedMaximumHeight: number;
+        let definedMaximumWidth;
+        let definedMaximumHeight;
 
         // Skip any extra work if both values are provided.
         if (isNullish(maximumWidth) || isNullish(maximumHeight)) {
@@ -159,7 +159,7 @@ export class AppHelperProxy<ThrowError extends boolean, TError extends ErrorExte
         parameterDescriptors: [spillArrayParameterDescriptor, spillMaximumHeightParameterDescriptor, spillMaximumWidthParameterDescriptor]
     })
     async spill(arrayValues: Matrix<unknown>, maximumHeight: Nullishable<number>, maximumWidth: Nullishable<number>, invocationContext: Nullishable<TInvocationContext>): Promise<MatrixResult<unknown, ThrowError, TError>> {
-        let result: MatrixResult<unknown, ThrowError, TError>;
+        let result;
 
         // Assume matrix is uniformly two-dimensional.
         const height = arrayValues.length;

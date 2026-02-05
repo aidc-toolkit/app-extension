@@ -246,8 +246,9 @@ export class Proxy {
 
             // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Target is known to be of type LibProxy.
             const targetClassType = Target as unknown as typeof LibProxy;
+
             let baseClassType = targetClassType;
-            let baseClassDescriptor: ClassDescriptor | undefined;
+            let baseClassDescriptor;
 
             do {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Class hierarchy is known to stop at LibProxy.
@@ -311,7 +312,7 @@ export class Proxy {
                 const methodName = interimMethodDescriptor.name;
                 const infixBefore = interimMethodDescriptor.infixBefore;
 
-                let functionName: string;
+                let functionName;
 
                 if (methodInfix === undefined || interimMethodDescriptor.ignoreInfix === true) {
                     // No other classes in the hierarchy or no infix required.
@@ -444,7 +445,7 @@ export class Proxy {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Class has been modified to add log method.
                 const targetLogger = this as TargetLogger;
 
-                let result: TReturn;
+                let result;
 
                 try {
                     result = target.call(this, ...args);
