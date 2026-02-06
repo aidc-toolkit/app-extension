@@ -1,7 +1,6 @@
 import type { NonGTINNumericIdentifierCreator, NonSerializableNumericIdentifierType } from "@aidc-toolkit/gs1";
 import type { AppExtension } from "../app-extension.js";
 import { proxy } from "../proxy.js";
-import type { ErrorExtends } from "../type.js";
 import {
     NonNumericIdentifierCreatorProxy,
     NonSerializableNumericIdentifierCreatorProxy,
@@ -11,8 +10,8 @@ import {
 @proxy.describeClass(false, {
     methodInfix: "GLN"
 })
-export class GLNCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonSerializableNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, NonSerializableNumericIdentifierType, NonGTINNumericIdentifierCreator> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
+export class GLNCreatorProxy extends NonSerializableNumericIdentifierCreatorProxy<NonSerializableNumericIdentifierType, NonGTINNumericIdentifierCreator> {
+    constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.glnCreator);
     }
 }
@@ -20,8 +19,8 @@ export class GLNCreatorProxy<ThrowError extends boolean, TError extends ErrorExt
 @proxy.describeClass(false, {
     methodInfix: "SSCC"
 })
-export class SSCCCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonSerializableNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, NonSerializableNumericIdentifierType, NonGTINNumericIdentifierCreator> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
+export class SSCCCreatorProxy extends NonSerializableNumericIdentifierCreatorProxy<NonSerializableNumericIdentifierType, NonGTINNumericIdentifierCreator> {
+    constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.ssccCreator);
     }
 }
@@ -29,8 +28,8 @@ export class SSCCCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
 @proxy.describeClass(false, {
     methodInfix: "GRAI"
 })
-export class GRAICreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends SerializableNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
+export class GRAICreatorProxy extends SerializableNumericIdentifierCreatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.graiCreator);
     }
 }
@@ -38,8 +37,8 @@ export class GRAICreatorProxy<ThrowError extends boolean, TError extends ErrorEx
 @proxy.describeClass(false, {
     methodInfix: "GIAI"
 })
-export class GIAICreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
+export class GIAICreatorProxy extends NonNumericIdentifierCreatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.giaiCreator);
     }
 }
@@ -47,8 +46,8 @@ export class GIAICreatorProxy<ThrowError extends boolean, TError extends ErrorEx
 @proxy.describeClass(false, {
     methodInfix: "GSRN"
 })
-export class GSRNCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonSerializableNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, NonSerializableNumericIdentifierType, NonGTINNumericIdentifierCreator> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
+export class GSRNCreatorProxy extends NonSerializableNumericIdentifierCreatorProxy<NonSerializableNumericIdentifierType, NonGTINNumericIdentifierCreator> {
+    constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.gsrnCreator);
     }
 }
@@ -56,8 +55,8 @@ export class GSRNCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
 @proxy.describeClass(false, {
     methodInfix: "GDTI"
 })
-export class GDTICreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends SerializableNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
+export class GDTICreatorProxy extends SerializableNumericIdentifierCreatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.gdtiCreator);
     }
 }
@@ -65,8 +64,8 @@ export class GDTICreatorProxy<ThrowError extends boolean, TError extends ErrorEx
 @proxy.describeClass(false, {
     methodInfix: "GINC"
 })
-export class GINCCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
+export class GINCCreatorProxy extends NonNumericIdentifierCreatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.gincCreator);
     }
 }
@@ -74,8 +73,8 @@ export class GINCCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
 @proxy.describeClass(false, {
     methodInfix: "GSIN"
 })
-export class GSINCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonSerializableNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, NonSerializableNumericIdentifierType, NonGTINNumericIdentifierCreator> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
+export class GSINCreatorProxy extends NonSerializableNumericIdentifierCreatorProxy<NonSerializableNumericIdentifierType, NonGTINNumericIdentifierCreator> {
+    constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.gsinCreator);
     }
 }
@@ -83,8 +82,8 @@ export class GSINCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
 @proxy.describeClass(false, {
     methodInfix: "GCN"
 })
-export class GCNCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends SerializableNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
+export class GCNCreatorProxy extends SerializableNumericIdentifierCreatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.gcnCreator);
     }
 }
@@ -92,8 +91,8 @@ export class GCNCreatorProxy<ThrowError extends boolean, TError extends ErrorExt
 @proxy.describeClass(false, {
     methodInfix: "CPID"
 })
-export class CPIDCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
+export class CPIDCreatorProxy extends NonNumericIdentifierCreatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.cpidCreator);
     }
 }
@@ -101,8 +100,8 @@ export class CPIDCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
 @proxy.describeClass(false, {
     methodInfix: "GMN"
 })
-export class GMNCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
+export class GMNCreatorProxy extends NonNumericIdentifierCreatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.gmnCreator);
     }
 }

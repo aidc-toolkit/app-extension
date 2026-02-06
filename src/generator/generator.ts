@@ -1,5 +1,11 @@
-import { ALPHA_URL, getLogger, I18nLanguageDetectors, type Promisable, websiteURL } from "@aidc-toolkit/core";
-import type { DefaultNamespace, ParseKeys } from "i18next";
+import {
+    ALPHA_URL,
+    getLogger,
+    I18nLanguageDetectors,
+    isI18nParseKey,
+    type Promisable,
+    websiteURL
+} from "@aidc-toolkit/core";
 import type { Logger } from "tslog";
 import { AppHelperProxy } from "../app-helper-proxy.js";
 import type { ClassDescriptor, MethodDescriptor } from "../descriptor.js";
@@ -185,7 +191,7 @@ export abstract class Generator {
     protected abstract finalize(success: boolean): Promisable<void>;
 
     /**
-     * Generate a localization.
+     * Get a localization.
      *
      * @template TLocalization
      * Localization type.
@@ -202,21 +208,18 @@ export abstract class Generator {
      * @returns
      * Localization.
      */
-    static #generateLocalization<TLocalization extends Localization>(locale: string, key: string, localizationCallback: (locale: string, localization: Localization & Partial<TLocalization>) => TLocalization): TLocalization {
+    static #getLocalization<TLocalization extends Localization>(locale: string, key: string, localizationCallback: (locale: string, localization: Localization & Partial<TLocalization>) => TLocalization): TLocalization {
         const lngReturnObjectsOption = {
             lng: locale,
             returnObjects: true
         } as const;
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Assume localized key exists.
-        const parseKey = key as ParseKeys<DefaultNamespace, typeof lngReturnObjectsOption>;
-
-        if (!i18nextAppExtension.exists(parseKey, lngReturnObjectsOption)) {
+        if (!isI18nParseKey(i18nextAppExtension, key, lngReturnObjectsOption)) {
             throw new Error(`Missing localization for ${key} in ${locale}`);
         }
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Localized key exists and return type is Localization & Partial<TLocalization>.
-        return localizationCallback(locale, i18nextAppExtension.t(key as ParseKeys<DefaultNamespace, typeof lngReturnObjectsOption>, lngReturnObjectsOption) as Localization & Partial<TLocalization>);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Return type is Localization & Partial<TLocalization>.
+        return localizationCallback(locale, i18nextAppExtension.t(key, lngReturnObjectsOption) as Localization & Partial<TLocalization>);
     }
 
     /**
@@ -263,18 +266,25 @@ export abstract class Generator {
                 this.createNamespace(namespace);
 
                 for (const [category, classDescriptors] of categoryHierarchy) {
-                    const namespaceCategory = `${namespacePrefix}${category}`;
-
-                    const categoriesKey = `Categories.${category}`;
-                    const namespaceCategoriesKey = `Categories.${namespaceCategory}`;
+                    const categoryKey = `Categories.${category}`;
+                    const namespaceCategoryKey = `Categories.${namespacePrefix}${category}`;
 
                     const categoryLocalizationsMap = new Map(this.locales.map((locale) => {
                         const lngOption = {
                             lng: locale
                         } as const;
 
-                        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Localized key exists.
-                        return [locale, i18nextAppExtension.t((i18nextAppExtension.exists(namespaceCategoriesKey, lngOption) ? namespaceCategoriesKey : categoriesKey) as ParseKeys, lngOption)];
+                        let key = namespaceCategoryKey;
+
+                        if (!isI18nParseKey(i18nextAppExtension, key)) {
+                            key = categoryKey;
+
+                            if (!isI18nParseKey(i18nextAppExtension, key, lngOption)) {
+                                throw new Error(`Missing localization for ${key} in ${locale}`);
+                            }
+                        }
+
+                        return [locale, i18nextAppExtension.t(key, lngOption)];
                     }));
 
                     this.createCategory(namespace, category, categoryLocalizationsMap);
@@ -295,13 +305,13 @@ export abstract class Generator {
                         for (const methodDescriptor of classDescriptor.methodDescriptors) {
                             const functionLocalizationsMap = new Map(methodDescriptor.isHidden !== true ?
                                 this.locales.map(locale =>
-                                    [locale, Generator.#generateLocalization<FunctionLocalization>(locale, `Functions.${namespacePrefix}${methodDescriptor.functionName}`, (locale, localization) => ({
+                                    [locale, Generator.#getLocalization<FunctionLocalization>(locale, `Functions.${namespacePrefix}${methodDescriptor.functionName}`, (locale, localization) => ({
                                         ...localization,
                                         titleCaseName: localization.titleCaseName ?? localization.name.replace(/^[a-z]/u, c => c.toUpperCase()),
                                         documentationURL: `${documentationBaseURL}/${locale === this.defaultLocale ? "" : `${locale}/`}${Generator.#DOCUMENTATION_PATH}${namespacePath}${localization.name}.html`,
                                         parametersMap: new Map(methodDescriptor.parameterDescriptors.map(parameterDescriptor =>
                                             // eslint-disable-next-line max-nested-callbacks -- Callback is empty.
-                                            [parameterDescriptor.name, Generator.#generateLocalization(locale, `Parameters.${parameterDescriptor.name}`, (_locale, localization) => localization)]
+                                            [parameterDescriptor.name, Generator.#getLocalization(locale, `Parameters.${parameterDescriptor.name}`, (_locale, localization) => localization)]
                                         ))
                                     }))]
                                 ) :

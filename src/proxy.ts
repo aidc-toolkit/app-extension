@@ -16,7 +16,6 @@ import {
     type ReplacementParameterDescriptor
 } from "./descriptor.js";
 import { LibProxy } from "./lib-proxy.js";
-import type { ErrorExtends } from "./type.js";
 
 /**
  * Remaining parameters past first parameter in constructor.
@@ -38,13 +37,12 @@ type RemainingConstructorParameters<TConstructor extends TypedAbstractConstructo
  * Proxy class constructor type.
  */
 type ProxyClassConstructor<
-    ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt,
-    T extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>,
+    T extends LibProxy,
     IsAbstract extends boolean,
     TConstructor extends TypedAbstractConstructor<TConstructor>
 > = IsAbstract extends true ?
-    AbstractConstructor<[appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>, ...args: RemainingConstructorParameters<TConstructor>], T> :
-    Constructor<[appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>], T>;
+    AbstractConstructor<[appExtension: AppExtension, ...args: RemainingConstructorParameters<TConstructor>], T> :
+    Constructor<[appExtension: AppExtension], T>;
 
 /**
  * Class decorator type. Defines the parameters passed to a class decorator function and the return type as identical to
@@ -63,11 +61,10 @@ type ProxyClassConstructor<
  * Narrowed proxy class constructor type.
  */
 type ClassDecorator<
-    ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt,
-    T extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>,
+    T extends LibProxy,
     IsAbstract extends boolean,
     TConstructor extends TypedAbstractConstructor<TConstructor>,
-    TProxyClassConstructor extends ProxyClassConstructor<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, T, IsAbstract, TConstructor>
+    TProxyClassConstructor extends ProxyClassConstructor<T, IsAbstract, TConstructor>
 > = (Target: TProxyClassConstructor, context: ClassDecoratorContext<TProxyClassConstructor>) => TProxyClassConstructor;
 
 /**
@@ -210,12 +207,11 @@ export class Proxy {
      * Function with which to decorate the class.
      */
     describeClass<
-        ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt,
-        T extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>,
+        T extends LibProxy,
         IsAbstract extends boolean,
         TConstructor extends TypedAbstractConstructor<TConstructor>,
-        TProxyClassConstructor extends ProxyClassConstructor<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, T, IsAbstract, TConstructor>
-    >(isAbstract: IsAbstract, decoratorClassDescriptor: DecoratorClassDescriptor = {}): ClassDecorator<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, T, IsAbstract, TConstructor, TProxyClassConstructor> {
+        TProxyClassConstructor extends ProxyClassConstructor<T, IsAbstract, TConstructor>
+    >(isAbstract: IsAbstract, decoratorClassDescriptor: DecoratorClassDescriptor = {}): ClassDecorator<T, IsAbstract, TConstructor, TProxyClassConstructor> {
         const interimClassDescriptor: InterimClassDescriptor = decoratorClassDescriptor.replacementParameterDescriptors === undefined ?
             omit(decoratorClassDescriptor, "replacementParameterDescriptors") :
             {
@@ -246,8 +242,9 @@ export class Proxy {
 
             // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Target is known to be of type LibProxy.
             const targetClassType = Target as unknown as typeof LibProxy;
+
             let baseClassType = targetClassType;
-            let baseClassDescriptor: ClassDescriptor | undefined;
+            let baseClassDescriptor;
 
             do {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Class hierarchy is known to stop at LibProxy.
@@ -311,7 +308,7 @@ export class Proxy {
                 const methodName = interimMethodDescriptor.name;
                 const infixBefore = interimMethodDescriptor.infixBefore;
 
-                let functionName: string;
+                let functionName;
 
                 if (methodInfix === undefined || interimMethodDescriptor.ignoreInfix === true) {
                     // No other classes in the hierarchy or no infix required.
@@ -444,7 +441,7 @@ export class Proxy {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Class has been modified to add log method.
                 const targetLogger = this as TargetLogger;
 
-                let result: TReturn;
+                let result;
 
                 try {
                     result = target.call(this, ...args);

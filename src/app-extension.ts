@@ -8,30 +8,22 @@ import {
     type Promisable
 } from "@aidc-toolkit/core";
 import type { Logger } from "tslog";
+import type {
+    ApplicationError,
+    BigInteger,
+    InvocationContext,
+    StreamingContext,
+    ThrowError
+} from "./app-extension-options.js";
 import type { LibProxy } from "./lib-proxy.js";
 import { i18nextAppExtension } from "./locale/i18n.js";
 import type { StreamingCancelledCallback, StreamingConsumerCallback } from "./streaming.js";
-import type { ErrorExtends, MatrixResult, SheetAddress, SheetRange, SingletonResult } from "./type.js";
+import type { MatrixResult, SheetAddress, SheetRange, SingletonResult } from "./type.js";
 
 /**
  * Application extension.
- *
- * @template ThrowError
- * If true, errors are reported through the throw/catch mechanism.
- *
- * @template TError
- * Error type.
- *
- * @template TInvocationContext
- * Application-specific invocation context type.
- *
- * @template TStreamingInvocationContext
- * Application-specific streaming invocation context type.
- *
- * @template TBigInt
- * Type to which big integer is mapped.
  */
-export abstract class AppExtension<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+export abstract class AppExtension {
     /**
      * Application name.
      */
@@ -80,7 +72,7 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
     /**
      * Proxies map for lazy loading and memory management.
      */
-    readonly #proxiesMap = new WeakMap<object, LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>>();
+    readonly #proxiesMap = new WeakMap<object, LibProxy>();
 
     /**
      * Constructor.
@@ -171,7 +163,7 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * @returns
      * Proxy instance.
      */
-    getProxy<T extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>>(ProxyConstructor: new (appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) => T): T {
+    getProxy<T extends LibProxy>(ProxyConstructor: new (appExtension: AppExtension) => T): T {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type is managed in this method.
         let proxy = this.#proxiesMap.get(ProxyConstructor) as T | undefined;
 
@@ -193,7 +185,7 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * @returns
      * Sheet address.
      */
-    abstract getSheetAddress(invocationContext: TInvocationContext): Promisable<SheetAddress>;
+    abstract getSheetAddress(invocationContext: InvocationContext): Promisable<SheetAddress>;
 
     /**
      * Get a parameter range from an invocation context.
@@ -207,13 +199,13 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * @returns
      * Sheet range or null if parameter is not a range.
      */
-    abstract getParameterSheetRange(invocationContext: TInvocationContext, parameterNumber: number): Promisable<SheetRange | null>;
+    abstract getParameterSheetRange(invocationContext: InvocationContext, parameterNumber: number): Promisable<SheetRange | null>;
 
     /**
-     * Set up streaming for a streaming function.
+     * Install a streaming function.
      *
-     * @param streamingInvocationContext
-     * Streaming invocation context.
+     * @param streamingContext
+     * Streaming context.
      *
      * @param streamingCancelledCallback
      * Streaming cancelled callback, called when streaming is cancelled.
@@ -221,7 +213,7 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * @returns
      * Streaming consumer callback, called when stream contents updated.
      */
-    abstract setUpStreaming<TResult>(streamingInvocationContext: TStreamingInvocationContext, streamingCancelledCallback: StreamingCancelledCallback): StreamingConsumerCallback<TResult, ThrowError, TError>;
+    abstract installStreaming<TResult>(streamingContext: StreamingContext, streamingCancelledCallback: StreamingCancelledCallback): StreamingConsumerCallback<TResult>;
 
     /**
      * Get a property stored within the active document.
@@ -286,7 +278,7 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
     }
 
     /**
-     * Map big integer to another type if necessary.
+     * Map a big integer to its representation type.
      *
      * @param value
      * Big integer value to map.
@@ -294,13 +286,10 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * @returns
      * Mapped big integer value.
      */
-    abstract mapBigInt(value: bigint): SingletonResult<TBigInt, ThrowError, TError>;
+    abstract mapBigInt(value: bigint): SingletonResult<BigInteger>;
 
     /**
      * Map hyperlink results to a form suitable for the application.
-     *
-     * @param invocationContext
-     * Invocation context.
      *
      * @param matrixHyperlinkResults
      * Matrix of hyperlink results from function call.
@@ -308,15 +297,16 @@ export abstract class AppExtension<ThrowError extends boolean, TError extends Er
      * @returns
      * Matrix of results in a form suitable for the application.
      */
-    abstract mapHyperlinkResults(invocationContext: TInvocationContext, matrixHyperlinkResults: MatrixResult<Hyperlink, ThrowError, TError>): Promisable<MatrixResult<unknown, ThrowError, TError>>;
+    abstract mapHyperlinkResults(matrixHyperlinkResults: MatrixResult<Hyperlink>): Promisable<MatrixResult<unknown>>;
 
     /**
      * Map a range error (thrown by the library) to an application-specific error. If errors are reported through the
      * throw/catch mechanism, the implementation may return the range error unmodified if that is supported.
      *
      * @param rangeError
+     * Range error.
      */
-    abstract mapRangeError(rangeError: RangeError): TError;
+    abstract mapRangeError(rangeError: RangeError): ApplicationError;
 
     /**
      * Handle an error with a message; called when an exception occurs outside the control of the AIDC Toolkit library.

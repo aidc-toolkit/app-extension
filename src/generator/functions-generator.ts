@@ -71,6 +71,11 @@ export abstract class FunctionsGenerator extends Generator {
         [Types.Any]: "any"
     };
 
+    /**
+     * Dummy value passed to invocation context and streaming context parameters if context is not supported.
+     */
+    static readonly #DUMMY_VALUE = "0";
+
     protected static readonly BASE_IMPORTS = [
         "import * as AppExtension from \"@aidc-toolkit/app-extension\";",
         "import { appExtension } from \"./app-extension.js\";"
@@ -87,21 +92,6 @@ export abstract class FunctionsGenerator extends Generator {
     readonly #supportsContext: boolean;
 
     /**
-     * Invocation context type name.
-     */
-    readonly #invocationContextTypeName: string;
-
-    /**
-     * Streaming invocation context type name.
-     */
-    readonly #streamingInvocationContextTypeName: string;
-
-    /**
-     * Template declaration for type alias.
-     */
-    readonly #templateDeclaration: string;
-
-    /**
      * Current class type alias.
      */
     #classTypeAlias!: ClassTypeAlias;
@@ -115,35 +105,14 @@ export abstract class FunctionsGenerator extends Generator {
      * @param inline
      * If true, functions are declared inline rather than using `function`.
      *
-     * @param throwError
-     * If true, errors are reported through the throw/catch mechanism.
-     *
-     * @param errorTypeName
-     * Error type name.
-     *
      * @param supportsContext
      * If true, application extension supports context.
-     *
-     * Big integer type name.
-     * @param invocationContextTypeName
-     * Invocation context type name.
-     *
-     * @param streamingInvocationContextTypeName
-     * Streaming invocation context type name.
-     *
-     * @param bigIntTypeName
-     * Big integer type name.
      */
-    constructor(version: string, inline: boolean, throwError: boolean, errorTypeName: string, supportsContext: boolean, invocationContextTypeName: string, streamingInvocationContextTypeName: string, bigIntTypeName: string) {
+    constructor(version: string, inline: boolean, supportsContext: boolean) {
         super(version, true);
 
         this.#inline = inline;
-
         this.#supportsContext = supportsContext;
-        this.#invocationContextTypeName = invocationContextTypeName;
-        this.#streamingInvocationContextTypeName = streamingInvocationContextTypeName;
-
-        this.#templateDeclaration = `<${throwError}, ${errorTypeName}, ${invocationContextTypeName}, ${streamingInvocationContextTypeName}, ${bigIntTypeName}>`;
     }
 
     /**
@@ -173,7 +142,7 @@ export abstract class FunctionsGenerator extends Generator {
         const classDescriptorNamespace = classDescriptor.namespace ?? "";
         const name = `${classDescriptorNamespace}${classDescriptor.name}`;
         const getter = `get${name}()`;
-        const implementation = `AppExtension${classDescriptorNamespace}.${classDescriptor.name}${this.#templateDeclaration}`;
+        const implementation = `AppExtension${classDescriptorNamespace}.${classDescriptor.name}`;
 
         this.#classTypeAlias = {
             name,
@@ -241,26 +210,26 @@ export abstract class FunctionsGenerator extends Generator {
                 parameterLocalizations.push({
                     name: "invocationContext",
                     description: "Invocation context.",
-                    javaScriptType: this.#invocationContextTypeName
+                    javaScriptType: "InvocationContext"
                 });
             }
 
             if (methodDescriptor.isStream === true) {
                 parameterLocalizations.push({
-                    name: "streamingInvocationContext",
-                    description: "Streaming invocation context.",
-                    javaScriptType: this.#streamingInvocationContextTypeName
+                    name: "streamingContext",
+                    description: "Streaming context.",
+                    javaScriptType: "StreamingContext"
                 });
             }
         } else {
             if (methodDescriptor.requiresContext === true) {
                 // Invocation context type name represents a literal dummy value.
-                dummyParameters.push(this.#invocationContextTypeName);
+                dummyParameters.push(FunctionsGenerator.#DUMMY_VALUE);
             }
 
             if (methodDescriptor.isStream === true) {
-                // Streaming invocation context type name represents a literal dummy value.
-                dummyParameters.push(this.#streamingInvocationContextTypeName);
+                // Streaming context type name represents a literal dummy value.
+                dummyParameters.push(FunctionsGenerator.#DUMMY_VALUE);
             }
         }
 

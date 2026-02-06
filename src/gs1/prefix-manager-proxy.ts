@@ -3,7 +3,7 @@ import type { PrefixType } from "@aidc-toolkit/gs1";
 import { Multiplicities, type ParameterDescriptor, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
 import { proxy } from "../proxy.js";
-import type { ErrorExtends, Matrix } from "../type.js";
+import type { Matrix } from "../type.js";
 
 const prefixParameterDescriptor: ParameterDescriptor = {
     name: "prefix",
@@ -30,7 +30,7 @@ const tweakFactorParameterDescriptor: ParameterDescriptor = {
     namespace: "GS1",
     category: "prefix"
 })
-export class PrefixManagerProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+export class PrefixManagerProxy extends LibProxy {
     @proxy.describeMethod({
         type: Types.Any,
         multiplicity: Multiplicities.SingletonArray,

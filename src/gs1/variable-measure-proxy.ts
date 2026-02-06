@@ -2,7 +2,7 @@ import { VariableMeasure } from "@aidc-toolkit/gs1";
 import { Multiplicities, type ParameterDescriptor, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
 import { proxy } from "../proxy.js";
-import type { ErrorExtends, Matrix, MatrixResult } from "../type.js";
+import type { Matrix, MatrixResult } from "../type.js";
 
 const rcnFormatParameterDescriptor: ParameterDescriptor = {
     name: "rcnFormat",
@@ -36,13 +36,13 @@ const rcnPriceOrWeightParameterDescriptor: ParameterDescriptor = {
     namespace: "GS1",
     category: "variableMeasure"
 })
-export class VariableMeasureProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+export class VariableMeasureProxy extends LibProxy {
     @proxy.describeMethod({
         type: Types.Number,
         multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [rcnFormatParameterDescriptor, rcnParameterDescriptor]
     })
-    parseVariableMeasureRCN(format: string, matrixRCNs: Matrix<string>): MatrixResult<number, ThrowError, TError> {
+    parseVariableMeasureRCN(format: string, matrixRCNs: Matrix<string>): MatrixResult<number> {
         return this.arrayResult(matrixRCNs, (rcn) => {
             const rcnReference = VariableMeasure.parseRCN(format, rcn);
 
@@ -56,7 +56,7 @@ export class VariableMeasureProxy<ThrowError extends boolean, TError extends Err
         ignoreInfix: true,
         parameterDescriptors: [rcnFormatParameterDescriptor, rcnItemReferenceParameterDescriptor, rcnPriceOrWeightParameterDescriptor]
     })
-    createVariableMeasureRCN(format: string, itemReference: number, matrixPricesOrWeights: Matrix<number>): MatrixResult<string, ThrowError, TError> {
+    createVariableMeasureRCN(format: string, itemReference: number, matrixPricesOrWeights: Matrix<number>): MatrixResult<string> {
         return this.matrixResult(matrixPricesOrWeights, priceOrWeight => VariableMeasure.createRCN(format, itemReference, priceOrWeight));
     }
 }

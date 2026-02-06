@@ -1,31 +1,17 @@
 import { mapIterable } from "@aidc-toolkit/utility";
+import type { BigInteger } from "./app-extension-options.js";
 import type { AppExtension } from "./app-extension.js";
 import { i18nextAppExtension } from "./locale/i18n.js";
-import type { ErrorExtends, Matrix, MatrixResult, SingletonResult } from "./type.js";
+import type { Matrix, MatrixResult, SingletonResult } from "./type.js";
 
 /**
  * Library proxy.
- *
- * @template ThrowError
- * If true, errors are reported through the throw/catch mechanism.
- *
- * @template TError
- * Error type.
- *
- * @template TInvocationContext
- * Application-specific invocation context type.
- *
- * @template TStreamingInvocationContext
- * Application-specific streaming invocation context type.
- * 
- * @template TBigInt
- * Type to which big integer is mapped.
  */
-export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+export abstract class LibProxy {
     /**
      * Application extension.
      */
-    readonly #appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>;
+    readonly #appExtension: AppExtension;
 
     /**
      * Constructor.
@@ -33,14 +19,14 @@ export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorE
      * @param appExtension
      * Application extension.
      */
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
+    constructor(appExtension: AppExtension) {
         this.#appExtension = appExtension;
     }
 
     /**
      * Get the application extension.
      */
-    get appExtension(): AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+    get appExtension(): AppExtension {
         return this.#appExtension;
     }
 
@@ -53,7 +39,7 @@ export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorE
      * @returns
      * Mapped big integer value.
      */
-    mapBigInt(value: bigint): SingletonResult<TBigInt, ThrowError, TError> {
+    mapBigInt(value: bigint): SingletonResult<BigInteger> {
         return this.#appExtension.mapBigInt(value);
     }
 
@@ -67,19 +53,18 @@ export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorE
      * @returns
      * Error if errors are not thrown.
      */
-    #handleError<TResult>(e: unknown): SingletonResult<TResult, ThrowError, TError> {
-        let result: SingletonResult<TResult, ThrowError, TError>;
+    #handleError<TResult>(e: unknown): SingletonResult<TResult> {
+        let result;
 
         if (e instanceof RangeError) {
             const error = this.#appExtension.mapRangeError(e);
 
             if (this.#appExtension.throwError) {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type is determined by application mapping.
-                throw error as Error;
+                // eslint-disable-next-line @typescript-eslint/only-throw-error -- Type is determined by application.
+                throw error;
             }
 
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Won't get here if ThrowError is false so result is TError.
-            result = error as SingletonResult<TResult, ThrowError, TError>;
+            result = error as SingletonResult<TResult>;
         } else {
             // Unknown error; pass on to application extension.
             result = this.appExtension.handleError(e instanceof Error ? e.message : String(e));
@@ -97,13 +82,13 @@ export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorE
      * @returns
      * Callback return or error if errors are not thrown.
      */
-    singletonResult<TResult>(callback: () => SingletonResult<TResult, ThrowError, TError>): SingletonResult<TResult, ThrowError, TError> {
-        let result: SingletonResult<TResult, ThrowError, TError>;
+    singletonResult<TResult>(callback: () => SingletonResult<TResult>): SingletonResult<TResult> {
+        let result;
 
         try {
             result = callback();
         } catch (e: unknown) {
-            result = this.#handleError(e);
+            result = this.#handleError<TResult>(e);
         }
 
         return result;
@@ -121,7 +106,7 @@ export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorE
      * @returns
      * Matrix of callback results and errors if errors are not thrown.
      */
-    protected matrixResult<TValue, TResult>(matrixValues: Matrix<TValue>, valueCallback: (value: TValue) => SingletonResult<TResult, ThrowError, TError>): MatrixResult<TResult, ThrowError, TError> {
+    protected matrixResult<TValue, TResult>(matrixValues: Matrix<TValue>, valueCallback: (value: TValue) => SingletonResult<TResult>): MatrixResult<TResult> {
         return matrixValues.map(rowValues => rowValues.map(value => this.singletonResult(() => valueCallback(value))));
     }
 
@@ -135,7 +120,7 @@ export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorE
      * @returns
      * Matrix of boolean values, true if corresponding string is empty.
      */
-    protected isValidString(matrixValidateResults: MatrixResult<string, ThrowError, TError>): Matrix<boolean> {
+    protected isValidString(matrixValidateResults: MatrixResult<string>): Matrix<boolean> {
         return matrixValidateResults.map(rowValues => rowValues.map(value => (validateResult => validateResult === "")(value)));
     }
 
@@ -154,8 +139,8 @@ export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorE
      * @returns
      * Matrix of callback results and errors if errors are not thrown.
      */
-    protected setUpMatrixResult<TSetup, TValue, TResult>(setUpCallback: () => TSetup, matrixValues: Matrix<TValue>, valueCallback: (setup: TSetup, value: TValue) => SingletonResult<TResult, ThrowError, TError>): MatrixResult<TResult, ThrowError, TError> {
-        let result: MatrixResult<TResult, ThrowError, TError>;
+    protected setUpMatrixResult<TSetup, TValue, TResult>(setUpCallback: () => TSetup, matrixValues: Matrix<TValue>, valueCallback: (setup: TSetup, value: TValue) => SingletonResult<TResult>): MatrixResult<TResult> {
+        let result: MatrixResult<TResult>;
 
         try {
             result = matrixValues.map(rowValues => rowValues.map(value => this.singletonResult(() => valueCallback(setUpCallback(), value))));
@@ -178,11 +163,10 @@ export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorE
      * @returns
      * Callback result or error as array if errors are not thrown.
      */
-    #arrayCallback<TValue, TResult>(value: TValue, callback: (value: TValue) => Array<SingletonResult<TResult, ThrowError, TError>>): Array<SingletonResult<TResult, ThrowError, TError>> {
+    #arrayCallback<TValue, TResult>(value: TValue, callback: (value: TValue) => Array<SingletonResult<TResult>>): Array<SingletonResult<TResult>> {
         const result = this.singletonResult(() => callback(value));
 
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- If result is not an array, it must be an error.
-        return result instanceof Array ? result : [result as SingletonResult<TResult, ThrowError, TError>];
+        return result instanceof Array ? result : [result];
     }
 
     /**
@@ -197,8 +181,8 @@ export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorE
      * @returns
      * Matrix of callback results and errors if errors are not thrown.
      */
-    protected arrayResult<TValue, TResult>(matrixValues: Matrix<TValue>, callback: (value: TValue) => Array<SingletonResult<TResult, ThrowError, TError>>): MatrixResult<TResult, ThrowError, TError> {
-        let result: MatrixResult<TResult, ThrowError, TError>;
+    protected arrayResult<TValue, TResult>(matrixValues: Matrix<TValue>, callback: (value: TValue) => Array<SingletonResult<TResult>>): MatrixResult<TResult> {
+        let result: MatrixResult<TResult>;
 
         if (matrixValues.length === 0) {
             // Special case; unlikely to occur.
@@ -221,7 +205,7 @@ export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorE
             });
         } else {
             result = matrixValues.map((rowValue) => {
-                let arrayResult: Array<SingletonResult<TResult, ThrowError, TError>>;
+                let arrayResult: Array<SingletonResult<TResult>>;
 
                 if (rowValue.length === 0) {
                     // Special case; unlikely to occur.
@@ -254,7 +238,7 @@ export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorE
      */
     protected matrixErrorResult<TValue>(matrixValues: Matrix<TValue>, callback: (value: TValue) => void): Matrix<string> {
         return matrixValues.map(rowValues => rowValues.map((value) => {
-            let result: string;
+            let result;
 
             try {
                 callback(value);
@@ -287,8 +271,8 @@ export abstract class LibProxy<ThrowError extends boolean, TError extends ErrorE
      * @returns
      * Matrix of callback results.
      */
-    protected iterableResult<TResult>(iterableCallback: () => Iterable<SingletonResult<TResult, ThrowError, TError>>): MatrixResult<TResult, ThrowError, TError> {
-        let result: MatrixResult<TResult, ThrowError, TError>;
+    protected iterableResult<TResult>(iterableCallback: () => Iterable<SingletonResult<TResult>>): MatrixResult<TResult> {
+        let result: MatrixResult<TResult>;
 
         try {
             result = Array.from(mapIterable(iterableCallback(), result => [result]));

@@ -25,7 +25,7 @@ import { type ExtendsParameterDescriptor, Multiplicities, type ParameterDescript
 import { LibProxy } from "../lib-proxy.js";
 import { i18nextAppExtension } from "../locale/i18n.js";
 import { proxy } from "../proxy.js";
-import type { ErrorExtends, Matrix, MatrixResult } from "../type.js";
+import type { Matrix, MatrixResult } from "../type.js";
 import {
     countParameterDescriptor,
     startValueParameterDescriptor,
@@ -38,12 +38,12 @@ import { prefixDefinitionGS1UPCParameterDescriptor } from "./prefix-definition-d
     namespace: "GS1",
     category: "identifierCreation"
 })
-abstract class IdentifierCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt, TIdentifierType extends IdentifierType, TIdentifierValidation extends IdentifierValidation, TIdentifierCreator extends IdentifierCreator<TIdentifierType, TIdentifierValidation>> extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+abstract class IdentifierCreatorProxy<TIdentifierType extends IdentifierType, TIdentifierValidation extends IdentifierValidation, TIdentifierCreator extends IdentifierCreator<TIdentifierType, TIdentifierValidation>> extends LibProxy {
     static readonly #PREFIX_TYPES: Array<PrefixType | undefined> = [PrefixTypes.GS1CompanyPrefix, PrefixTypes.UPCCompanyPrefix, PrefixTypes.GS18Prefix];
 
     readonly #getCreator: (prefixManager: PrefixManager) => TIdentifierCreator;
 
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>, getCreator: (prefixManager: PrefixManager) => TIdentifierCreator) {
+    constructor(appExtension: AppExtension, getCreator: (prefixManager: PrefixManager) => TIdentifierCreator) {
         super(appExtension);
 
         this.#getCreator = getCreator;
@@ -131,13 +131,13 @@ export const sparseParameterDescriptor: ParameterDescriptor = {
 };
 
 @proxy.describeClass(true)
-export abstract class NumericIdentifierCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt, TNumericIdentifierType extends NumericIdentifierType, TNumericIdentifierCreator extends NumericIdentifierCreator<TNumericIdentifierType>> extends IdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, TNumericIdentifierType, NumericIdentifierValidation, TNumericIdentifierCreator> {
+export abstract class NumericIdentifierCreatorProxy<TNumericIdentifierType extends NumericIdentifierType, TNumericIdentifierCreator extends NumericIdentifierCreator<TNumericIdentifierType>> extends IdentifierCreatorProxy<TNumericIdentifierType, NumericIdentifierValidation, TNumericIdentifierCreator> {
     @proxy.describeMethod({
         type: Types.String,
         multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [prefixDefinitionGS1UPCParameterDescriptor, valueParameterDescriptor, sparseParameterDescriptor]
     })
-    create(prefixDefinition: Matrix<unknown>, matrixValues: Matrix<number | bigint>, sparse: Nullishable<boolean>): MatrixResult<string, ThrowError, TError> {
+    create(prefixDefinition: Matrix<unknown>, matrixValues: Matrix<number | bigint>, sparse: Nullishable<boolean>): MatrixResult<string> {
         const sparseOrUndefined = sparse ?? undefined;
 
         return this.setUpMatrixResult(() =>
@@ -153,7 +153,7 @@ export abstract class NumericIdentifierCreatorProxy<ThrowError extends boolean, 
         multiplicity: Multiplicities.Array,
         parameterDescriptors: [prefixDefinitionGS1UPCParameterDescriptor, startValueParameterDescriptor, countParameterDescriptor, sparseParameterDescriptor]
     })
-    createSequence(prefixDefinition: Matrix<unknown>, startValue: number, count: number, sparse: Nullishable<boolean>): MatrixResult<string, ThrowError, TError> {
+    createSequence(prefixDefinition: Matrix<unknown>, startValue: number, count: number, sparse: Nullishable<boolean>): MatrixResult<string> {
         return this.iterableResult(() => {
             this.appExtension.validateSequenceCount(count);
 
@@ -166,7 +166,7 @@ export abstract class NumericIdentifierCreatorProxy<ThrowError extends boolean, 
         multiplicity: Multiplicities.Array,
         parameterDescriptors: [prefixDefinitionGS1UPCParameterDescriptor]
     })
-    createAll(prefixDefinition: Matrix<unknown>): MatrixResult<string, ThrowError, TError> {
+    createAll(prefixDefinition: Matrix<unknown>): MatrixResult<string> {
         return this.iterableResult(() => {
             const creator = this.getCreator(prefixDefinition);
 
@@ -177,10 +177,10 @@ export abstract class NumericIdentifierCreatorProxy<ThrowError extends boolean, 
     }
 }
 
-abstract class NonGTINNumericIdentifierCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt, TNonGTINNumericIdentifierType extends NonGTINNumericIdentifierType, TNonGTINNumericIdentifierCreator extends NonGTINNumericIdentifierCreator> extends NumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, TNonGTINNumericIdentifierType, TNonGTINNumericIdentifierCreator> {
+abstract class NonGTINNumericIdentifierCreatorProxy<TNonGTINNumericIdentifierType extends NonGTINNumericIdentifierType, TNonGTINNumericIdentifierCreator extends NonGTINNumericIdentifierCreator> extends NumericIdentifierCreatorProxy<TNonGTINNumericIdentifierType, TNonGTINNumericIdentifierCreator> {
 }
 
-export abstract class NonSerializableNumericIdentifierCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt, TNonSerializableNumericIdentifierType extends NonSerializableNumericIdentifierType, TNonGTINNumericIdentifierCreator extends NonGTINNumericIdentifierCreator> extends NonGTINNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, TNonSerializableNumericIdentifierType, TNonGTINNumericIdentifierCreator> {
+export abstract class NonSerializableNumericIdentifierCreatorProxy<TNonSerializableNumericIdentifierType extends NonSerializableNumericIdentifierType, TNonGTINNumericIdentifierCreator extends NonGTINNumericIdentifierCreator> extends NonGTINNumericIdentifierCreatorProxy<TNonSerializableNumericIdentifierType, TNonGTINNumericIdentifierCreator> {
 }
 
 const singleValueParameterDescriptor: ExtendsParameterDescriptor = {
@@ -202,13 +202,13 @@ const serialComponentParameterDescriptor: ParameterDescriptor = {
 };
 
 @proxy.describeClass(true)
-export abstract class SerializableNumericIdentifierCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonGTINNumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, SerializableNumericIdentifierType, SerializableNumericIdentifierCreator> {
+export abstract class SerializableNumericIdentifierCreatorProxy extends NonGTINNumericIdentifierCreatorProxy<SerializableNumericIdentifierType, SerializableNumericIdentifierCreator> {
     @proxy.describeMethod({
         type: Types.String,
         multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [prefixDefinitionGS1UPCParameterDescriptor, singleValueParameterDescriptor, serialComponentParameterDescriptor, sparseParameterDescriptor]
     })
-    createSerialized(prefixDefinition: Matrix<unknown>, value: number, matrixSerialComponents: Matrix<string>, sparse: Nullishable<boolean>): MatrixResult<string, ThrowError, TError> {
+    createSerialized(prefixDefinition: Matrix<unknown>, value: number | bigint, matrixSerialComponents: Matrix<string>, sparse: Nullishable<boolean>): MatrixResult<string> {
         const sparseOrUndefined = sparse ?? undefined;
 
         return this.setUpMatrixResult(() =>
@@ -223,7 +223,7 @@ export abstract class SerializableNumericIdentifierCreatorProxy<ThrowError exten
         multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [baseIdentifierParameterDescriptor, serialComponentParameterDescriptor]
     })
-    concatenate(baseIdentifier: string, matrixSerialComponents: Matrix<string>): MatrixResult<string, ThrowError, TError> {
+    concatenate(baseIdentifier: string, matrixSerialComponents: Matrix<string>): MatrixResult<string> {
         return this.setUpMatrixResult(() =>
             this.getCreator([[baseIdentifier.substring(0, !baseIdentifier.startsWith("0") ? PrefixValidator.GS1_COMPANY_PREFIX_MINIMUM_LENGTH : PrefixValidator.UPC_COMPANY_PREFIX_MINIMUM_LENGTH + 1), PrefixTypes.GS1CompanyPrefix]]),
         matrixSerialComponents, (creator, serialComponent) =>
@@ -240,13 +240,13 @@ const referenceParameterDescriptor: ParameterDescriptor = {
 };
 
 @proxy.describeClass(true)
-export abstract class NonNumericIdentifierCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends IdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, NonNumericIdentifierType, NonNumericIdentifierValidation, NonNumericIdentifierCreator> {
+export abstract class NonNumericIdentifierCreatorProxy extends IdentifierCreatorProxy<NonNumericIdentifierType, NonNumericIdentifierValidation, NonNumericIdentifierCreator> {
     @proxy.describeMethod({
         type: Types.String,
         multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [prefixDefinitionGS1UPCParameterDescriptor, referenceParameterDescriptor]
     })
-    create(prefixDefinition: Matrix<unknown>, matrixReferences: Matrix<string>): MatrixResult<string, ThrowError, TError> {
+    create(prefixDefinition: Matrix<unknown>, matrixReferences: Matrix<string>): MatrixResult<string> {
         return this.setUpMatrixResult(() =>
             this.getCreator(prefixDefinition),
         matrixReferences, (creator, reference) =>

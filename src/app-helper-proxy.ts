@@ -1,9 +1,10 @@
 import { isNullish, type LogLevel, logLevelOf, type NonNullishable, type Nullishable } from "@aidc-toolkit/core";
+import type { InvocationContext, StreamingContext } from "./app-extension-options.js";
 import { type ExtendsParameterDescriptor, Multiplicities, type ParameterDescriptor, Types } from "./descriptor.js";
 import { LibProxy } from "./lib-proxy.js";
 import { i18nextAppExtension } from "./locale/i18n.js";
 import { proxy } from "./proxy.js";
-import type { ErrorExtends, Matrix, MatrixResult } from "./type.js";
+import type { Matrix, MatrixResult } from "./type.js";
 
 const spillArrayParameterDescriptor: ParameterDescriptor = {
     name: "spillArray",
@@ -54,27 +55,14 @@ interface MaximumDimensions {
 }
 
 /**
- * Application utilities.
- *
- * @template ThrowError
- * If true, errors are reported through the throw/catch mechanism.
- *
- * @template TError
- * Error type.
- *
- * @template TInvocationContext
- * Application-specific invocation context type.
- *
- * @template TStreamingInvocationContext
- * Application-specific streaming invocation context type.
- * 
- * @template TBigInt
- * Type to which big integer is mapped.
+ * Application helper.
  */
 @proxy.describeClass(false, {
     category: "helper"
 })
-export class AppHelperProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+export class AppHelperProxy extends LibProxy {
+    static readonly #LOGGER_STREAM_NAME = "loggerStream";
+
     /**
      * Get the version.
      *
@@ -102,7 +90,7 @@ export class AppHelperProxy<ThrowError extends boolean, TError extends ErrorExte
      * @returns
      * Array of maximum width and maximum height.
      */
-    async #defaultMaximums(maximumDimensions: MaximumDimensions, invocationContext: Nullishable<TInvocationContext>): Promise<NonNullishable<MaximumDimensions>> {
+    async #defaultMaximums(maximumDimensions: MaximumDimensions, invocationContext: Nullishable<InvocationContext>): Promise<NonNullishable<MaximumDimensions>> {
         if (isNullish(invocationContext)) {
             // Application error; no localization necessary.
             throw new Error("Invocation context not provided by application");
@@ -111,8 +99,8 @@ export class AppHelperProxy<ThrowError extends boolean, TError extends ErrorExte
         const maximumWidth = maximumDimensions.width;
         const maximumHeight = maximumDimensions.height;
 
-        let definedMaximumWidth: number;
-        let definedMaximumHeight: number;
+        let definedMaximumWidth;
+        let definedMaximumHeight;
 
         // Skip any extra work if both values are provided.
         if (isNullish(maximumWidth) || isNullish(maximumHeight)) {
@@ -156,8 +144,8 @@ export class AppHelperProxy<ThrowError extends boolean, TError extends ErrorExte
         requiresContext: true,
         parameterDescriptors: [spillArrayParameterDescriptor, spillMaximumHeightParameterDescriptor, spillMaximumWidthParameterDescriptor]
     })
-    async spill(arrayValues: Matrix<unknown>, maximumHeight: Nullishable<number>, maximumWidth: Nullishable<number>, invocationContext: Nullishable<TInvocationContext>): Promise<MatrixResult<unknown, ThrowError, TError>> {
-        let result: MatrixResult<unknown, ThrowError, TError>;
+    async spill(arrayValues: Matrix<unknown>, maximumHeight: Nullishable<number>, maximumWidth: Nullishable<number>, invocationContext: Nullishable<InvocationContext>): Promise<MatrixResult<unknown>> {
+        let result;
 
         // Assume matrix is uniformly two-dimensional.
         const height = arrayValues.length;
@@ -279,7 +267,7 @@ export class AppHelperProxy<ThrowError extends boolean, TError extends ErrorExte
         isHidden: true,
         parameterDescriptors: [logLevelParameterDescriptor]
     })
-    loggerMessages(logLevelString: Nullishable<string>): MatrixResult<string, ThrowError, TError> {
+    loggerMessages(logLevelString: Nullishable<string>): MatrixResult<string> {
         const appExtension = this.appExtension;
 
         let logLevel: LogLevel | undefined = undefined;
@@ -306,8 +294,8 @@ export class AppHelperProxy<ThrowError extends boolean, TError extends ErrorExte
      * @param logLevelString
      * Log level as string.
      *
-     * @param streamingInvocationContext
-     * Streaming invocation context.
+     * @param streamingContext
+     * Streaming context.
      */
     @proxy.describeMethod({
         type: Types.String,
@@ -316,10 +304,10 @@ export class AppHelperProxy<ThrowError extends boolean, TError extends ErrorExte
         isStream: true,
         parameterDescriptors: [logLevelParameterDescriptor]
     })
-    loggerStream(logLevelString: Nullishable<string>, streamingInvocationContext: Nullishable<TStreamingInvocationContext>): void {
-        if (isNullish(streamingInvocationContext)) {
+    loggerStream(logLevelString: Nullishable<string>, streamingContext: Nullishable<StreamingContext>): void {
+        if (isNullish(streamingContext)) {
             // Application error; no localization necessary.
-            throw new Error("Streaming invocation context not provided by application");
+            throw new Error("Streaming context not provided by application");
         }
 
         const appExtension = this.appExtension;
@@ -327,9 +315,9 @@ export class AppHelperProxy<ThrowError extends boolean, TError extends ErrorExte
         let notificationCallbackAdded = false;
         let previousLogLevel: number | undefined = undefined;
 
-        const streamingConsumerCallback = appExtension.setUpStreaming<string>(streamingInvocationContext, () => {
+        const streamingConsumerCallback = appExtension.installStreaming<string>(streamingContext, () => {
             if (notificationCallbackAdded) {
-                appExtension.memoryTransport.removeNotificationCallback("loggerMessages");
+                appExtension.memoryTransport.removeNotificationCallback(AppHelperProxy.#LOGGER_STREAM_NAME);
             }
 
             if (previousLogLevel !== undefined) {
@@ -337,7 +325,7 @@ export class AppHelperProxy<ThrowError extends boolean, TError extends ErrorExte
             }
         });
 
-        if (appExtension.memoryTransport.addNotificationCallback("loggerMessages", (_message, messages) => {
+        if (appExtension.memoryTransport.addNotificationCallback(AppHelperProxy.#LOGGER_STREAM_NAME, (_message, messages) => {
             streamingConsumerCallback(this.iterableResult(() => messages));
         })) {
             notificationCallbackAdded = true;
@@ -359,7 +347,7 @@ export class AppHelperProxy<ThrowError extends boolean, TError extends ErrorExte
             }
         } else {
             // Diagnostic tool; localization not required.
-            streamingConsumerCallback([["Only one logger messages call allowable per workbook"]]);
+            streamingConsumerCallback([["Only one logger stream allowable per workbook"]]);
         }
     }
 }
