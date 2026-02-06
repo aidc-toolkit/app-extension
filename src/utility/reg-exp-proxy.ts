@@ -2,7 +2,7 @@ import type { Nullishable } from "@aidc-toolkit/core";
 import { RegExpValidator } from "@aidc-toolkit/utility";
 import { Multiplicities, type ParameterDescriptor, Types } from "../descriptor.js";
 import { proxy } from "../proxy.js";
-import type { ErrorExtends, Matrix } from "../type.js";
+import type { Matrix } from "../type.js";
 import { validateSParameterDescriptor } from "./string-descriptor.js";
 import { StringProxy } from "./string-proxy.js";
 
@@ -23,7 +23,7 @@ const errorMessageParameterDescriptor: ParameterDescriptor = {
 @proxy.describeClass(false, {
     methodInfix: "RegExp"
 })
-export class RegExpProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends StringProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+export class RegExpProxy<ThrowError extends boolean> extends StringProxy<ThrowError> {
     @proxy.describeMethod({
         type: Types.String,
         multiplicity: Multiplicities.Matrix,

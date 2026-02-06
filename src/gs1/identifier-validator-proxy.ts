@@ -13,7 +13,7 @@ import type {
 import type { AppExtension } from "../app-extension.js";
 import { type ExtendsParameterDescriptor, Multiplicities, Types } from "../descriptor.js";
 import { proxy } from "../proxy.js";
-import type { ErrorExtends, Matrix, MatrixResult } from "../type.js";
+import type { Matrix, MatrixResult } from "../type.js";
 import { exclusionAllNumericParameterDescriptor } from "../utility/character-set-descriptor.js";
 import { StringProxy } from "../utility/string-proxy.js";
 import { identifierParameterDescriptor } from "./identifier-descriptor.js";
@@ -35,10 +35,10 @@ const splitIdentifierParameterDescriptor: ExtendsParameterDescriptor = {
     namespace: "GS1",
     category: "identifierValidation"
 })
-abstract class IdentifierValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt, TIdentifierType extends IdentifierType> extends StringProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+abstract class IdentifierValidatorProxy<ThrowError extends boolean, TIdentifierType extends IdentifierType> extends StringProxy<ThrowError> {
     readonly #validator: IdentifierTypeValidator<TIdentifierType>;
 
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>, validator: IdentifierTypeValidator<TIdentifierType>) {
+    constructor(appExtension: AppExtension<ThrowError>, validator: IdentifierTypeValidator<TIdentifierType>) {
         super(appExtension);
 
         this.#validator = validator;
@@ -50,7 +50,7 @@ abstract class IdentifierValidatorProxy<ThrowError extends boolean, TError exten
 }
 
 @proxy.describeClass(true)
-abstract class NumericIdentifierValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt, TNumericIdentifierType extends NumericIdentifierType> extends IdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, TNumericIdentifierType> {
+abstract class NumericIdentifierValidatorProxy<ThrowError extends boolean, TNumericIdentifierType extends NumericIdentifierType> extends IdentifierValidatorProxy<ThrowError, TNumericIdentifierType> {
     @proxy.describeMethod({
         type: Types.String,
         multiplicity: Multiplicities.Matrix,
@@ -70,23 +70,23 @@ abstract class NumericIdentifierValidatorProxy<ThrowError extends boolean, TErro
     }
 }
 
-export abstract class GTINValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, GTINType> {
+export abstract class GTINValidatorProxy<ThrowError extends boolean> extends NumericIdentifierValidatorProxy<ThrowError, GTINType> {
 }
 
-abstract class NonGTINNumericIdentifierValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt, TNonGTINNumericIdentifierType extends NonGTINNumericIdentifierType = NonGTINNumericIdentifierType> extends NumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, TNonGTINNumericIdentifierType> {
+abstract class NonGTINNumericIdentifierValidatorProxy<ThrowError extends boolean, TNonGTINNumericIdentifierType extends NonGTINNumericIdentifierType = NonGTINNumericIdentifierType> extends NumericIdentifierValidatorProxy<ThrowError, TNonGTINNumericIdentifierType> {
 }
 
-export abstract class NonSerializableNumericIdentifierValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonGTINNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, NonSerializableNumericIdentifierType> {
+export abstract class NonSerializableNumericIdentifierValidatorProxy<ThrowError extends boolean> extends NonGTINNumericIdentifierValidatorProxy<ThrowError, NonSerializableNumericIdentifierType> {
 }
 
 @proxy.describeClass(true)
-export abstract class SerializableNumericIdentifierValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonGTINNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, SerializableNumericIdentifierType> {
+export abstract class SerializableNumericIdentifierValidatorProxy<ThrowError extends boolean> extends NonGTINNumericIdentifierValidatorProxy<ThrowError, SerializableNumericIdentifierType> {
     @proxy.describeMethod({
         type: Types.String,
         multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [splitIdentifierParameterDescriptor]
     })
-    split(matrixIdentifiers: Matrix<string>): MatrixResult<string, ThrowError, TError> {
+    split(matrixIdentifiers: Matrix<string>): MatrixResult<string, ThrowError> {
         return this.arrayResult(matrixIdentifiers, (identifier) => {
             const serializableNumericIdentifierSplit = this.validator.split(identifier);
 
@@ -96,7 +96,7 @@ export abstract class SerializableNumericIdentifierValidatorProxy<ThrowError ext
 }
 
 @proxy.describeClass(true)
-export abstract class NonNumericIdentifierValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends IdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, NonNumericIdentifierType> {
+export abstract class NonNumericIdentifierValidatorProxy<ThrowError extends boolean> extends IdentifierValidatorProxy<ThrowError, NonNumericIdentifierType> {
     @proxy.describeMethod({
         type: Types.String,
         multiplicity: Multiplicities.Matrix,

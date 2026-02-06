@@ -1,11 +1,4 @@
-/**
- * Type that error type is expected to extend. If the application framework reports errors through the throw/catch
- * mechanism, the error type is expected to extend {@linkcode Error}. Otherwise, it may extend any object type.
- *
- * @template ThrowError
- * If true, errors are reported through the throw/catch mechanism.
- */
-export type ErrorExtends<ThrowError extends boolean> = ThrowError extends true ? Error : object;
+import type { AppExtensionError } from "./app-extension-options.js";
 
 /**
  * Sheet.
@@ -77,11 +70,8 @@ export type Matrix<T> = T[][];
  *
  * @template ThrowError
  * If true, errors are reported through the throw/catch mechanism.
- *
- * @template TError
- * Error type.
  */
-export type SingletonResult<TResult, ThrowError extends boolean, TError extends ErrorExtends<ThrowError>> = ThrowError extends false ? TResult | TError : TResult;
+export type SingletonResult<TResult, ThrowError extends boolean> = ThrowError extends false ? TResult | AppExtensionError : TResult;
 
 /**
  * Function matrix return, possibly including an error return in each element. If the application extension reports
@@ -93,8 +83,5 @@ export type SingletonResult<TResult, ThrowError extends boolean, TError extends 
  *
  * @template ThrowError
  * If true, errors are reported through the throw/catch mechanism.
- *
- * @template TError
- * Error type.
  */
-export type MatrixResult<TResult, ThrowError extends boolean, TError extends ErrorExtends<ThrowError>> = Matrix<SingletonResult<TResult, ThrowError, TError>>;
+export type MatrixResult<TResult, ThrowError extends boolean> = Matrix<SingletonResult<TResult, ThrowError>>;

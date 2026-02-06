@@ -3,7 +3,7 @@ import type { GTINCreator, GTINType } from "@aidc-toolkit/gs1";
 import type { AppExtension } from "../app-extension.js";
 import { Multiplicities, Types } from "../descriptor.js";
 import { expandParameterDescriptor, proxy } from "../proxy.js";
-import type { ErrorExtends, Matrix, MatrixResult } from "../type.js";
+import type { Matrix, MatrixResult } from "../type.js";
 import { valueParameterDescriptor } from "../utility/transformer-descriptor.js";
 import { indicatorDigitParameterDescriptor } from "./gtin-descriptor.js";
 import { NumericIdentifierCreatorProxy, sparseParameterDescriptor } from "./identifier-creator-proxy.js";
@@ -21,8 +21,8 @@ import {
         }
     ]
 })
-export class GTINCreatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NumericIdentifierCreatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, GTINType, GTINCreator> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
+export class GTINCreatorProxy<ThrowError extends boolean> extends NumericIdentifierCreatorProxy<ThrowError, GTINType, GTINCreator> {
+    constructor(appExtension: AppExtension<ThrowError>) {
         super(appExtension, prefixManager => prefixManager.gtinCreator);
     }
 
@@ -32,7 +32,7 @@ export class GTINCreatorProxy<ThrowError extends boolean, TError extends ErrorEx
         ignoreInfix: true,
         parameterDescriptors: [indicatorDigitParameterDescriptor, prefixDefinitionAnyParameterDescriptor, valueParameterDescriptor, sparseParameterDescriptor]
     })
-    createGTIN14(indicatorDigit: string, prefixDefinition: Matrix<unknown>, matrixValues: Matrix<number | bigint>, sparse: Nullishable<boolean>): MatrixResult<string, ThrowError, TError> {
+    createGTIN14(indicatorDigit: string, prefixDefinition: Matrix<unknown>, matrixValues: Matrix<number | bigint>, sparse: Nullishable<boolean>): MatrixResult<string, ThrowError> {
         const sparseOrUndefined = sparse ?? undefined;
 
         return this.setUpMatrixResult(() =>

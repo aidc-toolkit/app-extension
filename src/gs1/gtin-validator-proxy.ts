@@ -4,7 +4,7 @@ import type { AppExtension } from "../app-extension.js";
 import { type ExtendsParameterDescriptor, Multiplicities, type ParameterDescriptor, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
 import { proxy } from "../proxy.js";
-import type { ErrorExtends, Matrix, MatrixResult } from "../type.js";
+import type { Matrix, MatrixResult } from "../type.js";
 import { indicatorDigitParameterDescriptor } from "./gtin-descriptor.js";
 import { identifierParameterDescriptor } from "./identifier-descriptor.js";
 import { GTINValidatorProxy } from "./identifier-validator-proxy.js";
@@ -12,8 +12,8 @@ import { GTINValidatorProxy } from "./identifier-validator-proxy.js";
 @proxy.describeClass(false, {
     methodInfix: "GTIN13"
 })
-export class GTIN13ValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends GTINValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
+export class GTIN13ValidatorProxy<ThrowError extends boolean> extends GTINValidatorProxy<ThrowError> {
+    constructor(appExtension: AppExtension<ThrowError>) {
         super(appExtension, IdentifierValidators.GTIN[GTINLengths.GTIN13]);
     }
 }
@@ -21,8 +21,8 @@ export class GTIN13ValidatorProxy<ThrowError extends boolean, TError extends Err
 @proxy.describeClass(false, {
     methodInfix: "GTIN12"
 })
-export class GTIN12ValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends GTINValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
+export class GTIN12ValidatorProxy<ThrowError extends boolean> extends GTINValidatorProxy<ThrowError> {
+    constructor(appExtension: AppExtension<ThrowError>) {
         super(appExtension, IdentifierValidators.GTIN[GTINLengths.GTIN12]);
     }
 }
@@ -30,8 +30,8 @@ export class GTIN12ValidatorProxy<ThrowError extends boolean, TError extends Err
 @proxy.describeClass(false, {
     methodInfix: "GTIN8"
 })
-export class GTIN8ValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends GTINValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
+export class GTIN8ValidatorProxy<ThrowError extends boolean> extends GTINValidatorProxy<ThrowError> {
+    constructor(appExtension: AppExtension<ThrowError>) {
         super(appExtension, IdentifierValidators.GTIN[GTINLengths.GTIN8]);
     }
 }
@@ -77,13 +77,13 @@ const validateGTIN14ParameterDescriptor: ExtendsParameterDescriptor = {
     namespace: "GS1",
     category: "identifierValidation"
 })
-export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
+export class GTINValidatorStaticProxy<ThrowError extends boolean> extends LibProxy<ThrowError> {
     @proxy.describeMethod({
         type: Types.String,
         multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [zeroSuppressibleGTIN12ParameterDescriptor]
     })
-    zeroSuppressGTIN12(matrixGTIN12s: Matrix<string>): MatrixResult<string, ThrowError, TError> {
+    zeroSuppressGTIN12(matrixGTIN12s: Matrix<string>): MatrixResult<string, ThrowError> {
         return this.matrixResult(matrixGTIN12s, gtin12 => GTINValidator.zeroSuppress(gtin12));
     }
 
@@ -92,7 +92,7 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
         multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [zeroSuppressedGTIN12ParameterDescriptor]
     })
-    zeroExpandGTIN12(matrixZeroSuppressedGTIN12s: Matrix<string>): MatrixResult<string, ThrowError, TError> {
+    zeroExpandGTIN12(matrixZeroSuppressedGTIN12s: Matrix<string>): MatrixResult<string, ThrowError> {
         return this.matrixResult(matrixZeroSuppressedGTIN12s, zeroSuppressedGTIN12 => GTINValidator.zeroExpand(zeroSuppressedGTIN12));
     }
 
@@ -101,7 +101,7 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
         multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [indicatorDigitParameterDescriptor, convertGTINParameterDescriptor]
     })
-    convertToGTIN14(indicatorDigit: string, matrixGTINs: Matrix<string>): MatrixResult<string, ThrowError, TError> {
+    convertToGTIN14(indicatorDigit: string, matrixGTINs: Matrix<string>): MatrixResult<string, ThrowError> {
         return this.matrixResult(matrixGTINs, gtin => GTINValidator.convertToGTIN14(indicatorDigit, gtin));
     }
 
@@ -110,7 +110,7 @@ export class GTINValidatorStaticProxy<ThrowError extends boolean, TError extends
         multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [normalizeGTINParameterDescriptor]
     })
-    normalizeGTIN(matrixGTINs: Matrix<string>): MatrixResult<string, ThrowError, TError> {
+    normalizeGTIN(matrixGTINs: Matrix<string>): MatrixResult<string, ThrowError> {
         return this.matrixResult(matrixGTINs, gtin => GTINValidator.normalize(gtin));
     }
 

@@ -1,7 +1,6 @@
 import { IdentifierValidators } from "@aidc-toolkit/gs1";
 import type { AppExtension } from "../app-extension.js";
 import { proxy } from "../proxy.js";
-import type { ErrorExtends } from "../type.js";
 import {
     NonNumericIdentifierValidatorProxy,
     NonSerializableNumericIdentifierValidatorProxy,
@@ -11,8 +10,8 @@ import {
 @proxy.describeClass(false, {
     methodInfix: "GLN"
 })
-export class GLNValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonSerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
+export class GLNValidatorProxy<ThrowError extends boolean> extends NonSerializableNumericIdentifierValidatorProxy<ThrowError> {
+    constructor(appExtension: AppExtension<ThrowError>) {
         super(appExtension, IdentifierValidators.GLN);
     }
 }
@@ -20,8 +19,8 @@ export class GLNValidatorProxy<ThrowError extends boolean, TError extends ErrorE
 @proxy.describeClass(false, {
     methodInfix: "SSCC"
 })
-export class SSCCValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonSerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
+export class SSCCValidatorProxy<ThrowError extends boolean> extends NonSerializableNumericIdentifierValidatorProxy<ThrowError> {
+    constructor(appExtension: AppExtension<ThrowError>) {
         super(appExtension, IdentifierValidators.SSCC);
     }
 }
@@ -29,8 +28,8 @@ export class SSCCValidatorProxy<ThrowError extends boolean, TError extends Error
 @proxy.describeClass(false, {
     methodInfix: "GRAI"
 })
-export class GRAIValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends SerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
+export class GRAIValidatorProxy<ThrowError extends boolean> extends SerializableNumericIdentifierValidatorProxy<ThrowError> {
+    constructor(appExtension: AppExtension<ThrowError>) {
         super(appExtension, IdentifierValidators.GRAI);
     }
 }
@@ -38,8 +37,8 @@ export class GRAIValidatorProxy<ThrowError extends boolean, TError extends Error
 @proxy.describeClass(false, {
     methodInfix: "GIAI"
 })
-export class GIAIValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
+export class GIAIValidatorProxy<ThrowError extends boolean> extends NonNumericIdentifierValidatorProxy<ThrowError> {
+    constructor(appExtension: AppExtension<ThrowError>) {
         super(appExtension, IdentifierValidators.GIAI);
     }
 }
@@ -47,8 +46,8 @@ export class GIAIValidatorProxy<ThrowError extends boolean, TError extends Error
 @proxy.describeClass(false, {
     methodInfix: "GSRN"
 })
-export class GSRNValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonSerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
+export class GSRNValidatorProxy<ThrowError extends boolean> extends NonSerializableNumericIdentifierValidatorProxy<ThrowError> {
+    constructor(appExtension: AppExtension<ThrowError>) {
         super(appExtension, IdentifierValidators.GSRN);
     }
 }
@@ -56,8 +55,8 @@ export class GSRNValidatorProxy<ThrowError extends boolean, TError extends Error
 @proxy.describeClass(false, {
     methodInfix: "GDTI"
 })
-export class GDTIValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends SerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
+export class GDTIValidatorProxy<ThrowError extends boolean> extends SerializableNumericIdentifierValidatorProxy<ThrowError> {
+    constructor(appExtension: AppExtension<ThrowError>) {
         super(appExtension, IdentifierValidators.GDTI);
     }
 }
@@ -65,8 +64,8 @@ export class GDTIValidatorProxy<ThrowError extends boolean, TError extends Error
 @proxy.describeClass(false, {
     methodInfix: "GINC"
 })
-export class GINCValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
+export class GINCValidatorProxy<ThrowError extends boolean> extends NonNumericIdentifierValidatorProxy<ThrowError> {
+    constructor(appExtension: AppExtension<ThrowError>) {
         super(appExtension, IdentifierValidators.GINC);
     }
 }
@@ -74,8 +73,8 @@ export class GINCValidatorProxy<ThrowError extends boolean, TError extends Error
 @proxy.describeClass(false, {
     methodInfix: "GSIN"
 })
-export class GSINValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonSerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
+export class GSINValidatorProxy<ThrowError extends boolean> extends NonSerializableNumericIdentifierValidatorProxy<ThrowError> {
+    constructor(appExtension: AppExtension<ThrowError>) {
         super(appExtension, IdentifierValidators.GSIN);
     }
 }
@@ -83,8 +82,8 @@ export class GSINValidatorProxy<ThrowError extends boolean, TError extends Error
 @proxy.describeClass(false, {
     methodInfix: "GCN"
 })
-export class GCNValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends SerializableNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
+export class GCNValidatorProxy<ThrowError extends boolean> extends SerializableNumericIdentifierValidatorProxy<ThrowError> {
+    constructor(appExtension: AppExtension<ThrowError>) {
         super(appExtension, IdentifierValidators.GCN);
     }
 }
@@ -92,8 +91,8 @@ export class GCNValidatorProxy<ThrowError extends boolean, TError extends ErrorE
 @proxy.describeClass(false, {
     methodInfix: "CPID"
 })
-export class CPIDValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
+export class CPIDValidatorProxy<ThrowError extends boolean> extends NonNumericIdentifierValidatorProxy<ThrowError> {
+    constructor(appExtension: AppExtension<ThrowError>) {
         super(appExtension, IdentifierValidators.CPID);
     }
 }
@@ -101,8 +100,8 @@ export class CPIDValidatorProxy<ThrowError extends boolean, TError extends Error
 @proxy.describeClass(false, {
     methodInfix: "GMN"
 })
-export class GMNValidatorProxy<ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt> extends NonNumericIdentifierValidatorProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt> {
-    constructor(appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>) {
+export class GMNValidatorProxy<ThrowError extends boolean> extends NonNumericIdentifierValidatorProxy<ThrowError> {
+    constructor(appExtension: AppExtension<ThrowError>) {
         super(appExtension, IdentifierValidators.GMN);
     }
 }

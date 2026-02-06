@@ -16,7 +16,6 @@ import {
     type ReplacementParameterDescriptor
 } from "./descriptor.js";
 import { LibProxy } from "./lib-proxy.js";
-import type { ErrorExtends } from "./type.js";
 
 /**
  * Remaining parameters past first parameter in constructor.
@@ -38,13 +37,13 @@ type RemainingConstructorParameters<TConstructor extends TypedAbstractConstructo
  * Proxy class constructor type.
  */
 type ProxyClassConstructor<
-    ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt,
-    T extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>,
+    ThrowError extends boolean,
+    T extends LibProxy<ThrowError>,
     IsAbstract extends boolean,
     TConstructor extends TypedAbstractConstructor<TConstructor>
 > = IsAbstract extends true ?
-    AbstractConstructor<[appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>, ...args: RemainingConstructorParameters<TConstructor>], T> :
-    Constructor<[appExtension: AppExtension<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>], T>;
+    AbstractConstructor<[appExtension: AppExtension<ThrowError>, ...args: RemainingConstructorParameters<TConstructor>], T> :
+    Constructor<[appExtension: AppExtension<ThrowError>], T>;
 
 /**
  * Class decorator type. Defines the parameters passed to a class decorator function and the return type as identical to
@@ -63,11 +62,11 @@ type ProxyClassConstructor<
  * Narrowed proxy class constructor type.
  */
 type ClassDecorator<
-    ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt,
-    T extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>,
+    ThrowError extends boolean,
+    T extends LibProxy<ThrowError>,
     IsAbstract extends boolean,
     TConstructor extends TypedAbstractConstructor<TConstructor>,
-    TProxyClassConstructor extends ProxyClassConstructor<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, T, IsAbstract, TConstructor>
+    TProxyClassConstructor extends ProxyClassConstructor<ThrowError, T, IsAbstract, TConstructor>
 > = (Target: TProxyClassConstructor, context: ClassDecoratorContext<TProxyClassConstructor>) => TProxyClassConstructor;
 
 /**
@@ -210,12 +209,12 @@ export class Proxy {
      * Function with which to decorate the class.
      */
     describeClass<
-        ThrowError extends boolean, TError extends ErrorExtends<ThrowError>, TInvocationContext, TStreamingInvocationContext, TBigInt,
-        T extends LibProxy<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt>,
+        ThrowError extends boolean,
+        T extends LibProxy<ThrowError>,
         IsAbstract extends boolean,
         TConstructor extends TypedAbstractConstructor<TConstructor>,
-        TProxyClassConstructor extends ProxyClassConstructor<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, T, IsAbstract, TConstructor>
-    >(isAbstract: IsAbstract, decoratorClassDescriptor: DecoratorClassDescriptor = {}): ClassDecorator<ThrowError, TError, TInvocationContext, TStreamingInvocationContext, TBigInt, T, IsAbstract, TConstructor, TProxyClassConstructor> {
+        TProxyClassConstructor extends ProxyClassConstructor<ThrowError, T, IsAbstract, TConstructor>
+    >(isAbstract: IsAbstract, decoratorClassDescriptor: DecoratorClassDescriptor = {}): ClassDecorator<ThrowError, T, IsAbstract, TConstructor, TProxyClassConstructor> {
         const interimClassDescriptor: InterimClassDescriptor = decoratorClassDescriptor.replacementParameterDescriptors === undefined ?
             omit(decoratorClassDescriptor, "replacementParameterDescriptors") :
             {
