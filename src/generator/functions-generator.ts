@@ -72,7 +72,7 @@ export abstract class FunctionsGenerator extends Generator {
     };
 
     /**
-     * Dummy value passed to invocation context and streaming invocation context parameters if context is not supported.
+     * Dummy value passed to invocation context and streaming context parameters if context is not supported.
      */
     static readonly #DUMMY_VALUE = "0";
 
@@ -210,15 +210,15 @@ export abstract class FunctionsGenerator extends Generator {
                 parameterLocalizations.push({
                     name: "invocationContext",
                     description: "Invocation context.",
-                    javaScriptType: "TInvocationContext"
+                    javaScriptType: "InvocationContext"
                 });
             }
 
             if (methodDescriptor.isStream === true) {
                 parameterLocalizations.push({
-                    name: "streamingInvocationContext",
-                    description: "Streaming invocation context.",
-                    javaScriptType: "TStreamingInvocationContext"
+                    name: "streamingContext",
+                    description: "Streaming context.",
+                    javaScriptType: "StreamingContext"
                 });
             }
         } else {
@@ -228,7 +228,7 @@ export abstract class FunctionsGenerator extends Generator {
             }
 
             if (methodDescriptor.isStream === true) {
-                // Streaming invocation context type name represents a literal dummy value.
+                // Streaming context type name represents a literal dummy value.
                 dummyParameters.push(FunctionsGenerator.#DUMMY_VALUE);
             }
         }

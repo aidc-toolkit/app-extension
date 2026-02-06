@@ -294,8 +294,8 @@ export class AppHelperProxy extends LibProxy {
      * @param logLevelString
      * Log level as string.
      *
-     * @param streamingInvocationContext
-     * Streaming invocation context.
+     * @param streamingContext
+     * Streaming context.
      */
     @proxy.describeMethod({
         type: Types.String,
@@ -304,10 +304,10 @@ export class AppHelperProxy extends LibProxy {
         isStream: true,
         parameterDescriptors: [logLevelParameterDescriptor]
     })
-    loggerStream(logLevelString: Nullishable<string>, streamingInvocationContext: Nullishable<StreamingContext>): void {
-        if (isNullish(streamingInvocationContext)) {
+    loggerStream(logLevelString: Nullishable<string>, streamingContext: Nullishable<StreamingContext>): void {
+        if (isNullish(streamingContext)) {
             // Application error; no localization necessary.
-            throw new Error("Streaming invocation context not provided by application");
+            throw new Error("Streaming context not provided by application");
         }
 
         const appExtension = this.appExtension;
@@ -315,7 +315,7 @@ export class AppHelperProxy extends LibProxy {
         let notificationCallbackAdded = false;
         let previousLogLevel: number | undefined = undefined;
 
-        const streamingConsumerCallback = appExtension.installStreaming<string>(streamingInvocationContext, () => {
+        const streamingConsumerCallback = appExtension.installStreaming<string>(streamingContext, () => {
             if (notificationCallbackAdded) {
                 appExtension.memoryTransport.removeNotificationCallback(AppHelperProxy.#LOGGER_STREAM_NAME);
             }

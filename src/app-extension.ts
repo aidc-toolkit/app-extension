@@ -204,8 +204,8 @@ export abstract class AppExtension {
     /**
      * Install a streaming function.
      *
-     * @param streamingInvocationContext
-     * Streaming invocation context.
+     * @param streamingContext
+     * Streaming context.
      *
      * @param streamingCancelledCallback
      * Streaming cancelled callback, called when streaming is cancelled.
@@ -213,7 +213,7 @@ export abstract class AppExtension {
      * @returns
      * Streaming consumer callback, called when stream contents updated.
      */
-    abstract installStreaming<TResult>(streamingInvocationContext: StreamingContext, streamingCancelledCallback: StreamingCancelledCallback): StreamingConsumerCallback<TResult>;
+    abstract installStreaming<TResult>(streamingContext: StreamingContext, streamingCancelledCallback: StreamingCancelledCallback): StreamingConsumerCallback<TResult>;
 
     /**
      * Get a property stored within the active document.
