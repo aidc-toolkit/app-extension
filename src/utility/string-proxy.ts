@@ -6,7 +6,7 @@ import type { Matrix } from "../type.js";
 @proxy.describeClass(true, {
     category: "string"
 })
-export abstract class StringProxy<ThrowError extends boolean> extends LibProxy<ThrowError> {
+export abstract class StringProxy extends LibProxy {
     protected validateString<TStringValidation extends StringValidation>(validator: StringValidator<TStringValidation>, matrixSs: Matrix<string>, validation?: TStringValidation): Matrix<string> {
         return this.matrixErrorResult(matrixSs, (s) => {
             validator.validate(s, validation);

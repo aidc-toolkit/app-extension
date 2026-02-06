@@ -17,8 +17,8 @@ import { CharacterSetCreatorProxy, CharacterSetValidatorProxy } from "../utility
         }
     ]
 })
-export class AI82Proxy<ThrowError extends boolean> extends CharacterSetCreatorProxy<ThrowError> {
-    constructor(appExtension: AppExtension<ThrowError>) {
+export class AI82Proxy extends CharacterSetCreatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, AI82_CREATOR);
     }
 }
@@ -33,8 +33,8 @@ export class AI82Proxy<ThrowError extends boolean> extends CharacterSetCreatorPr
         }
     ]
 })
-export class AI39Proxy<ThrowError extends boolean> extends CharacterSetCreatorProxy<ThrowError> {
-    constructor(appExtension: AppExtension<ThrowError>) {
+export class AI39Proxy extends CharacterSetCreatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, AI39_CREATOR);
     }
 }
@@ -43,8 +43,8 @@ export class AI39Proxy<ThrowError extends boolean> extends CharacterSetCreatorPr
     namespace: "GS1",
     methodInfix: "AI64"
 })
-export class AI64Proxy<ThrowError extends boolean> extends CharacterSetValidatorProxy<ThrowError> {
-    constructor(appExtension: AppExtension<ThrowError>) {
+export class AI64Proxy extends CharacterSetValidatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, AI64_VALIDATOR);
     }
 }

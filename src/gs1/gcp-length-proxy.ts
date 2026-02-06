@@ -16,7 +16,7 @@ const gcpLengthIdentifierParameterDescriptor: ExtendsParameterDescriptor = {
 /**
  * Application extension GCP length cache. Data is stored in application extension shared data.
  */
-class AppExtensionGCPLengthCache<ThrowError extends boolean> extends RemoteGCPLengthCache {
+class AppExtensionGCPLengthCache extends RemoteGCPLengthCache {
     /**
      * Logger.
      */
@@ -28,7 +28,7 @@ class AppExtensionGCPLengthCache<ThrowError extends boolean> extends RemoteGCPLe
      * @param appExtension
      * Application extension.
      */
-    constructor(appExtension: AppExtension<ThrowError>) {
+    constructor(appExtension: AppExtension) {
         super(appExtension.sharedAppDataStorage, RemoteGCPLengthCache.DEFAULT_BASE_URL, appExtension.httpFetch);
 
         this.#logger = appExtension.logger;
@@ -100,10 +100,10 @@ class AppExtensionGCPLengthCache<ThrowError extends boolean> extends RemoteGCPLe
     namespace: "GS1",
     category: "service"
 })
-export class GCPLengthProxy<ThrowError extends boolean> extends LibProxy<ThrowError> {
+export class GCPLengthProxy extends LibProxy {
     readonly #gcpLength: GCPLength;
     
-    constructor(appExtension: AppExtension<ThrowError>) {
+    constructor(appExtension: AppExtension) {
         super(appExtension);
         
         this.#gcpLength = new GCPLength(new AppExtensionGCPLengthCache(appExtension));
@@ -128,7 +128,7 @@ export class GCPLengthProxy<ThrowError extends boolean> extends LibProxy<ThrowEr
         isAsync: true,
         parameterDescriptors: [identifierTypeParameterDescriptor, gcpLengthIdentifierParameterDescriptor]
     })
-    async gcpLengthOf(identifierType: string, matrixIdentifiers: Matrix<string>): Promise<MatrixResult<number, ThrowError>> {
+    async gcpLengthOf(identifierType: string, matrixIdentifiers: Matrix<string>): Promise<MatrixResult<number>> {
         return this.#loadGCPLengthData().then(() => this.setUpMatrixResult(
             () => validateIdentifierType(identifierType),
             matrixIdentifiers,
@@ -142,7 +142,7 @@ export class GCPLengthProxy<ThrowError extends boolean> extends LibProxy<ThrowEr
         isAsync: true,
         parameterDescriptors: []
     })
-    async gcpLengthDateTime(): Promise<SingletonResult<string, ThrowError>> {
+    async gcpLengthDateTime(): Promise<SingletonResult<string>> {
         return this.#loadGCPLengthData().then(() =>
             this.singletonResult(() => this.#gcpLength.dateTime.toISOString())
         );
@@ -154,7 +154,7 @@ export class GCPLengthProxy<ThrowError extends boolean> extends LibProxy<ThrowEr
         isAsync: true,
         parameterDescriptors: []
     })
-    async gcpLengthDisclaimer(): Promise<SingletonResult<string, ThrowError>> {
+    async gcpLengthDisclaimer(): Promise<SingletonResult<string>> {
         return this.#loadGCPLengthData().then(() =>
             this.singletonResult(() => this.#gcpLength.disclaimer)
         );

@@ -1,4 +1,4 @@
-import type { AppExtensionError } from "./app-extension-options.js";
+import type { ApplicationError, ThrowError } from "./app-extension-options.js";
 
 /**
  * Sheet.
@@ -67,11 +67,8 @@ export type Matrix<T> = T[][];
  *
  * @template TResult
  * Result type.
- *
- * @template ThrowError
- * If true, errors are reported through the throw/catch mechanism.
  */
-export type SingletonResult<TResult, ThrowError extends boolean> = ThrowError extends false ? TResult | AppExtensionError : TResult;
+export type SingletonResult<TResult> = ThrowError extends true ? TResult : TResult | ApplicationError;
 
 /**
  * Function matrix return, possibly including an error return in each element. If the application extension reports
@@ -80,8 +77,5 @@ export type SingletonResult<TResult, ThrowError extends boolean> = ThrowError ex
  *
  * @template TResult
  * Result type.
- *
- * @template ThrowError
- * If true, errors are reported through the throw/catch mechanism.
  */
-export type MatrixResult<TResult, ThrowError extends boolean> = Matrix<SingletonResult<TResult, ThrowError>>;
+export type MatrixResult<TResult> = Matrix<SingletonResult<TResult>>;

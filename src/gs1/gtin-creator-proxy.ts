@@ -21,8 +21,8 @@ import {
         }
     ]
 })
-export class GTINCreatorProxy<ThrowError extends boolean> extends NumericIdentifierCreatorProxy<ThrowError, GTINType, GTINCreator> {
-    constructor(appExtension: AppExtension<ThrowError>) {
+export class GTINCreatorProxy extends NumericIdentifierCreatorProxy<GTINType, GTINCreator> {
+    constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.gtinCreator);
     }
 
@@ -32,7 +32,7 @@ export class GTINCreatorProxy<ThrowError extends boolean> extends NumericIdentif
         ignoreInfix: true,
         parameterDescriptors: [indicatorDigitParameterDescriptor, prefixDefinitionAnyParameterDescriptor, valueParameterDescriptor, sparseParameterDescriptor]
     })
-    createGTIN14(indicatorDigit: string, prefixDefinition: Matrix<unknown>, matrixValues: Matrix<number | bigint>, sparse: Nullishable<boolean>): MatrixResult<string, ThrowError> {
+    createGTIN14(indicatorDigit: string, prefixDefinition: Matrix<unknown>, matrixValues: Matrix<number | bigint>, sparse: Nullishable<boolean>): MatrixResult<string> {
         const sparseOrUndefined = sparse ?? undefined;
 
         return this.setUpMatrixResult(() =>

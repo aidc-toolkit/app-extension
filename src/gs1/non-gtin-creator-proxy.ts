@@ -10,8 +10,8 @@ import {
 @proxy.describeClass(false, {
     methodInfix: "GLN"
 })
-export class GLNCreatorProxy<ThrowError extends boolean> extends NonSerializableNumericIdentifierCreatorProxy<ThrowError, NonSerializableNumericIdentifierType, NonGTINNumericIdentifierCreator> {
-    constructor(appExtension: AppExtension<ThrowError>) {
+export class GLNCreatorProxy extends NonSerializableNumericIdentifierCreatorProxy<NonSerializableNumericIdentifierType, NonGTINNumericIdentifierCreator> {
+    constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.glnCreator);
     }
 }
@@ -19,8 +19,8 @@ export class GLNCreatorProxy<ThrowError extends boolean> extends NonSerializable
 @proxy.describeClass(false, {
     methodInfix: "SSCC"
 })
-export class SSCCCreatorProxy<ThrowError extends boolean> extends NonSerializableNumericIdentifierCreatorProxy<ThrowError, NonSerializableNumericIdentifierType, NonGTINNumericIdentifierCreator> {
-    constructor(appExtension: AppExtension<ThrowError>) {
+export class SSCCCreatorProxy extends NonSerializableNumericIdentifierCreatorProxy<NonSerializableNumericIdentifierType, NonGTINNumericIdentifierCreator> {
+    constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.ssccCreator);
     }
 }
@@ -28,8 +28,8 @@ export class SSCCCreatorProxy<ThrowError extends boolean> extends NonSerializabl
 @proxy.describeClass(false, {
     methodInfix: "GRAI"
 })
-export class GRAICreatorProxy<ThrowError extends boolean> extends SerializableNumericIdentifierCreatorProxy<ThrowError> {
-    constructor(appExtension: AppExtension<ThrowError>) {
+export class GRAICreatorProxy extends SerializableNumericIdentifierCreatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.graiCreator);
     }
 }
@@ -37,8 +37,8 @@ export class GRAICreatorProxy<ThrowError extends boolean> extends SerializableNu
 @proxy.describeClass(false, {
     methodInfix: "GIAI"
 })
-export class GIAICreatorProxy<ThrowError extends boolean> extends NonNumericIdentifierCreatorProxy<ThrowError> {
-    constructor(appExtension: AppExtension<ThrowError>) {
+export class GIAICreatorProxy extends NonNumericIdentifierCreatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.giaiCreator);
     }
 }
@@ -46,8 +46,8 @@ export class GIAICreatorProxy<ThrowError extends boolean> extends NonNumericIden
 @proxy.describeClass(false, {
     methodInfix: "GSRN"
 })
-export class GSRNCreatorProxy<ThrowError extends boolean> extends NonSerializableNumericIdentifierCreatorProxy<ThrowError, NonSerializableNumericIdentifierType, NonGTINNumericIdentifierCreator> {
-    constructor(appExtension: AppExtension<ThrowError>) {
+export class GSRNCreatorProxy extends NonSerializableNumericIdentifierCreatorProxy<NonSerializableNumericIdentifierType, NonGTINNumericIdentifierCreator> {
+    constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.gsrnCreator);
     }
 }
@@ -55,8 +55,8 @@ export class GSRNCreatorProxy<ThrowError extends boolean> extends NonSerializabl
 @proxy.describeClass(false, {
     methodInfix: "GDTI"
 })
-export class GDTICreatorProxy<ThrowError extends boolean> extends SerializableNumericIdentifierCreatorProxy<ThrowError> {
-    constructor(appExtension: AppExtension<ThrowError>) {
+export class GDTICreatorProxy extends SerializableNumericIdentifierCreatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.gdtiCreator);
     }
 }
@@ -64,8 +64,8 @@ export class GDTICreatorProxy<ThrowError extends boolean> extends SerializableNu
 @proxy.describeClass(false, {
     methodInfix: "GINC"
 })
-export class GINCCreatorProxy<ThrowError extends boolean> extends NonNumericIdentifierCreatorProxy<ThrowError> {
-    constructor(appExtension: AppExtension<ThrowError>) {
+export class GINCCreatorProxy extends NonNumericIdentifierCreatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.gincCreator);
     }
 }
@@ -73,8 +73,8 @@ export class GINCCreatorProxy<ThrowError extends boolean> extends NonNumericIden
 @proxy.describeClass(false, {
     methodInfix: "GSIN"
 })
-export class GSINCreatorProxy<ThrowError extends boolean> extends NonSerializableNumericIdentifierCreatorProxy<ThrowError, NonSerializableNumericIdentifierType, NonGTINNumericIdentifierCreator> {
-    constructor(appExtension: AppExtension<ThrowError>) {
+export class GSINCreatorProxy extends NonSerializableNumericIdentifierCreatorProxy<NonSerializableNumericIdentifierType, NonGTINNumericIdentifierCreator> {
+    constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.gsinCreator);
     }
 }
@@ -82,8 +82,8 @@ export class GSINCreatorProxy<ThrowError extends boolean> extends NonSerializabl
 @proxy.describeClass(false, {
     methodInfix: "GCN"
 })
-export class GCNCreatorProxy<ThrowError extends boolean> extends SerializableNumericIdentifierCreatorProxy<ThrowError> {
-    constructor(appExtension: AppExtension<ThrowError>) {
+export class GCNCreatorProxy extends SerializableNumericIdentifierCreatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.gcnCreator);
     }
 }
@@ -91,8 +91,8 @@ export class GCNCreatorProxy<ThrowError extends boolean> extends SerializableNum
 @proxy.describeClass(false, {
     methodInfix: "CPID"
 })
-export class CPIDCreatorProxy<ThrowError extends boolean> extends NonNumericIdentifierCreatorProxy<ThrowError> {
-    constructor(appExtension: AppExtension<ThrowError>) {
+export class CPIDCreatorProxy extends NonNumericIdentifierCreatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.cpidCreator);
     }
 }
@@ -100,8 +100,8 @@ export class CPIDCreatorProxy<ThrowError extends boolean> extends NonNumericIden
 @proxy.describeClass(false, {
     methodInfix: "GMN"
 })
-export class GMNCreatorProxy<ThrowError extends boolean> extends NonNumericIdentifierCreatorProxy<ThrowError> {
-    constructor(appExtension: AppExtension<ThrowError>) {
+export class GMNCreatorProxy extends NonNumericIdentifierCreatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.gmnCreator);
     }
 }

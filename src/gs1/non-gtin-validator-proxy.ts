@@ -10,8 +10,8 @@ import {
 @proxy.describeClass(false, {
     methodInfix: "GLN"
 })
-export class GLNValidatorProxy<ThrowError extends boolean> extends NonSerializableNumericIdentifierValidatorProxy<ThrowError> {
-    constructor(appExtension: AppExtension<ThrowError>) {
+export class GLNValidatorProxy extends NonSerializableNumericIdentifierValidatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, IdentifierValidators.GLN);
     }
 }
@@ -19,8 +19,8 @@ export class GLNValidatorProxy<ThrowError extends boolean> extends NonSerializab
 @proxy.describeClass(false, {
     methodInfix: "SSCC"
 })
-export class SSCCValidatorProxy<ThrowError extends boolean> extends NonSerializableNumericIdentifierValidatorProxy<ThrowError> {
-    constructor(appExtension: AppExtension<ThrowError>) {
+export class SSCCValidatorProxy extends NonSerializableNumericIdentifierValidatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, IdentifierValidators.SSCC);
     }
 }
@@ -28,8 +28,8 @@ export class SSCCValidatorProxy<ThrowError extends boolean> extends NonSerializa
 @proxy.describeClass(false, {
     methodInfix: "GRAI"
 })
-export class GRAIValidatorProxy<ThrowError extends boolean> extends SerializableNumericIdentifierValidatorProxy<ThrowError> {
-    constructor(appExtension: AppExtension<ThrowError>) {
+export class GRAIValidatorProxy extends SerializableNumericIdentifierValidatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, IdentifierValidators.GRAI);
     }
 }
@@ -37,8 +37,8 @@ export class GRAIValidatorProxy<ThrowError extends boolean> extends Serializable
 @proxy.describeClass(false, {
     methodInfix: "GIAI"
 })
-export class GIAIValidatorProxy<ThrowError extends boolean> extends NonNumericIdentifierValidatorProxy<ThrowError> {
-    constructor(appExtension: AppExtension<ThrowError>) {
+export class GIAIValidatorProxy extends NonNumericIdentifierValidatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, IdentifierValidators.GIAI);
     }
 }
@@ -46,8 +46,8 @@ export class GIAIValidatorProxy<ThrowError extends boolean> extends NonNumericId
 @proxy.describeClass(false, {
     methodInfix: "GSRN"
 })
-export class GSRNValidatorProxy<ThrowError extends boolean> extends NonSerializableNumericIdentifierValidatorProxy<ThrowError> {
-    constructor(appExtension: AppExtension<ThrowError>) {
+export class GSRNValidatorProxy extends NonSerializableNumericIdentifierValidatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, IdentifierValidators.GSRN);
     }
 }
@@ -55,8 +55,8 @@ export class GSRNValidatorProxy<ThrowError extends boolean> extends NonSerializa
 @proxy.describeClass(false, {
     methodInfix: "GDTI"
 })
-export class GDTIValidatorProxy<ThrowError extends boolean> extends SerializableNumericIdentifierValidatorProxy<ThrowError> {
-    constructor(appExtension: AppExtension<ThrowError>) {
+export class GDTIValidatorProxy extends SerializableNumericIdentifierValidatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, IdentifierValidators.GDTI);
     }
 }
@@ -64,8 +64,8 @@ export class GDTIValidatorProxy<ThrowError extends boolean> extends Serializable
 @proxy.describeClass(false, {
     methodInfix: "GINC"
 })
-export class GINCValidatorProxy<ThrowError extends boolean> extends NonNumericIdentifierValidatorProxy<ThrowError> {
-    constructor(appExtension: AppExtension<ThrowError>) {
+export class GINCValidatorProxy extends NonNumericIdentifierValidatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, IdentifierValidators.GINC);
     }
 }
@@ -73,8 +73,8 @@ export class GINCValidatorProxy<ThrowError extends boolean> extends NonNumericId
 @proxy.describeClass(false, {
     methodInfix: "GSIN"
 })
-export class GSINValidatorProxy<ThrowError extends boolean> extends NonSerializableNumericIdentifierValidatorProxy<ThrowError> {
-    constructor(appExtension: AppExtension<ThrowError>) {
+export class GSINValidatorProxy extends NonSerializableNumericIdentifierValidatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, IdentifierValidators.GSIN);
     }
 }
@@ -82,8 +82,8 @@ export class GSINValidatorProxy<ThrowError extends boolean> extends NonSerializa
 @proxy.describeClass(false, {
     methodInfix: "GCN"
 })
-export class GCNValidatorProxy<ThrowError extends boolean> extends SerializableNumericIdentifierValidatorProxy<ThrowError> {
-    constructor(appExtension: AppExtension<ThrowError>) {
+export class GCNValidatorProxy extends SerializableNumericIdentifierValidatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, IdentifierValidators.GCN);
     }
 }
@@ -91,8 +91,8 @@ export class GCNValidatorProxy<ThrowError extends boolean> extends SerializableN
 @proxy.describeClass(false, {
     methodInfix: "CPID"
 })
-export class CPIDValidatorProxy<ThrowError extends boolean> extends NonNumericIdentifierValidatorProxy<ThrowError> {
-    constructor(appExtension: AppExtension<ThrowError>) {
+export class CPIDValidatorProxy extends NonNumericIdentifierValidatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, IdentifierValidators.CPID);
     }
 }
@@ -100,8 +100,8 @@ export class CPIDValidatorProxy<ThrowError extends boolean> extends NonNumericId
 @proxy.describeClass(false, {
     methodInfix: "GMN"
 })
-export class GMNValidatorProxy<ThrowError extends boolean> extends NonNumericIdentifierValidatorProxy<ThrowError> {
-    constructor(appExtension: AppExtension<ThrowError>) {
+export class GMNValidatorProxy extends NonNumericIdentifierValidatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, IdentifierValidators.GMN);
     }
 }

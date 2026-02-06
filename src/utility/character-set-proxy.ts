@@ -10,7 +10,7 @@ import {
     NUMERIC_CREATOR,
     Sequence
 } from "@aidc-toolkit/utility";
-import type { AppExtensionBigInt } from "../app-extension-options.js";
+import type { BigInteger } from "../app-extension-options.js";
 import type { AppExtension } from "../app-extension.js";
 import { type ExtendsParameterDescriptor, Multiplicities, type ParameterDescriptor, Types } from "../descriptor.js";
 import { expandParameterDescriptor, proxy } from "../proxy.js";
@@ -42,10 +42,10 @@ const valueForSParameterDescriptor: ExtendsParameterDescriptor = {
 };
 
 @proxy.describeClass(true)
-export abstract class CharacterSetValidatorProxy<ThrowError extends boolean> extends StringProxy<ThrowError> {
+export abstract class CharacterSetValidatorProxy extends StringProxy {
     readonly #characterSetValidator: CharacterSetValidator;
 
-    constructor(appExtension: AppExtension<ThrowError>, characterSetValidator: CharacterSetValidator) {
+    constructor(appExtension: AppExtension, characterSetValidator: CharacterSetValidator) {
         super(appExtension);
 
         this.#characterSetValidator = characterSetValidator;
@@ -73,10 +73,10 @@ export abstract class CharacterSetValidatorProxy<ThrowError extends boolean> ext
 }
 
 @proxy.describeClass(true)
-export abstract class CharacterSetCreatorProxy<ThrowError extends boolean> extends CharacterSetValidatorProxy<ThrowError> {
+export abstract class CharacterSetCreatorProxy extends CharacterSetValidatorProxy {
     readonly #characterSetCreator: CharacterSetCreator;
 
-    constructor(appExtension: AppExtension<ThrowError>, characterSetCreator: CharacterSetCreator) {
+    constructor(appExtension: AppExtension, characterSetCreator: CharacterSetCreator) {
         super(appExtension, characterSetCreator);
 
         this.#characterSetCreator = characterSetCreator;
@@ -87,7 +87,7 @@ export abstract class CharacterSetCreatorProxy<ThrowError extends boolean> exten
         multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [lengthParameterDescriptor, valueParameterDescriptor, exclusionNoneParameterDescriptor, tweakParameterDescriptor]
     })
-    create(length: number, matrixValues: Matrix<number | bigint>, exclusion: Nullishable<Exclusion>, tweak: Nullishable<number | bigint>): MatrixResult<string, ThrowError> {
+    create(length: number, matrixValues: Matrix<number | bigint>, exclusion: Nullishable<Exclusion>, tweak: Nullishable<number | bigint>): MatrixResult<string> {
         const exclusionOrUndefined = exclusion ?? undefined;
         const tweakOrUndefined = tweak ?? undefined;
 
@@ -102,7 +102,7 @@ export abstract class CharacterSetCreatorProxy<ThrowError extends boolean> exten
         multiplicity: Multiplicities.Array,
         parameterDescriptors: [lengthParameterDescriptor, startValueParameterDescriptor, countParameterDescriptor, exclusionNoneParameterDescriptor, tweakParameterDescriptor]
     })
-    createSequence(length: number, startValue: number, count: number, exclusion: Nullishable<Exclusion>, tweak: Nullishable<number | bigint>): MatrixResult<string, ThrowError> {
+    createSequence(length: number, startValue: number, count: number, exclusion: Nullishable<Exclusion>, tweak: Nullishable<number | bigint>): MatrixResult<string> {
         const exclusionOrUndefined = exclusion ?? undefined;
         const tweakOrUndefined = tweak ?? undefined;
 
@@ -118,7 +118,7 @@ export abstract class CharacterSetCreatorProxy<ThrowError extends boolean> exten
         multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [valueForSParameterDescriptor, exclusionNoneParameterDescriptor, tweakParameterDescriptor]
     })
-    valueFor(matrixSs: Matrix<string>, exclusion: Nullishable<Exclusion>, tweak: Nullishable<number | bigint>): MatrixResult<AppExtensionBigInt, ThrowError> {
+    valueFor(matrixSs: Matrix<string>, exclusion: Nullishable<Exclusion>, tweak: Nullishable<number | bigint>): MatrixResult<BigInteger> {
         const exclusionOrUndefined = exclusion ?? undefined;
         const tweakOrUndefined = tweak ?? undefined;
 
@@ -137,8 +137,8 @@ export abstract class CharacterSetCreatorProxy<ThrowError extends boolean> exten
         }
     ]
 })
-export class NumericProxy<ThrowError extends boolean> extends CharacterSetCreatorProxy<ThrowError> {
-    constructor(appExtension: AppExtension<ThrowError>) {
+export class NumericProxy extends CharacterSetCreatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, NUMERIC_CREATOR);
     }
 }
@@ -152,8 +152,8 @@ export class NumericProxy<ThrowError extends boolean> extends CharacterSetCreato
         }
     ]
 })
-export class HexadecimalProxy<ThrowError extends boolean> extends CharacterSetCreatorProxy<ThrowError> {
-    constructor(appExtension: AppExtension<ThrowError>) {
+export class HexadecimalProxy extends CharacterSetCreatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, HEXADECIMAL_CREATOR);
     }
 }
@@ -161,8 +161,8 @@ export class HexadecimalProxy<ThrowError extends boolean> extends CharacterSetCr
 @proxy.describeClass(false, {
     methodInfix: "Alphabetic"
 })
-export class AlphabeticProxy<ThrowError extends boolean> extends CharacterSetCreatorProxy<ThrowError> {
-    constructor(appExtension: AppExtension<ThrowError>) {
+export class AlphabeticProxy extends CharacterSetCreatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, ALPHABETIC_CREATOR);
     }
 }
@@ -176,8 +176,8 @@ export class AlphabeticProxy<ThrowError extends boolean> extends CharacterSetCre
         }
     ]
 })
-export class AlphanumericProxy<ThrowError extends boolean> extends CharacterSetCreatorProxy<ThrowError> {
-    constructor(appExtension: AppExtension<ThrowError>) {
+export class AlphanumericProxy extends CharacterSetCreatorProxy {
+    constructor(appExtension: AppExtension) {
         super(appExtension, ALPHANUMERIC_CREATOR);
     }
 }

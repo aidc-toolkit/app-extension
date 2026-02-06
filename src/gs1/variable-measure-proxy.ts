@@ -36,13 +36,13 @@ const rcnPriceOrWeightParameterDescriptor: ParameterDescriptor = {
     namespace: "GS1",
     category: "variableMeasure"
 })
-export class VariableMeasureProxy<ThrowError extends boolean> extends LibProxy<ThrowError> {
+export class VariableMeasureProxy extends LibProxy {
     @proxy.describeMethod({
         type: Types.Number,
         multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [rcnFormatParameterDescriptor, rcnParameterDescriptor]
     })
-    parseVariableMeasureRCN(format: string, matrixRCNs: Matrix<string>): MatrixResult<number, ThrowError> {
+    parseVariableMeasureRCN(format: string, matrixRCNs: Matrix<string>): MatrixResult<number> {
         return this.arrayResult(matrixRCNs, (rcn) => {
             const rcnReference = VariableMeasure.parseRCN(format, rcn);
 
@@ -56,7 +56,7 @@ export class VariableMeasureProxy<ThrowError extends boolean> extends LibProxy<T
         ignoreInfix: true,
         parameterDescriptors: [rcnFormatParameterDescriptor, rcnItemReferenceParameterDescriptor, rcnPriceOrWeightParameterDescriptor]
     })
-    createVariableMeasureRCN(format: string, itemReference: number, matrixPricesOrWeights: Matrix<number>): MatrixResult<string, ThrowError> {
+    createVariableMeasureRCN(format: string, itemReference: number, matrixPricesOrWeights: Matrix<number>): MatrixResult<string> {
         return this.matrixResult(matrixPricesOrWeights, priceOrWeight => VariableMeasure.createRCN(format, itemReference, priceOrWeight));
     }
 }

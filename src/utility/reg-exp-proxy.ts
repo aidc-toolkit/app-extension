@@ -23,7 +23,7 @@ const errorMessageParameterDescriptor: ParameterDescriptor = {
 @proxy.describeClass(false, {
     methodInfix: "RegExp"
 })
-export class RegExpProxy<ThrowError extends boolean> extends StringProxy<ThrowError> {
+export class RegExpProxy extends StringProxy {
     @proxy.describeMethod({
         type: Types.String,
         multiplicity: Multiplicities.Matrix,

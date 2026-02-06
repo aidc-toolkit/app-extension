@@ -92,11 +92,6 @@ export abstract class FunctionsGenerator extends Generator {
     readonly #supportsContext: boolean;
 
     /**
-     * Template declaration for type alias.
-     */
-    readonly #templateDeclaration: string;
-
-    /**
      * Current class type alias.
      */
     #classTypeAlias!: ClassTypeAlias;
@@ -110,18 +105,14 @@ export abstract class FunctionsGenerator extends Generator {
      * @param inline
      * If true, functions are declared inline rather than using `function`.
      *
-     * @param throwError
-     * If true, errors are reported through the throw/catch mechanism.
-     *
      * @param supportsContext
      * If true, application extension supports context.
      */
-    constructor(version: string, inline: boolean, throwError: boolean, supportsContext: boolean) {
+    constructor(version: string, inline: boolean, supportsContext: boolean) {
         super(version, true);
 
         this.#inline = inline;
         this.#supportsContext = supportsContext;
-        this.#templateDeclaration = `<${throwError}>`;
     }
 
     /**
@@ -151,7 +142,7 @@ export abstract class FunctionsGenerator extends Generator {
         const classDescriptorNamespace = classDescriptor.namespace ?? "";
         const name = `${classDescriptorNamespace}${classDescriptor.name}`;
         const getter = `get${name}()`;
-        const implementation = `AppExtension${classDescriptorNamespace}.${classDescriptor.name}${this.#templateDeclaration}`;
+        const implementation = `AppExtension${classDescriptorNamespace}.${classDescriptor.name}`;
 
         this.#classTypeAlias = {
             name,

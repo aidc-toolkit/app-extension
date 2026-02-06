@@ -30,7 +30,7 @@ const tweakFactorParameterDescriptor: ParameterDescriptor = {
     namespace: "GS1",
     category: "prefix"
 })
-export class PrefixManagerProxy<ThrowError extends boolean> extends LibProxy<ThrowError> {
+export class PrefixManagerProxy extends LibProxy {
     @proxy.describeMethod({
         type: Types.Any,
         multiplicity: Multiplicities.SingletonArray,

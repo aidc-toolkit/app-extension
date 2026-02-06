@@ -56,13 +56,13 @@ const ai82SWithCheckCharacterPairParameterDescriptor: ExtendsParameterDescriptor
     namespace: "GS1",
     category: "checkCharacter"
 })
-export class CheckProxy<ThrowError extends boolean> extends LibProxy<ThrowError> {
+export class CheckProxy extends LibProxy {
     @proxy.describeMethod({
         type: Types.String,
         multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [numericSParameterDescriptor]
     })
-    checkDigit(matrixSs: Matrix<string>): MatrixResult<string, ThrowError> {
+    checkDigit(matrixSs: Matrix<string>): MatrixResult<string> {
         return this.matrixResult(matrixSs, s => checkDigit(s));
     }
 
@@ -71,7 +71,7 @@ export class CheckProxy<ThrowError extends boolean> extends LibProxy<ThrowError>
         multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [numericSWithCheckDigitParameterDescriptor]
     })
-    hasValidCheckDigit(matrixSs: Matrix<string>): MatrixResult<boolean, ThrowError> {
+    hasValidCheckDigit(matrixSs: Matrix<string>): MatrixResult<boolean> {
         return this.matrixResult(matrixSs, s => hasValidCheckDigit(s));
     }
 
@@ -80,7 +80,7 @@ export class CheckProxy<ThrowError extends boolean> extends LibProxy<ThrowError>
         multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [numericSFourOrFiveDigitsParameterDescriptor]
     })
-    priceOrWeightCheckDigit(matrixSs: Matrix<string>): MatrixResult<string, ThrowError> {
+    priceOrWeightCheckDigit(matrixSs: Matrix<string>): MatrixResult<string> {
         return this.matrixResult(matrixSs, s => priceOrWeightCheckDigit(s));
     }
 
@@ -92,7 +92,7 @@ export class CheckProxy<ThrowError extends boolean> extends LibProxy<ThrowError>
             multiplicity: Multiplicities.Singleton
         }, checkDigitParameterDescriptor]
     })
-    isValidPriceOrWeightCheckDigit(s: string, checkDigit: string): SingletonResult<boolean, ThrowError> {
+    isValidPriceOrWeightCheckDigit(s: string, checkDigit: string): SingletonResult<boolean> {
         return this.singletonResult(() => isValidPriceOrWeightCheckDigit(s, checkDigit));
     }
 
@@ -101,7 +101,7 @@ export class CheckProxy<ThrowError extends boolean> extends LibProxy<ThrowError>
         multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [ai82SParameterDescriptor]
     })
-    checkCharacterPair(matrixSs: Matrix<string>): MatrixResult<string, ThrowError> {
+    checkCharacterPair(matrixSs: Matrix<string>): MatrixResult<string> {
         return this.matrixResult(matrixSs, s => checkCharacterPair(s));
     }
 
@@ -110,7 +110,7 @@ export class CheckProxy<ThrowError extends boolean> extends LibProxy<ThrowError>
         multiplicity: Multiplicities.Matrix,
         parameterDescriptors: [ai82SWithCheckCharacterPairParameterDescriptor]
     })
-    hasValidCheckCharacterPair(matrixSs: Matrix<string>): MatrixResult<boolean, ThrowError> {
+    hasValidCheckCharacterPair(matrixSs: Matrix<string>): MatrixResult<boolean> {
         return this.matrixResult(matrixSs, s => hasValidCheckCharacterPair(s));
     }
 }

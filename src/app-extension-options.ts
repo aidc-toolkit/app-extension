@@ -4,9 +4,14 @@
  */
 export interface AppExtensionOptions {
     /**
-     * Error.
+     * If true, errors are reported through the throw/catch mechanism.
      */
-    Error: object;
+    ThrowError: boolean;
+
+    /**
+     * Application error.
+     */
+    ApplicationError: object;
 
     /**
      * Invocation context.
@@ -14,14 +19,14 @@ export interface AppExtensionOptions {
     InvocationContext: unknown;
 
     /**
-     * Streaming invocation context.
+     * Streaming context.
      */
-    StreamingInvocationContext: unknown;
+    StreamingContext: unknown;
 
     /**
      * Big integer representation.
      */
-    BigInt: number | bigint;
+    BigInteger: number | bigint;
 }
 
 /**
@@ -31,21 +36,26 @@ export interface CustomAppExtensionOptions extends AppExtensionOptions {
 }
 
 /**
- * Error type.
+ * If true, errors are reported through the throw/catch mechanism.
  */
-export type AppExtensionError = CustomAppExtensionOptions["Error"];
+export type ThrowError = CustomAppExtensionOptions["ThrowError"];
+
+/**
+ * Application error type.
+ */
+export type ApplicationError = CustomAppExtensionOptions["ApplicationError"];
 
 /**
  * Invocation context type.
  */
-export type AppExtensionInvocationContext = CustomAppExtensionOptions["InvocationContext"];
+export type InvocationContext = CustomAppExtensionOptions["InvocationContext"];
 
 /**
- * Streaming invocation context type.
+ * Streaming context type.
  */
-export type AppExtensionStreamingInvocationContext = CustomAppExtensionOptions["StreamingInvocationContext"];
+export type StreamingContext = CustomAppExtensionOptions["StreamingContext"];
 
 /**
  * Big integer representation type.
  */
-export type AppExtensionBigInt = CustomAppExtensionOptions["BigInt"];
+export type BigInteger = CustomAppExtensionOptions["BigInteger"];
