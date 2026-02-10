@@ -61,8 +61,6 @@ interface MaximumDimensions {
     category: "helper"
 })
 export class AppHelperProxy extends LibProxy {
-    static readonly #LOGGER_STREAM_NAME = "loggerStream";
-
     /**
      * Get the version.
      *
@@ -265,6 +263,7 @@ export class AppHelperProxy extends LibProxy {
         type: Types.String,
         multiplicity: Multiplicities.Array,
         isHidden: true,
+        isVolatile: true,
         parameterDescriptors: [logLevelParameterDescriptor]
     })
     loggerMessages(logLevelString: Nullishable<string>): MatrixResult<string> {
@@ -317,7 +316,7 @@ export class AppHelperProxy extends LibProxy {
 
         const streamingConsumerCallback = appExtension.installStreaming<string>(streamingContext, () => {
             if (notificationCallbackAdded) {
-                appExtension.memoryTransport.removeNotificationCallback(AppHelperProxy.#LOGGER_STREAM_NAME);
+                appExtension.memoryTransport.removeNotificationCallback(AppHelperProxy.name);
             }
 
             if (previousLogLevel !== undefined) {
@@ -325,7 +324,7 @@ export class AppHelperProxy extends LibProxy {
             }
         });
 
-        if (appExtension.memoryTransport.addNotificationCallback(AppHelperProxy.#LOGGER_STREAM_NAME, (_message, messages) => {
+        if (appExtension.memoryTransport.addNotificationCallback(AppHelperProxy.name, (_message, messages) => {
             streamingConsumerCallback(this.iterableResult(() => messages));
         })) {
             notificationCallbackAdded = true;
