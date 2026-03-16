@@ -190,10 +190,10 @@ export abstract class LibProxy {
         } else if (matrixValues.length === 1) {
             result = [];
 
-            matrixValues[0].forEach((value, columnIndex) => {
+            for (const [columnIndex, value] of matrixValues[0].entries()) {
                 const arrayResult = this.#arrayCallback(value, callback);
 
-                arrayResult.forEach((resultError, rowIndex) => {
+                for (const [rowIndex, resultError] of arrayResult.entries()) {
                     // Append a row if necessary.
                     if (result.length <= rowIndex) {
                         result.push([]);
@@ -201,8 +201,8 @@ export abstract class LibProxy {
 
                     // Assignment will automatically expand row to the number of columns in the matrix.
                     result[rowIndex][columnIndex] = resultError;
-                });
-            });
+                }
+            }
         } else {
             result = matrixValues.map((rowValue) => {
                 let arrayResult: Array<SingletonResult<TResult>>;
