@@ -191,9 +191,7 @@ export abstract class LibProxy {
             result = [];
 
             for (const [columnIndex, value] of matrixValues[0].entries()) {
-                const arrayResult = this.#arrayCallback(value, callback);
-
-                for (const [rowIndex, resultError] of arrayResult.entries()) {
+                for (const [rowIndex, resultError] of this.#arrayCallback(value, callback).entries()) {
                     // Append a row if necessary.
                     if (result.length <= rowIndex) {
                         result.push([]);
