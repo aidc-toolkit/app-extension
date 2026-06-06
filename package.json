@@ -1,21 +1,16 @@
 {
-  "name": "@aidc-toolkit/app-extension",
-  "version": "1.0.54",
-  "description": "Application extension framework for AIDC Toolkit",
+  "name": "@aidc-toolkit/demo",
+  "version": "1.1.0",
+  "description": "Demonstration of AIDC Toolkit",
   "type": "module",
-  "main": "dist/index.js",
-  "exports": {
-    ".": "./dist/index.js",
-    "./gs1": "./dist/gs1/index.js",
-    "./generator": "./dist/generator/index.js"
-  },
+  "private": true,
   "homepage": "https://aidc-toolkit.com",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/aidc-toolkit/app-extension.git"
+    "url": "git+https://github.com/aidc-toolkit/demo.git"
   },
   "bugs": {
-    "url": "https://github.com/aidc-toolkit/app-extension/issues"
+    "url": "https://github.com/aidc-toolkit/demo/issues"
   },
   "license": "Apache-2.0",
   "author": {
@@ -25,20 +20,34 @@
   },
   "scripts": {
     "lint": "eslint",
-    "tsc-src": "tsc --project tsconfig-src.json",
-    "build:non-prod": "rimraf dist tsconfig-src.tsbuildinfo && npm run tsc-src -- --declarationMap --sourceMap",
-    "build:alpha": "npm run build:non-prod && tsc --project tsconfig-config.json --noEmit",
-    "build:beta": "npm run build:non-prod",
-    "build:prod": "npm run tsc-src -- --noEmit && tsup --tsconfig tsconfig-tsup.json",
-    "build:doc": "npm run build:non-prod",
-    "generate-locale-resources": "tsx src/generator/locale-resources-generator.ts"
+    "build:base": "tsc --project tsconfig-src.json --noEmit && vite build",
+    "build:alpha": "npm run build:base && tsc --project tsconfig-config.json --noEmit",
+    "build:doc": "npm run build:base",
+    "server": "vite",
+    "server-preview": "npm run build:doc && vite preview"
   },
   "devDependencies": {
-    "@aidc-toolkit/dev": "^1.0.47"
+    "@aidc-toolkit/dev": "^1.0.47",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.2",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.6.0",
+    "typescript-plugin-css-modules": "^5.2.0",
+    "vite": "^8.0.16",
+    "vite-plugin-svgr": "^5.2.0"
   },
   "dependencies": {
     "@aidc-toolkit/core": "^1.0.48",
-    "@aidc-toolkit/gs1": "^1.0.50",
-    "@aidc-toolkit/utility": "^1.0.49"
+    "@aidc-toolkit/gs1": "^1.1.1-alpha",
+    "@aidc-toolkit/utility": "^1.0.49",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^9.0.1",
+    "@mui/material": "^9.0.1",
+    "bootstrap": "^5.3.8",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
   }
 }
