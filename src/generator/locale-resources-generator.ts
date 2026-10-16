@@ -346,7 +346,7 @@ class LocaleResourcesGenerator extends Generator {
                     result = -parameterDescriptor1.sortOrder;
                 }
             } else {
-                // eslint-disable-next-line no-lonely-if -- Matches structure in "then" clause.
+                // eslint-disable-next-line no-lonely-if -- Matches structure in "if" clause.
                 if ("sortOrder" in parameterDescriptor2) {
                     // Parameter descriptors with undefined sort order to go the end.
                     result = parameterDescriptor2.sortOrder;
