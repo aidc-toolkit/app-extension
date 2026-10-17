@@ -101,25 +101,14 @@ class AppExtensionGCPLengthCache extends RemoteGCPLengthCache {
     category: "service"
 })
 export class GCPLengthProxy extends LibProxy {
-    readonly #gcpLength: GCPLength;
-    
-    constructor(appExtension: AppExtension) {
-        super(appExtension);
-        
-        this.#gcpLength = new GCPLength(new AppExtensionGCPLengthCache(appExtension));
-    }
-
     /**
-     * Load GS1 Company Prefix length data.
+     * Get the GS1 Company Prefix length service.
      *
      * @returns
-     * Void promise.
+     * GS1 Company Prefix length service.
      */
-    async #loadGCPLengthData(): Promise<void> {
-        return this.#gcpLength.load().catch((e: unknown) => {
-            // Log and swallow error.
-            this.appExtension.logger.error("Load GS1 Company Prefix length data failed", e);
-        });
+    get #gcpLength(): Promise<GCPLength> {
+        return GCPLength.instance(() => new AppExtensionGCPLengthCache(this.appExtension));
     }
 
     @proxy.describeMethod({
@@ -129,11 +118,14 @@ export class GCPLengthProxy extends LibProxy {
         parameterDescriptors: [identifierTypeParameterDescriptor, gcpLengthIdentifierParameterDescriptor]
     })
     async gcpLengthOf(identifierType: string, matrixIdentifiers: Matrix<string>): Promise<MatrixResult<number>> {
-        return this.#loadGCPLengthData().then(() => this.setUpMatrixResult(
-            () => validateIdentifierType(identifierType),
+        return this.asyncSetupMatrixResult(
+            async () => ({
+                gcpLength: await this.#gcpLength,
+                validatedIdentifierType: validateIdentifierType(identifierType)
+            }),
             matrixIdentifiers,
-            (validatedIdentifierType, identifier) => this.#gcpLength.lengthOf(validatedIdentifierType, identifier)
-        ));
+            (setup, identifier) => setup.gcpLength.lengthOf(setup.validatedIdentifierType, identifier)
+        );
     }
 
     @proxy.describeMethod({
@@ -143,9 +135,7 @@ export class GCPLengthProxy extends LibProxy {
         parameterDescriptors: []
     })
     async gcpLengthDateTime(): Promise<SingletonResult<string>> {
-        return this.#loadGCPLengthData().then(() =>
-            this.singletonResult(() => this.#gcpLength.dateTime.toISOString())
-        );
+        return this.singletonResult(async () => this.#gcpLength.then(gcpLength => gcpLength.dateTime.toISOString()));
     }
 
     @proxy.describeMethod({
@@ -155,8 +145,6 @@ export class GCPLengthProxy extends LibProxy {
         parameterDescriptors: []
     })
     async gcpLengthDisclaimer(): Promise<SingletonResult<string>> {
-        return this.#loadGCPLengthData().then(() =>
-            this.singletonResult(() => this.#gcpLength.disclaimer)
-        );
+        return this.singletonResult(async () => this.#gcpLength.then(gcpLength => gcpLength.disclaimer));
     }
 }

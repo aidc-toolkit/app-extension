@@ -35,7 +35,7 @@ export class GTINCreatorProxy extends NumericIdentifierCreatorProxy<GTINType, GT
     createGTIN14(indicatorDigit: string, prefixDefinition: Matrix<unknown>, matrixValues: Matrix<number | bigint>, sparse: Nullishable<boolean>): MatrixResult<string> {
         const sparseOrUndefined = sparse ?? undefined;
 
-        return this.setUpMatrixResult(() =>
+        return this.setupMatrixResult(() =>
             this.getCreator(prefixDefinition),
         matrixValues, (creator, value) =>
             creator.createGTIN14(indicatorDigit, value, sparseOrUndefined)
