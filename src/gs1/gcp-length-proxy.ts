@@ -107,7 +107,7 @@ export class GCPLengthProxy extends LibProxy {
      * @returns
      * GS1 Company Prefix length service.
      */
-    get gcpLength(): Promise<GCPLength> {
+    get #gcpLength(): Promise<GCPLength> {
         return GCPLength.instance(() => new AppExtensionGCPLengthCache(this.appExtension));
     }
 
@@ -118,12 +118,13 @@ export class GCPLengthProxy extends LibProxy {
         parameterDescriptors: [identifierTypeParameterDescriptor, gcpLengthIdentifierParameterDescriptor]
     })
     async gcpLengthOf(identifierType: string, matrixIdentifiers: Matrix<string>): Promise<MatrixResult<number>> {
-        const gcpLength = await this.gcpLength;
-
-        return this.setupMatrixResult(
-            () => validateIdentifierType(identifierType),
+        return this.asyncSetupMatrixResult(
+            async () => ({
+                gcpLength: await this.#gcpLength,
+                validatedIdentifierType: validateIdentifierType(identifierType)
+            }),
             matrixIdentifiers,
-            (validatedIdentifierType, identifier) => gcpLength.lengthOf(validatedIdentifierType, identifier)
+            (setup, identifier) => setup.gcpLength.lengthOf(setup.validatedIdentifierType, identifier)
         );
     }
 
@@ -134,9 +135,7 @@ export class GCPLengthProxy extends LibProxy {
         parameterDescriptors: []
     })
     async gcpLengthDateTime(): Promise<SingletonResult<string>> {
-        const gcpLength = await this.gcpLength;
-
-        return this.singletonResult(() => gcpLength.dateTime.toISOString());
+        return this.singletonResult(async () => this.#gcpLength.then(gcpLength => gcpLength.dateTime.toISOString()));
     }
 
     @proxy.describeMethod({
@@ -146,8 +145,6 @@ export class GCPLengthProxy extends LibProxy {
         parameterDescriptors: []
     })
     async gcpLengthDisclaimer(): Promise<SingletonResult<string>> {
-        const gcpLength = await this.gcpLength;
-
-        return this.singletonResult(() => gcpLength.disclaimer);
+        return this.singletonResult(async () => this.#gcpLength.then(gcpLength => gcpLength.disclaimer));
     }
 }
