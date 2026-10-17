@@ -140,7 +140,7 @@ export abstract class NumericIdentifierCreatorProxy<TNumericIdentifierType exten
     create(prefixDefinition: Matrix<unknown>, matrixValues: Matrix<number | bigint>, sparse: Nullishable<boolean>): MatrixResult<string> {
         const sparseOrUndefined = sparse ?? undefined;
 
-        return this.setUpMatrixResult(() =>
+        return this.setupMatrixResult(() =>
             this.getCreator(prefixDefinition),
         matrixValues, (creator, value) =>
             creator.create(value, sparseOrUndefined)
@@ -211,7 +211,7 @@ export abstract class SerializableNumericIdentifierCreatorProxy extends NonGTINN
     createSerialized(prefixDefinition: Matrix<unknown>, value: number | bigint, matrixSerialComponents: Matrix<string>, sparse: Nullishable<boolean>): MatrixResult<string> {
         const sparseOrUndefined = sparse ?? undefined;
 
-        return this.setUpMatrixResult(() =>
+        return this.setupMatrixResult(() =>
             this.getCreator(prefixDefinition),
         matrixSerialComponents, (creator, serialComponent) =>
             creator.createSerialized(value, serialComponent, sparseOrUndefined)
@@ -224,7 +224,7 @@ export abstract class SerializableNumericIdentifierCreatorProxy extends NonGTINN
         parameterDescriptors: [baseIdentifierParameterDescriptor, serialComponentParameterDescriptor]
     })
     concatenate(baseIdentifier: string, matrixSerialComponents: Matrix<string>): MatrixResult<string> {
-        return this.setUpMatrixResult(() =>
+        return this.setupMatrixResult(() =>
             this.getCreator([[baseIdentifier.substring(0, !baseIdentifier.startsWith("0") ? PrefixValidator.GS1_COMPANY_PREFIX_MINIMUM_LENGTH : PrefixValidator.UPC_COMPANY_PREFIX_MINIMUM_LENGTH + 1), PrefixTypes.GS1CompanyPrefix]]),
         matrixSerialComponents, (creator, serialComponent) =>
             creator.concatenate(baseIdentifier, serialComponent)
@@ -247,7 +247,7 @@ export abstract class NonNumericIdentifierCreatorProxy extends IdentifierCreator
         parameterDescriptors: [prefixDefinitionGS1UPCParameterDescriptor, referenceParameterDescriptor]
     })
     create(prefixDefinition: Matrix<unknown>, matrixReferences: Matrix<string>): MatrixResult<string> {
-        return this.setUpMatrixResult(() =>
+        return this.setupMatrixResult(() =>
             this.getCreator(prefixDefinition),
         matrixReferences, (creator, reference) =>
             creator.create(reference)

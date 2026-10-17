@@ -120,7 +120,7 @@ export class GCPLengthProxy extends LibProxy {
     async gcpLengthOf(identifierType: string, matrixIdentifiers: Matrix<string>): Promise<MatrixResult<number>> {
         const gcpLength = await this.gcpLength;
 
-        return this.setUpMatrixResult(
+        return this.setupMatrixResult(
             () => validateIdentifierType(identifierType),
             matrixIdentifiers,
             (validatedIdentifierType, identifier) => gcpLength.lengthOf(validatedIdentifierType, identifier)
