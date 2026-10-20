@@ -127,7 +127,7 @@ export abstract class LibProxy {
     /**
      * Set up a mapping and call a matrix result function with error handling.
      *
-     * @param setUpCallback
+     * @param setupCallback
      * Callback to set up the mapping.
      *
      * @param matrixValues
@@ -139,11 +139,42 @@ export abstract class LibProxy {
      * @returns
      * Matrix of callback results and errors if errors are not thrown.
      */
-    protected setUpMatrixResult<TSetup, TValue, TResult>(setUpCallback: () => TSetup, matrixValues: Matrix<TValue>, valueCallback: (setup: TSetup, value: TValue) => SingletonResult<TResult>): MatrixResult<TResult> {
+    protected setupMatrixResult<TSetup, TValue, TResult>(setupCallback: () => TSetup, matrixValues: Matrix<TValue>, valueCallback: (setup: TSetup, value: TValue) => SingletonResult<TResult>): MatrixResult<TResult> {
         let result: MatrixResult<TResult>;
 
         try {
-            result = matrixValues.map(rowValues => rowValues.map(value => this.singletonResult(() => valueCallback(setUpCallback(), value))));
+            const setup = setupCallback();
+
+            result = this.matrixResult(matrixValues, value => valueCallback(setup, value));
+        } catch (e: unknown) {
+            result = [[this.#handleError(e)]];
+        }
+
+        return result;
+    }
+
+    /**
+     * Set up a mapping asynchronously and call a matrix result function with error handling.
+     *
+     * @param setupCallback
+     * Callback to set up the mapping.
+     *
+     * @param matrixValues
+     * Matrix of values.
+     *
+     * @param valueCallback
+     * Callback to process value.
+     *
+     * @returns
+     * Matrix of callback results and errors if errors are not thrown.
+     */
+    protected async asyncSetupMatrixResult<TSetup, TValue, TResult>(setupCallback: () => Promise<TSetup>, matrixValues: Matrix<TValue>, valueCallback: (setup: TSetup, value: TValue) => SingletonResult<TResult>): Promise<MatrixResult<TResult>> {
+        let result: MatrixResult<TResult>;
+
+        try {
+            const setup = await setupCallback();
+
+            result = this.matrixResult(matrixValues, value => valueCallback(setup, value));
         } catch (e: unknown) {
             result = [[this.#handleError(e)]];
         }
