@@ -426,6 +426,6 @@ class LocaleResourcesGenerator extends Generator {
 const generator = new LocaleResourcesGenerator();
 
 generator.generate().catch((e: unknown) => {
-    generator.logger.error(e);
+    generator.logger.error("Generator failed", e);
     process.exit(1);
 });
