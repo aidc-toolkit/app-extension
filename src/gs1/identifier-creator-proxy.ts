@@ -1,4 +1,3 @@
-import { isNullish, type Nullishable } from "@aidc-toolkit/core";
 import {
     type IdentifierCreator,
     type IdentifierType,
@@ -24,6 +23,7 @@ import type { AppExtension } from "../app-extension.js";
 import { type ExtendsParameterDescriptor, Multiplicities, type ParameterDescriptor, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
 import { i18nextAppExtension } from "../locale/i18n.js";
+import { isNullish, type Nullishable } from "../nullishable.js";
 import { proxy } from "../proxy.js";
 import type { Matrix, MatrixResult } from "../type.js";
 import {
