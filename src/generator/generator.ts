@@ -1,5 +1,5 @@
 import {
-    ALPHA_URL,
+    alphaURL,
     getLogger,
     I18nLanguageDetectors,
     isI18nParseKey,
@@ -230,7 +230,7 @@ export abstract class Generator {
 
         await i18nAppExtensionInit(I18nLanguageDetectors.CLI);
 
-        const documentationBaseURL = websiteURL(this.version, true, await ALPHA_URL);
+        const documentationBaseURL = websiteURL(this.version, true, await alphaURL());
 
         await this.initialize();
 
