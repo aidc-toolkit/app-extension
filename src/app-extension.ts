@@ -248,12 +248,12 @@ export abstract class AppExtension {
     /**
      * Get application data storage for the current document.
      */
-    abstract get documentAppDataStorage(): AppDataStorage<boolean>;
+    abstract get documentAppDataStorage(): AppDataStorage;
 
     /**
      * Get application data storage shared across multiple documents.
      */
-    abstract get sharedAppDataStorage(): AppDataStorage<boolean>;
+    abstract get sharedAppDataStorage(): AppDataStorage;
 
     /**
      * Get HTTP fetch function.
