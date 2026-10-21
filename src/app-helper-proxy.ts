@@ -1,8 +1,9 @@
-import { isNullish, type LogLevel, logLevelOf, type NonNullishable, type Nullishable } from "@aidc-toolkit/core";
+import { type LogLevel, logLevelOf } from "@aidc-toolkit/core";
 import type { InvocationContext, StreamingContext } from "./app-extension-options.js";
 import { type ExtendsParameterDescriptor, Multiplicities, type ParameterDescriptor, Types } from "./descriptor.js";
 import { LibProxy } from "./lib-proxy.js";
 import { i18nextAppExtension } from "./locale/i18n.js";
+import { isNullish, type NonNullishable, type Nullishable } from "./nullishable.js";
 import { proxy } from "./proxy.js";
 import type { Matrix, MatrixResult } from "./type.js";
 

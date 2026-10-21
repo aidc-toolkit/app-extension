@@ -1,4 +1,3 @@
-import type { Nullishable } from "@aidc-toolkit/core";
 import type {
     GTINType,
     IdentifierType,
@@ -12,6 +11,7 @@ import type {
 } from "@aidc-toolkit/gs1";
 import type { AppExtension } from "../app-extension.js";
 import { type ExtendsParameterDescriptor, Multiplicities, Types } from "../descriptor.js";
+import type { Nullishable } from "../nullishable.js";
 import { proxy } from "../proxy.js";
 import type { Matrix, MatrixResult } from "../type.js";
 import { exclusionAllNumericParameterDescriptor } from "../utility/character-set-descriptor.js";

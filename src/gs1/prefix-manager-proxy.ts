@@ -1,7 +1,7 @@
-import type { Nullishable } from "@aidc-toolkit/core";
 import type { PrefixType } from "@aidc-toolkit/gs1";
 import { Multiplicities, type ParameterDescriptor, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
+import type { Nullishable } from "../nullishable.js";
 import { proxy } from "../proxy.js";
 import type { Matrix } from "../type.js";
 
