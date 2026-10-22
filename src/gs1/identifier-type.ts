@@ -1,5 +1,5 @@
 import { type IdentifierType, IdentifierTypes } from "@aidc-toolkit/gs1";
-import { i18nextAppExtension } from "../locale/i18n.js";
+import { i18nextAppExtensionT } from "../locale/i18n.js";
 
 /**
  * Determine if string is an identifier type.
@@ -28,7 +28,7 @@ export function validateIdentifierType(identifierType: string): IdentifierType {
     const upperIdentifierType = identifierType.toUpperCase();
 
     if (!isIdentifierType(upperIdentifierType)) {
-        throw new RangeError(i18nextAppExtension.t("ServiceProxy.invalidIdentifierType", {
+        throw new RangeError(i18nextAppExtensionT("ServiceProxy.invalidIdentifierType", {
             identifierType
         }));
     }

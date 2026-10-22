@@ -22,7 +22,7 @@ import { Sequence } from "@aidc-toolkit/utility";
 import type { AppExtension } from "../app-extension.js";
 import { type ExtendsParameterDescriptor, Multiplicities, type ParameterDescriptor, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
-import { i18nextAppExtension } from "../locale/i18n.js";
+import { i18nextAppExtensionT } from "../locale/i18n.js";
 import { isNullish, type Nullishable } from "../nullishable.js";
 import { proxy } from "../proxy.js";
 import type { Matrix, MatrixResult } from "../type.js";
@@ -56,20 +56,20 @@ abstract class IdentifierCreatorProxy<TIdentifierType extends IdentifierType, TI
             // Prefix definition is vertical.
             prefixDefinition.map((prefixDefinitionRow) => {
                 if (prefixDefinitionRow.length !== 1) {
-                    throw new RangeError(i18nextAppExtension.t("IdentifierCreatorProxy.prefixDefinitionMustBeOneDimensional"));
+                    throw new RangeError(i18nextAppExtensionT("IdentifierCreatorProxy.prefixDefinitionMustBeOneDimensional"));
                 }
 
                 return prefixDefinitionRow[0];
             });
 
         if (reducedPrefixDefinition.length > 3) {
-            throw new RangeError(i18nextAppExtension.t("IdentifierCreatorProxy.prefixDefinitionMustHaveMaximumThreeElements"));
+            throw new RangeError(i18nextAppExtensionT("IdentifierCreatorProxy.prefixDefinitionMustHaveMaximumThreeElements"));
         }
 
         const prefix = reducedPrefixDefinition[0];
 
         if (typeof prefix !== "string") {
-            throw new RangeError(i18nextAppExtension.t("IdentifierCreatorProxy.prefixMustBeString"));
+            throw new RangeError(i18nextAppExtensionT("IdentifierCreatorProxy.prefixMustBeString"));
         }
 
         /**
@@ -93,7 +93,7 @@ abstract class IdentifierCreatorProxy<TIdentifierType extends IdentifierType, TI
         const prefixTypeIndex = getPrefixDefinitionValue(1, 0);
 
         if (typeof prefixTypeIndex !== "number" || prefixTypeIndex < 0 || prefixTypeIndex >= IdentifierCreatorProxy.#PREFIX_TYPES.length) {
-            throw new RangeError(i18nextAppExtension.t("IdentifierCreatorProxy.prefixTypeMustBeNumber", {
+            throw new RangeError(i18nextAppExtensionT("IdentifierCreatorProxy.prefixTypeMustBeNumber", {
                 maximumPrefixType: IdentifierCreatorProxy.#PREFIX_TYPES.length - 1
             }));
         }
@@ -102,7 +102,7 @@ abstract class IdentifierCreatorProxy<TIdentifierType extends IdentifierType, TI
 
         // Undefined is included in type in case of invalid input.
         if (prefixType === undefined) {
-            throw new RangeError(i18nextAppExtension.t("IdentifierCreatorProxy.invalidPrefixType"));
+            throw new RangeError(i18nextAppExtensionT("IdentifierCreatorProxy.invalidPrefixType"));
         }
 
         const prefixManager = PrefixManager.get(prefixType, prefix);
@@ -111,7 +111,7 @@ abstract class IdentifierCreatorProxy<TIdentifierType extends IdentifierType, TI
 
         if (!isNullish(tweakFactor)) {
             if (typeof tweakFactor !== "number") {
-                throw new RangeError(i18nextAppExtension.t("IdentifierCreatorProxy.tweakFactorMustBeNumber"));
+                throw new RangeError(i18nextAppExtensionT("IdentifierCreatorProxy.tweakFactorMustBeNumber"));
             }
 
             prefixManager.tweakFactor = tweakFactor;
