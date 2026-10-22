@@ -16,7 +16,7 @@ import type {
     ThrowError
 } from "./app-extension-options.js";
 import type { LibProxy } from "./lib-proxy.js";
-import { i18nextAppExtension } from "./locale/i18n.js";
+import { i18nextAppExtensionT } from "./locale/i18n.js";
 import type { StreamingCancelledCallback, StreamingConsumerCallback } from "./streaming.js";
 import type { MatrixResult, SheetAddress, SheetRange, SingletonResult } from "./type.js";
 
@@ -270,7 +270,7 @@ export abstract class AppExtension {
         const absoluteSequenceCount = Math.abs(sequenceCount);
 
         if (absoluteSequenceCount > this.#maximumSequenceCount) {
-            throw new RangeError(i18nextAppExtension.t("AppExtension.sequenceCountMustBeLessThanOrEqualTo", {
+            throw new RangeError(i18nextAppExtensionT("AppExtension.sequenceCountMustBeLessThanOrEqualTo", {
                 sequenceCount: absoluteSequenceCount,
                 maximumSequenceCount: this.#maximumSequenceCount
             }));

@@ -1,4 +1,4 @@
-import type { LocaleResources } from "@aidc-toolkit/core";
+import { DEFAULT_LANGUAGE, type LocaleResources } from "@aidc-toolkit/core";
 import * as fs from "node:fs";
 import * as path from "node:path";
 import type {
@@ -414,7 +414,7 @@ class LocaleResourcesGenerator extends Generator {
                     const mergedLocaleResources: LocaleResources = {};
 
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Module format is known.
-                    return this.#merge(mergedLocaleResources, entry.name === "en", "", this.#templateLocaleResources, (module as LocaleResourcesModule).default, !entry.name.includes("-")) ?
+                    return this.#merge(mergedLocaleResources, entry.name === DEFAULT_LANGUAGE, "", this.#templateLocaleResources, (module as LocaleResourcesModule).default, !entry.name.includes("-")) ?
                         fs.promises.writeFile(localeResourcesSource, `${LocaleResourcesGenerator.#buildOutput("export default", mergedLocaleResources, 0)};\n`) :
                         undefined;
                 });
