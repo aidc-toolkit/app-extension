@@ -1,18 +1,5 @@
-import { type IdentifierType, IdentifierTypes } from "@aidc-toolkit/gs1";
+import { type IdentifierType, isIdentifierType } from "@aidc-toolkit/gs1";
 import { i18nextAppExtensionT } from "../locale/i18n.js";
-
-/**
- * Determine if string is an identifier type.
- *
- * @param identifierType
- * Identifier type.
- *
- * @returns
- * True if string is an identifier type.
- */
-export function isIdentifierType(identifierType: string): identifierType is IdentifierType {
-    return identifierType in IdentifierTypes;
-}
 
 /**
  * Validate an identifier type and return it normalized.
