@@ -2,6 +2,20 @@
   "name": "@aidc-toolkit/app-extension",
   "version": "2.0.0-alpha",
   "description": "Application extension framework for AIDC Toolkit",
+  "keywords": [
+    "aidc",
+    "barcode",
+    "rfid",
+    "epc",
+    "microsoft",
+    "word",
+    "excel",
+    "powerpoint",
+    "google",
+    "docs",
+    "sheets",
+    "slides"
+  ],
   "type": "module",
   "main": "dist/index.js",
   "exports": {
