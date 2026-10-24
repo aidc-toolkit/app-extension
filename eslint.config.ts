@@ -1,8 +1,8 @@
-import { esLintConfigAIDCToolkit } from "@aidc-toolkit/dev";
+import { esLintDefineAIDCToolkitConfig } from "@aidc-toolkit/dev";
 import { defineConfig } from "eslint/config";
 
 export default defineConfig([
-    ...esLintConfigAIDCToolkit,
+    ...esLintDefineAIDCToolkitConfig(),
     {
         files: [
             "src/*/**/*-proxy.ts"
