@@ -1,4 +1,4 @@
-# Application Extension Package
+# App Extension Package
 
 **Copyright © 2024-2026 Dolphin Data Development Ltd. and AIDC Toolkit contributors**
 

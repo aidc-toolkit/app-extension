@@ -1,3 +1,4 @@
+import type { Nullishable } from "@aidc-toolkit/core";
 import {
     ALPHABETIC_CREATOR,
     ALPHANUMERIC_CREATOR,
@@ -12,7 +13,6 @@ import {
 import type { BigInteger } from "../app-extension-options.js";
 import type { AppExtension } from "../app-extension.js";
 import { type ExtendsParameterDescriptor, Multiplicities, type ParameterDescriptor, Types } from "../descriptor.js";
-import type { Nullishable } from "../nullishable.js";
 import { expandParameterDescriptor, proxy } from "../proxy.js";
 import type { Matrix, MatrixResult } from "../type.js";
 import {

@@ -18,7 +18,6 @@
 export * from "./locale/i18n.js";
 
 export type * from "./app-extension-options.js";
-export * from "./nullishable.js";
 export type * from "./type.js";
 
 export type * from "./streaming.js";

@@ -1,6 +1,6 @@
+import type { Nullishable } from "@aidc-toolkit/core";
 import { RegExpValidator } from "@aidc-toolkit/utility";
 import { Multiplicities, type ParameterDescriptor, Types } from "../descriptor.js";
-import type { Nullishable } from "../nullishable.js";
 import { proxy } from "../proxy.js";
 import type { Matrix } from "../type.js";
 import { validateSParameterDescriptor } from "./string-descriptor.js";

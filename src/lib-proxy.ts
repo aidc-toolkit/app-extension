@@ -1,7 +1,7 @@
 import { mapIterable } from "@aidc-toolkit/utility";
 import type { BigInteger } from "./app-extension-options.js";
 import type { AppExtension } from "./app-extension.js";
-import { i18nextAppExtensionT } from "./locale/i18n.js";
+import { i18nextAppExtension } from "./locale/i18n.js";
 import type { Matrix, MatrixResult, SingletonResult } from "./type.js";
 
 /**
@@ -242,7 +242,7 @@ export abstract class LibProxy {
                 } else if (rowValue.length === 1) {
                     arrayResult = this.#arrayCallback(rowValue[0], callback);
                 } else {
-                    arrayResult = [this.#handleError(new RangeError(i18nextAppExtensionT("Proxy.matrixMustBeArray")))];
+                    arrayResult = [this.#handleError(new RangeError(i18nextAppExtension.t("Proxy.matrixMustBeArray")))];
                 }
 
                 return arrayResult;

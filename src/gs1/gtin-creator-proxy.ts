@@ -1,7 +1,7 @@
+import type { Nullishable } from "@aidc-toolkit/core";
 import type { GTINCreator, GTINType } from "@aidc-toolkit/gs1";
 import type { AppExtension } from "../app-extension.js";
 import { Multiplicities, Types } from "../descriptor.js";
-import type { Nullishable } from "../nullishable.js";
 import { expandParameterDescriptor, proxy } from "../proxy.js";
 import type { Matrix, MatrixResult } from "../type.js";
 import { valueParameterDescriptor } from "../utility/transformer-descriptor.js";
