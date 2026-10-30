@@ -1,5 +1,5 @@
 import {
-    ALPHA_URL,
+    alphaURL,
     getLogger,
     I18nLanguageDetectors,
     isI18nParseKey,
@@ -10,7 +10,12 @@ import type { Logger } from "tslog";
 import { AppHelperProxy } from "../app-helper-proxy.js";
 import type { ClassDescriptor, MethodDescriptor } from "../descriptor.js";
 import * as GS1 from "../gs1/index.js";
-import { appExtensionResourceBundle, i18nAppExtensionInit, i18nextAppExtension } from "../locale/i18n.js";
+import {
+    appExtensionNS,
+    appExtensionResourceBundle,
+    i18nAppExtensionInit,
+    i18nextAppExtensionT
+} from "../locale/i18n.js";
 import { proxy } from "../proxy.js";
 import * as Utility from "../utility/index.js";
 
@@ -214,12 +219,12 @@ export abstract class Generator {
             returnObjects: true
         } as const;
 
-        if (!isI18nParseKey(i18nextAppExtension, key, lngReturnObjectsOption)) {
+        if (!isI18nParseKey(appExtensionNS, key, lngReturnObjectsOption)) {
             throw new Error(`Missing localization for ${key} in ${locale}`);
         }
 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Return type is Localization & Partial<TLocalization>.
-        return localizationCallback(locale, i18nextAppExtension.t(key, lngReturnObjectsOption) as Localization & Partial<TLocalization>);
+        return localizationCallback(locale, i18nextAppExtensionT(key, lngReturnObjectsOption) as Localization & Partial<TLocalization>);
     }
 
     /**
@@ -230,7 +235,7 @@ export abstract class Generator {
 
         await i18nAppExtensionInit(I18nLanguageDetectors.CLI);
 
-        const documentationBaseURL = websiteURL(this.version, true, await ALPHA_URL);
+        const documentationBaseURL = websiteURL(this.version, true, await alphaURL());
 
         await this.initialize();
 
@@ -276,15 +281,15 @@ export abstract class Generator {
 
                         let key = namespaceCategoryKey;
 
-                        if (!isI18nParseKey(i18nextAppExtension, key)) {
+                        if (!isI18nParseKey(appExtensionNS, key)) {
                             key = categoryKey;
 
-                            if (!isI18nParseKey(i18nextAppExtension, key, lngOption)) {
+                            if (!isI18nParseKey(appExtensionNS, key, lngOption)) {
                                 throw new Error(`Missing localization for ${key} in ${locale}`);
                             }
                         }
 
-                        return [locale, i18nextAppExtension.t(key, lngOption)];
+                        return [locale, i18nextAppExtensionT(key, lngOption)];
                     }));
 
                     this.createCategory(namespace, category, categoryLocalizationsMap);

@@ -11,11 +11,28 @@ declare module "i18next" {
      * Custom type options for this package.
      */
     interface CustomTypeOptions {
-        defaultNS: "aidct_app_extension";
+        /**
+         * Resources override.
+         */
         resources: {
+            /**
+             * Core locale resources.
+             */
             aidct_core: CoreLocaleResources;
+
+            /**
+             * Utility locale resources.
+             */
             aidct_utility: UtilityLocaleResources;
+
+            /**
+             * GS1 locale resources.
+             */
             aidct_gs1: GS1LocaleResources;
+
+            /**
+             * Application extension locale resources.
+             */
             aidct_app_extension: AppExtensionLocaleResources;
         };
     }
