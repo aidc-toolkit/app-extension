@@ -11,24 +11,39 @@ import frLocaleResources from "./fr/locale-resources.js";
 export const appExtensionNS = "aidct_app_extension";
 
 /**
- * Application extension parse keys.
- */
-export type AppExtensionParseKeys = ParseKeys<typeof appExtensionNS>;
-
-/**
  * Locale resources type is extracted from the English locale resources object.
  */
 export type AppExtensionLocaleResources = typeof enLocaleResources;
+
+/**
+ * Core locale resources augmentation.
+ */
+declare module "@aidc-toolkit/core" {
+    /**
+     * Internationalization locale resources.
+     */
+    export interface I18nLocaleResources {
+        /**
+         * Application extension locale resources.
+         */
+        [appExtensionNS]: AppExtensionLocaleResources;
+    }
+}
+
+/**
+ * Application extension parse keys.
+ */
+export type AppExtensionParseKeys = ParseKeys<typeof appExtensionNS>;
 
 /**
  * Application extension resource bundle.
  */
 export const appExtensionResourceBundle: Resource = {
     en: {
-        aidct_app_extension: enLocaleResources
+        [appExtensionNS]: enLocaleResources
     },
     fr: {
-        aidct_app_extension: frLocaleResources
+        [appExtensionNS]: frLocaleResources
     }
 };
 
