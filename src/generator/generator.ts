@@ -1,11 +1,12 @@
 import {
     ALPHA_URL,
     getLogger,
-    I18nLanguageDetectors,
+    i18nCoreCLILanguageDetector,
     isI18nParseKey,
     type Promisable,
     websiteURL
 } from "@aidc-toolkit/core";
+import i18next from "i18next";
 import type { Logger } from "tslog";
 import { AppHelperProxy } from "../app-helper-proxy.js";
 import type { ClassDescriptor, MethodDescriptor } from "../descriptor.js";
@@ -228,7 +229,7 @@ export abstract class Generator {
     async generate(): Promise<void> {
         let success = false;
 
-        await i18nAppExtensionInit(I18nLanguageDetectors.CLI);
+        await i18nAppExtensionInit(i18next.use(i18nCoreCLILanguageDetector));
 
         const documentationBaseURL = websiteURL(this.version, true, await ALPHA_URL);
 

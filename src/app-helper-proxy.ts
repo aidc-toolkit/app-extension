@@ -1,4 +1,4 @@
-import { isNullish, type LogLevel, logLevelOf, type NonNullishable, type Nullishable } from "@aidc-toolkit/core";
+import { logLevelOf } from "@aidc-toolkit/core";
 import type { InvocationContext, StreamingContext } from "./app-extension-options.js";
 import { type ExtendsParameterDescriptor, Multiplicities, type ParameterDescriptor, Types } from "./descriptor.js";
 import { LibProxy } from "./lib-proxy.js";
@@ -173,7 +173,7 @@ export class AppHelperProxy extends LibProxy {
             if (length > 1 && length <= maximumArea) {
                 const lengthSquareRoot = Math.sqrt(length);
 
-                let spillParallel: number | undefined = undefined;
+                let spillParallel;
 
                 // Array that has a length of a power of 10 is treated specially.
                 if (Number.isInteger(Math.log10(length))) {
@@ -269,7 +269,7 @@ export class AppHelperProxy extends LibProxy {
     loggerMessages(logLevelString: Nullishable<string>): MatrixResult<string> {
         const appExtension = this.appExtension;
 
-        let logLevel: LogLevel | undefined = undefined;
+        let logLevel;
 
         if (!isNullish(logLevelString)) {
             try {
@@ -312,7 +312,7 @@ export class AppHelperProxy extends LibProxy {
         const appExtension = this.appExtension;
 
         let notificationCallbackAdded = false;
-        let previousLogLevel: number | undefined = undefined;
+        let previousLogLevel: number | undefined;
 
         const streamingConsumerCallback = appExtension.installStreaming<string>(streamingContext, () => {
             if (notificationCallbackAdded) {
@@ -329,7 +329,7 @@ export class AppHelperProxy extends LibProxy {
         })) {
             notificationCallbackAdded = true;
 
-            let logLevel: LogLevel | undefined = undefined;
+            let logLevel;
 
             if (!isNullish(logLevelString)) {
                 try {

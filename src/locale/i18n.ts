@@ -1,7 +1,7 @@
-import { i18nCoreInit, i18nInit, type I18nLanguageDetector } from "@aidc-toolkit/core";
+import { i18nCoreInit, i18nInit } from "@aidc-toolkit/core";
 import { i18nGS1Init } from "@aidc-toolkit/gs1";
 import { i18nUtilityInit } from "@aidc-toolkit/utility";
-import i18next, { type i18n, type Resource } from "i18next";
+import type { i18n, ParseKeys, Resource, TFunction } from "i18next";
 import enLocaleResources from "./en/locale-resources.js";
 import frLocaleResources from "./fr/locale-resources.js";
 
@@ -13,25 +13,47 @@ export const appExtensionNS = "aidct_app_extension";
 export type AppExtensionLocaleResources = typeof enLocaleResources;
 
 /**
+ * Core locale resources augmentation.
+ */
+declare module "@aidc-toolkit/core" {
+    /**
+     * Internationalization locale resources.
+     */
+    export interface I18nLocaleResources {
+        /**
+         * Application extension locale resources.
+         */
+        [appExtensionNS]: AppExtensionLocaleResources;
+    }
+}
+
+/**
+ * Application extension parse keys.
+ */
+export type AppExtensionParseKeys = ParseKeys<typeof appExtensionNS>;
+
+/**
  * App extension resource bundle.
  */
 export const appExtensionResourceBundle: Resource = {
     en: {
-        aidct_app_extension: enLocaleResources
+        [appExtensionNS]: enLocaleResources
     },
     fr: {
-        aidct_app_extension: frLocaleResources
+        [appExtensionNS]: frLocaleResources
     }
 };
 
-// Explicit type is necessary because type can't be inferred without additional references.
-export const i18nextAppExtension: i18n = i18next.createInstance();
+/**
+ * Application extension i18next translator function.
+ */
+export let i18nextAppExtensionT: TFunction<typeof appExtensionNS>;
 
 /**
  * Initialize internationalization.
  *
- * @param languageDetector
- * Language detector.
+ * @param i18next
+ * Internationalization instance.
  *
  * @param debug
  * Debug setting.
@@ -39,6 +61,9 @@ export const i18nextAppExtension: i18n = i18next.createInstance();
  * @returns
  * App extension resource bundle.
  */
-export async function i18nAppExtensionInit(languageDetector: I18nLanguageDetector, debug = false): Promise<Resource> {
-    return i18nInit(i18nextAppExtension, languageDetector, debug, appExtensionNS, appExtensionResourceBundle, i18nCoreInit, i18nUtilityInit, i18nGS1Init);
+export async function i18nAppExtensionInit(i18next: i18n, debug = false): Promise<Resource> {
+    // Bind translator function to i18next.
+    i18nextAppExtensionT = i18next.getFixedT(null, appExtensionNS);
+
+    return i18nInit(i18next, debug, appExtensionResourceBundle, i18nCoreInit, i18nUtilityInit, i18nGS1Init);
 }
