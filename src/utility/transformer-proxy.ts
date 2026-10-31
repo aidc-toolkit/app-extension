@@ -1,8 +1,8 @@
+import type { Nullishable } from "@aidc-toolkit/core";
 import { mapIterable, Sequence, Transformer } from "@aidc-toolkit/utility";
 import type { BigInteger } from "../app-extension-options.js";
 import { type ExtendsParameterDescriptor, Multiplicities, type ParameterDescriptor, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
-import type { Nullishable } from "../nullishable.js";
 import { proxy } from "../proxy.js";
 import type { Matrix, MatrixResult } from "../type.js";
 import {

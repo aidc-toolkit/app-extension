@@ -86,9 +86,6 @@ type InterimMethodDescriptor = Omit<MethodDescriptor, "functionName">;
  * Subset of method descriptor used in call to decorator.
  */
 interface DecoratorMethodDescriptor extends Omit<InterimMethodDescriptor, "name" | "parameterDescriptors"> {
-    /**
-     * Parameter descriptors.
-     */
     parameterDescriptors: Array<ParameterDescriptor | ExtendsParameterDescriptor>;
 }
 
@@ -96,9 +93,6 @@ interface DecoratorMethodDescriptor extends Omit<InterimMethodDescriptor, "name"
  * Subset of class descriptor used during decoration process.
  */
 interface InterimClassDescriptor extends Omit<ClassDescriptor, "name" | "category" | "objectName" | "methodDescriptors"> {
-    /**
-     * Category.
-     */
     readonly category?: string;
 }
 
@@ -106,13 +100,7 @@ interface InterimClassDescriptor extends Omit<ClassDescriptor, "name" | "categor
  * Subset of class descriptor used in call to decorator.
  */
 interface DecoratorClassDescriptor extends Omit<InterimClassDescriptor, "replacementParameterDescriptors"> {
-    /**
-     * Replacement parameter descriptors.
-     */
     readonly replacementParameterDescriptors?: ReadonlyArray<Omit<ReplacementParameterDescriptor, "replacement"> & {
-        /**
-         * Replacement.
-         */
         readonly replacement: ParameterDescriptor | ExtendsParameterDescriptor;
     }>;
 }
