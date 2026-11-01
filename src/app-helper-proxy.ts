@@ -2,7 +2,8 @@ import { logLevelOf } from "@aidc-toolkit/core";
 import type { InvocationContext, StreamingContext } from "./app-extension-options.js";
 import { type ExtendsParameterDescriptor, Multiplicities, type ParameterDescriptor, Types } from "./descriptor.js";
 import { LibProxy } from "./lib-proxy.js";
-import { i18nextAppExtension } from "./locale/i18n.js";
+import { i18nextAppExtensionT } from "./locale/i18n.js";
+import { isNullish, type NonNullishable, type Nullishable } from "./nullishable.js";
 import { proxy } from "./proxy.js";
 import type { Matrix, MatrixResult } from "./type.js";
 
@@ -151,7 +152,7 @@ export class AppHelperProxy extends LibProxy {
 
         const isArrayOrError = this.singletonResult(() => {
             if (height > 1 && width > 1) {
-                throw new RangeError(i18nextAppExtension.t("Proxy.matrixMustBeArray"));
+                throw new RangeError(i18nextAppExtensionT("Proxy.matrixMustBeArray"));
             }
 
             return true;

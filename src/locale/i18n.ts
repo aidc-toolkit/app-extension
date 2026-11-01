@@ -5,6 +5,9 @@ import type { i18n, ParseKeys, Resource, TFunction } from "i18next";
 import enLocaleResources from "./en/locale-resources.js";
 import frLocaleResources from "./fr/locale-resources.js";
 
+/**
+ * Application extension namespace.
+ */
 export const appExtensionNS = "aidct_app_extension";
 
 /**
@@ -33,7 +36,7 @@ declare module "@aidc-toolkit/core" {
 export type AppExtensionParseKeys = ParseKeys<typeof appExtensionNS>;
 
 /**
- * App extension resource bundle.
+ * Application extension resource bundle.
  */
 export const appExtensionResourceBundle: Resource = {
     en: {
@@ -59,7 +62,7 @@ export let i18nextAppExtensionT: TFunction<typeof appExtensionNS>;
  * Debug setting.
  *
  * @returns
- * App extension resource bundle.
+ * Application extension resource bundle.
  */
 export async function i18nAppExtensionInit(i18next: i18n, debug = false): Promise<Resource> {
     // Bind translator function to i18next.
