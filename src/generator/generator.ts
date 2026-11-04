@@ -234,11 +234,9 @@ export abstract class Generator {
     async generate(): Promise<void> {
         let success = false;
 
-        await i18nAppExtensionInit(i18next.use(i18nCoreCLILanguageDetector));
+        await i18nAppExtensionInit(i18next.use(i18nCoreCLILanguageDetector)).then(async () => this.initialize());
 
         const documentationBaseURL = websiteURL(this.version, true, await alphaURL());
-
-        await this.initialize();
 
         const namespaceHierarchy = new Map<string | undefined, Map<string, ClassDescriptor[]>>();
 
