@@ -365,7 +365,7 @@ export class Proxy {
 
             return class extends Target implements TargetLogger {
                 /**
-                 * Get the logger.
+                 * @inheritDoc
                  */
                 get logger(): Logger<object> {
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -- Type hierarchy is known.
@@ -487,7 +487,7 @@ export class Proxy {
     }
 
     /**
-     * Get the class descriptors.
+     * Class descriptors.
      */
     get classDescriptors(): MapIterator<ClassDescriptor> {
         return this.#concreteClassDescriptorsMap.values();

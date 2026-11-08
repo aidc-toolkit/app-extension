@@ -116,7 +116,7 @@ export abstract class FunctionsGenerator extends Generator {
     }
 
     /**
-     * Get the class type alias.
+     * Current class type alias.
      */
     get classTypeAlias(): ClassTypeAlias {
         return this.#classTypeAlias;

@@ -24,7 +24,7 @@ export abstract class LibProxy {
     }
 
     /**
-     * Get the application extension.
+     * Application extension.
      */
     get appExtension(): AppExtension {
         return this.#appExtension;

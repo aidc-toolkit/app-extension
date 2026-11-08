@@ -102,12 +102,9 @@ class AppExtensionGCPLengthCache extends RemoteGCPLengthCache {
 })
 export class GCPLengthProxy extends LibProxy {
     /**
-     * Get the GS1 Company Prefix length service.
-     *
-     * @returns
      * GS1 Company Prefix length service.
      */
-    get #gcpLength(): Promise<GCPLength> {
+    private get gcpLength(): Promise<GCPLength> {
         return GCPLength.instance(() => new AppExtensionGCPLengthCache(this.appExtension));
     }
 
@@ -120,7 +117,7 @@ export class GCPLengthProxy extends LibProxy {
     async gcpLengthOf(identifierType: string, matrixIdentifiers: Matrix<string>): Promise<MatrixResult<number>> {
         return this.asyncSetupMatrixResult(
             async () => ({
-                gcpLength: await this.#gcpLength,
+                gcpLength: await this.gcpLength,
                 validatedIdentifierType: validateIdentifierType(identifierType)
             }),
             matrixIdentifiers,
@@ -135,7 +132,7 @@ export class GCPLengthProxy extends LibProxy {
         parameterDescriptors: []
     })
     async gcpLengthDateTime(): Promise<SingletonResult<string>> {
-        return this.singletonResult(async () => this.#gcpLength.then(gcpLength => gcpLength.dateTime.toISOString()));
+        return this.singletonResult(async () => this.gcpLength.then(gcpLength => gcpLength.dateTime.toISOString()));
     }
 
     @proxy.describeMethod({
@@ -145,6 +142,6 @@ export class GCPLengthProxy extends LibProxy {
         parameterDescriptors: []
     })
     async gcpLengthDisclaimer(): Promise<SingletonResult<string>> {
-        return this.singletonResult(async () => this.#gcpLength.then(gcpLength => gcpLength.disclaimer));
+        return this.singletonResult(async () => this.gcpLength.then(gcpLength => gcpLength.disclaimer));
     }
 }

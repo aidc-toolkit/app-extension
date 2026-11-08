@@ -112,28 +112,28 @@ export abstract class Generator {
     }
 
     /**
-     * Get the logger.
+     * Logger.
      */
     get logger(): Logger<object> {
         return this.#logger;
     }
 
     /**
-     * Get the package version.
+     * Package version.
      */
     get version(): string {
         return this.#version;
     }
 
     /**
-     * Get the locales.
+     * Locales.
      */
     protected get locales(): readonly string[] {
         return this.#locales;
     }
 
     /**
-     * Get the default locale.
+     * Default locale.
      */
     protected get defaultLocale(): string {
         return this.#defaultLocale;

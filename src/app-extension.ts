@@ -113,43 +113,40 @@ export abstract class AppExtension {
     }
 
     /**
-     * Get the version.
-     *
-     * @returns
-     * Version.
+     * Application version.
      */
     get version(): string {
         return this.#version;
     }
 
     /**
-     * Determine if errors are reported through the throw/catch mechanism.
+     * True if errors are reported through the throw/catch mechanism.
      */
     get throwError(): ThrowError {
         return this.#throwError;
     }
 
     /**
-     * Get the logger.
+     * Logger.
      */
     get logger(): Logger<object> {
         return this.#logger;
     }
 
     /**
-     * Get the logger memory transport.
+     * Logger memory transport.
      */
     get memoryTransport(): MemoryTransport<object> {
         return this.#memoryTransport;
     }
 
     /**
-     * Get the maximum width supported by the application.
+     * Maximum width supported by the application.
      */
     abstract get maximumWidth(): number;
 
     /**
-     * Get the maximum height supported by the application.
+     * Maximum height supported by the application.
      */
     abstract get maximumHeight(): number;
 
