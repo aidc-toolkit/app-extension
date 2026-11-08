@@ -55,7 +55,7 @@ export abstract class AppExtension {
     readonly #maximumSequenceCount: number;
 
     /**
-     * If true, errors are reported through the throw/catch mechanism.
+     * True if errors are reported through the throw/catch mechanism.
      */
     readonly #throwError: ThrowError;
 
@@ -84,7 +84,7 @@ export abstract class AppExtension {
      * Maximum sequence count supported by application.
      *
      * @param throwError
-     * If true, errors are reported through the throw/catch mechanism.
+     * True if errors are reported through the throw/catch mechanism.
      */
     protected constructor(version: string, maximumSequenceCount: number, throwError: ThrowError) {
         this.#version = version;

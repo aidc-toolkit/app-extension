@@ -200,7 +200,7 @@ export default {
         },
         sparse: {
             name: "sparse",
-            description: "If true, value is mapped to a sparse sequence resistant to discovery."
+            description: "True if the value should be mapped to a sparse sequence resistant to discovery."
         },
         serialComponent: {
             name: "serialComponent",

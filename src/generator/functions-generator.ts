@@ -82,12 +82,12 @@ export abstract class FunctionsGenerator extends Generator {
     ];
 
     /**
-     * If true, functions are declared inline rather than using `function`.
+     * True if functions are declared inline rather than using `function`.
      */
     readonly #inline: boolean;
 
     /**
-     * If true, application extension supports context.
+     * True if application extension supports context.
      */
     readonly #supportsContext: boolean;
 
@@ -103,10 +103,10 @@ export abstract class FunctionsGenerator extends Generator {
      * Package version.
      *
      * @param inline
-     * If true, functions are declared inline rather than using `function`.
+     * True if functions are declared inline rather than using `function`.
      *
      * @param supportsContext
-     * If true, application extension supports context.
+     * True if application extension supports context.
      */
     constructor(version: string, inline: boolean, supportsContext: boolean) {
         super(version, true);

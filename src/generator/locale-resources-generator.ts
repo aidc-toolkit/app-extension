@@ -240,7 +240,7 @@ class LocaleResourcesGenerator extends Generator {
      * Merged locale resources.
      *
      * @param isDefaultLocale
-     * If true, locale being merged is the default.
+     * True if locale being merged is the default.
      *
      * @param parentKey
      * Parent key for logging purposes.

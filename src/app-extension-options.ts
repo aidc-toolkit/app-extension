@@ -4,7 +4,7 @@
  */
 export interface AppExtensionOptions {
     /**
-     * If true, errors are reported through the throw/catch mechanism.
+     * True if errors are reported through the throw/catch mechanism.
      */
     ThrowError: boolean;
 
@@ -36,7 +36,7 @@ export interface CustomAppExtensionOptions extends AppExtensionOptions {
 }
 
 /**
- * If true, errors are reported through the throw/catch mechanism.
+ * True if errors are reported through the throw/catch mechanism.
  */
 export type ThrowError = CustomAppExtensionOptions["ThrowError"];
 

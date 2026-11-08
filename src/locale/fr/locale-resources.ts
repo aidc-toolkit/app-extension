@@ -200,7 +200,7 @@ export default {
         },
         sparse: {
             name: "clairsemee",
-            description: "Si cette valeur est vraie, la valeur est mappée sur une séquence clairsemée résistante à la découverte. La valeur par défaut est faux."
+            description: "Vrai si la valeur doit être mappée vers une séquence creuse résistante à la découverte."
         },
         serialComponent: {
             name: "composanteSerie",

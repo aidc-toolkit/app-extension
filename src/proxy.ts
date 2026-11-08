@@ -210,7 +210,7 @@ export class Proxy {
      * Narrowed proxy class constructor type.
      *
      * @param isAbstract
-     * True if class is abstract.
+     * True if the proxy class is abstract.
      *
      * @param decoratorClassDescriptor
      * Class descriptor.
