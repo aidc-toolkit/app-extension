@@ -87,14 +87,7 @@ abstract class IdentifierCreatorProxy<TIdentifierCreator extends IdentifierCreat
             }));
         }
 
-        const prefixType = IdentifierCreatorProxy.#PREFIX_TYPES[prefixTypeIndex];
-
-        // Undefined is included in type in case of invalid input.
-        if (prefixType === undefined) {
-            throw new RangeError(i18nextAppExtensionT("IdentifierCreatorProxy.invalidPrefixType"));
-        }
-
-        const prefixManager = PrefixManager.get(prefixType, prefix);
+        const prefixManager = PrefixManager.get(PrefixTypeValues[prefixTypeIndex], prefix);
 
         const tweakFactor = getPrefixDefinitionValue(2, null);
 
