@@ -1,4 +1,16 @@
-import type { NonGTINNumericIdentifierCreator, NonSerializableNumericIdentifierType } from "@aidc-toolkit/gs1";
+import type {
+    CPIDCreator,
+    GCNCreator,
+    GDTICreator,
+    GIAICreator,
+    GINCCreator,
+    GLNCreator,
+    GMNCreator,
+    GRAICreator,
+    GSINCreator,
+    GSRNCreator,
+    SSCCCreator
+} from "@aidc-toolkit/gs1";
 import type { AppExtension } from "../app-extension.js";
 import { proxy } from "../proxy.js";
 import {
@@ -10,7 +22,7 @@ import {
 @proxy.describeClass(false, {
     methodInfix: "GLN"
 })
-export class GLNCreatorProxy extends NonSerializableNumericIdentifierCreatorProxy<NonSerializableNumericIdentifierType, NonGTINNumericIdentifierCreator> {
+export class GLNCreatorProxy extends NonSerializableNumericIdentifierCreatorProxy<GLNCreator> {
     constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.glnCreator);
     }
@@ -19,7 +31,7 @@ export class GLNCreatorProxy extends NonSerializableNumericIdentifierCreatorProx
 @proxy.describeClass(false, {
     methodInfix: "SSCC"
 })
-export class SSCCCreatorProxy extends NonSerializableNumericIdentifierCreatorProxy<NonSerializableNumericIdentifierType, NonGTINNumericIdentifierCreator> {
+export class SSCCCreatorProxy extends NonSerializableNumericIdentifierCreatorProxy<SSCCCreator> {
     constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.ssccCreator);
     }
@@ -28,7 +40,7 @@ export class SSCCCreatorProxy extends NonSerializableNumericIdentifierCreatorPro
 @proxy.describeClass(false, {
     methodInfix: "GRAI"
 })
-export class GRAICreatorProxy extends SerializableNumericIdentifierCreatorProxy {
+export class GRAICreatorProxy extends SerializableNumericIdentifierCreatorProxy<GRAICreator> {
     constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.graiCreator);
     }
@@ -37,7 +49,7 @@ export class GRAICreatorProxy extends SerializableNumericIdentifierCreatorProxy 
 @proxy.describeClass(false, {
     methodInfix: "GIAI"
 })
-export class GIAICreatorProxy extends NonNumericIdentifierCreatorProxy {
+export class GIAICreatorProxy extends NonNumericIdentifierCreatorProxy<GIAICreator> {
     constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.giaiCreator);
     }
@@ -46,7 +58,7 @@ export class GIAICreatorProxy extends NonNumericIdentifierCreatorProxy {
 @proxy.describeClass(false, {
     methodInfix: "GSRN"
 })
-export class GSRNCreatorProxy extends NonSerializableNumericIdentifierCreatorProxy<NonSerializableNumericIdentifierType, NonGTINNumericIdentifierCreator> {
+export class GSRNCreatorProxy extends NonSerializableNumericIdentifierCreatorProxy<GSRNCreator> {
     constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.gsrnCreator);
     }
@@ -55,7 +67,7 @@ export class GSRNCreatorProxy extends NonSerializableNumericIdentifierCreatorPro
 @proxy.describeClass(false, {
     methodInfix: "GDTI"
 })
-export class GDTICreatorProxy extends SerializableNumericIdentifierCreatorProxy {
+export class GDTICreatorProxy extends SerializableNumericIdentifierCreatorProxy<GDTICreator> {
     constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.gdtiCreator);
     }
@@ -64,7 +76,7 @@ export class GDTICreatorProxy extends SerializableNumericIdentifierCreatorProxy 
 @proxy.describeClass(false, {
     methodInfix: "GINC"
 })
-export class GINCCreatorProxy extends NonNumericIdentifierCreatorProxy {
+export class GINCCreatorProxy extends NonNumericIdentifierCreatorProxy<GINCCreator> {
     constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.gincCreator);
     }
@@ -73,7 +85,7 @@ export class GINCCreatorProxy extends NonNumericIdentifierCreatorProxy {
 @proxy.describeClass(false, {
     methodInfix: "GSIN"
 })
-export class GSINCreatorProxy extends NonSerializableNumericIdentifierCreatorProxy<NonSerializableNumericIdentifierType, NonGTINNumericIdentifierCreator> {
+export class GSINCreatorProxy extends NonSerializableNumericIdentifierCreatorProxy<GSINCreator> {
     constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.gsinCreator);
     }
@@ -82,7 +94,7 @@ export class GSINCreatorProxy extends NonSerializableNumericIdentifierCreatorPro
 @proxy.describeClass(false, {
     methodInfix: "GCN"
 })
-export class GCNCreatorProxy extends SerializableNumericIdentifierCreatorProxy {
+export class GCNCreatorProxy extends SerializableNumericIdentifierCreatorProxy<GCNCreator> {
     constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.gcnCreator);
     }
@@ -91,7 +103,7 @@ export class GCNCreatorProxy extends SerializableNumericIdentifierCreatorProxy {
 @proxy.describeClass(false, {
     methodInfix: "CPID"
 })
-export class CPIDCreatorProxy extends NonNumericIdentifierCreatorProxy {
+export class CPIDCreatorProxy extends NonNumericIdentifierCreatorProxy<CPIDCreator> {
     constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.cpidCreator);
     }
@@ -100,7 +112,7 @@ export class CPIDCreatorProxy extends NonNumericIdentifierCreatorProxy {
 @proxy.describeClass(false, {
     methodInfix: "GMN"
 })
-export class GMNCreatorProxy extends NonNumericIdentifierCreatorProxy {
+export class GMNCreatorProxy extends NonNumericIdentifierCreatorProxy<GMNCreator> {
     constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.gmnCreator);
     }

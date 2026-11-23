@@ -1,4 +1,4 @@
-import type { GTINCreator, GTINType } from "@aidc-toolkit/gs1";
+import type { GTINCreator } from "@aidc-toolkit/gs1";
 import type { AppExtension } from "../app-extension.js";
 import { Multiplicities, Types } from "../descriptor.js";
 import type { Nullishable } from "../nullishable.js";
@@ -21,7 +21,7 @@ import {
         }
     ]
 })
-export class GTINCreatorProxy extends NumericIdentifierCreatorProxy<GTINType, GTINCreator> {
+export class GTINCreatorProxy extends NumericIdentifierCreatorProxy<GTINCreator> {
     constructor(appExtension: AppExtension) {
         super(appExtension, prefixManager => prefixManager.gtinCreator);
     }

@@ -1,4 +1,11 @@
-import { GTINLengths, type GTINLevel, GTINValidator, IdentifierValidators } from "@aidc-toolkit/gs1";
+import {
+    GTIN12_VALIDATOR,
+    GTIN13_VALIDATOR,
+    GTIN8_VALIDATOR,
+    type GTINLevel,
+    GTINValidator,
+    type PrefixTypes
+} from "@aidc-toolkit/gs1";
 import type { AppExtension } from "../app-extension.js";
 import { type ExtendsParameterDescriptor, Multiplicities, type ParameterDescriptor, Types } from "../descriptor.js";
 import { LibProxy } from "../lib-proxy.js";
@@ -12,27 +19,27 @@ import { GTINValidatorProxy } from "./identifier-validator-proxy.js";
 @proxy.describeClass(false, {
     methodInfix: "GTIN13"
 })
-export class GTIN13ValidatorProxy extends GTINValidatorProxy {
+export class GTIN13ValidatorProxy extends GTINValidatorProxy<typeof PrefixTypes.GS1CompanyPrefix> {
     constructor(appExtension: AppExtension) {
-        super(appExtension, IdentifierValidators.GTIN[GTINLengths.GTIN13]);
+        super(appExtension, GTIN13_VALIDATOR);
     }
 }
 
 @proxy.describeClass(false, {
     methodInfix: "GTIN12"
 })
-export class GTIN12ValidatorProxy extends GTINValidatorProxy {
+export class GTIN12ValidatorProxy extends GTINValidatorProxy<typeof PrefixTypes.UPCCompanyPrefix> {
     constructor(appExtension: AppExtension) {
-        super(appExtension, IdentifierValidators.GTIN[GTINLengths.GTIN12]);
+        super(appExtension, GTIN12_VALIDATOR);
     }
 }
 
 @proxy.describeClass(false, {
     methodInfix: "GTIN8"
 })
-export class GTIN8ValidatorProxy extends GTINValidatorProxy {
+export class GTIN8ValidatorProxy extends GTINValidatorProxy<typeof PrefixTypes.GS18Prefix> {
     constructor(appExtension: AppExtension) {
-        super(appExtension, IdentifierValidators.GTIN[GTINLengths.GTIN8]);
+        super(appExtension, GTIN8_VALIDATOR);
     }
 }
 

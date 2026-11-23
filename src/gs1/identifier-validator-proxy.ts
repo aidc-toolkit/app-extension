@@ -7,6 +7,7 @@ import type {
     NonNumericIdentifierValidation,
     NonSerializableNumericIdentifierType,
     NumericIdentifierType,
+    PrefixType,
     SerializableNumericIdentifierType
 } from "@aidc-toolkit/gs1";
 import type { AppExtension } from "../app-extension.js";
@@ -35,22 +36,22 @@ const splitIdentifierParameterDescriptor: ExtendsParameterDescriptor = {
     namespace: "GS1",
     category: "identifierValidation"
 })
-abstract class IdentifierValidatorProxy<TIdentifierType extends IdentifierType> extends StringProxy {
-    readonly #validator: IdentifierTypeValidator<TIdentifierType>;
+abstract class IdentifierValidatorProxy<TIdentifierType extends IdentifierType, TPrefixType extends TIdentifierType extends GTINType ? PrefixType : never = never> extends StringProxy {
+    readonly #validator: IdentifierTypeValidator<TIdentifierType, TPrefixType>;
 
-    constructor(appExtension: AppExtension, validator: IdentifierTypeValidator<TIdentifierType>) {
+    constructor(appExtension: AppExtension, validator: IdentifierTypeValidator<TIdentifierType, TPrefixType>) {
         super(appExtension);
 
         this.#validator = validator;
     }
 
-    protected get validator(): IdentifierTypeValidator<TIdentifierType> {
+    protected get validator(): IdentifierTypeValidator<TIdentifierType, TPrefixType> {
         return this.#validator;
     }
 }
 
 @proxy.describeClass(true)
-abstract class NumericIdentifierValidatorProxy<TNumericIdentifierType extends NumericIdentifierType> extends IdentifierValidatorProxy<TNumericIdentifierType> {
+abstract class NumericIdentifierValidatorProxy<TNumericIdentifierType extends NumericIdentifierType, TPrefixType extends TNumericIdentifierType extends GTINType ? PrefixType : never = never> extends IdentifierValidatorProxy<TNumericIdentifierType, TPrefixType> {
     @proxy.describeMethod({
         type: Types.String,
         multiplicity: Multiplicities.Matrix,
@@ -70,7 +71,7 @@ abstract class NumericIdentifierValidatorProxy<TNumericIdentifierType extends Nu
     }
 }
 
-export abstract class GTINValidatorProxy extends NumericIdentifierValidatorProxy<GTINType> {
+export abstract class GTINValidatorProxy<TPrefixType extends PrefixType> extends NumericIdentifierValidatorProxy<GTINType, TPrefixType> {
 }
 
 abstract class NonGTINNumericIdentifierValidatorProxy<TNonGTINNumericIdentifierType extends NonGTINNumericIdentifierType = NonGTINNumericIdentifierType> extends NumericIdentifierValidatorProxy<TNonGTINNumericIdentifierType> {

@@ -1,22 +1,13 @@
 import {
     type IdentifierCreator,
-    type IdentifierType,
-    type IdentifierValidation,
     type NonGTINNumericIdentifierCreator,
-    type NonGTINNumericIdentifierType,
     type NonNumericIdentifierCreator,
-    type NonNumericIdentifierType,
-    type NonNumericIdentifierValidation,
-    type NonSerializableNumericIdentifierType,
     type NumericIdentifierCreator,
-    type NumericIdentifierType,
-    type NumericIdentifierValidation,
     PrefixManager,
-    type PrefixType,
     PrefixTypes,
+    PrefixTypeValues,
     PrefixValidator,
-    type SerializableNumericIdentifierCreator,
-    type SerializableNumericIdentifierType
+    type SerializableNumericIdentifierCreator
 } from "@aidc-toolkit/gs1";
 import { Sequence } from "@aidc-toolkit/utility";
 import type { AppExtension } from "../app-extension.js";
@@ -38,9 +29,7 @@ import { prefixDefinitionGS1UPCParameterDescriptor } from "./prefix-definition-d
     namespace: "GS1",
     category: "identifierCreation"
 })
-abstract class IdentifierCreatorProxy<TIdentifierType extends IdentifierType, TIdentifierValidation extends IdentifierValidation, TIdentifierCreator extends IdentifierCreator<TIdentifierType, TIdentifierValidation>> extends LibProxy {
-    static readonly #PREFIX_TYPES: Array<PrefixType | undefined> = [PrefixTypes.GS1CompanyPrefix, PrefixTypes.UPCCompanyPrefix, PrefixTypes.GS18Prefix];
-
+abstract class IdentifierCreatorProxy<TIdentifierCreator extends IdentifierCreator> extends LibProxy {
     readonly #getCreator: (prefixManager: PrefixManager) => TIdentifierCreator;
 
     constructor(appExtension: AppExtension, getCreator: (prefixManager: PrefixManager) => TIdentifierCreator) {
@@ -92,9 +81,9 @@ abstract class IdentifierCreatorProxy<TIdentifierType extends IdentifierType, TI
 
         const prefixTypeIndex = getPrefixDefinitionValue(1, 0);
 
-        if (typeof prefixTypeIndex !== "number" || prefixTypeIndex < 0 || prefixTypeIndex >= IdentifierCreatorProxy.#PREFIX_TYPES.length) {
+        if (typeof prefixTypeIndex !== "number" || prefixTypeIndex < 0 || prefixTypeIndex >= PrefixTypeValues.length) {
             throw new RangeError(i18nextAppExtensionT("IdentifierCreatorProxy.prefixTypeMustBeNumber", {
-                maximumPrefixType: IdentifierCreatorProxy.#PREFIX_TYPES.length - 1
+                maximumPrefixType: PrefixTypeValues.length - 1
             }));
         }
 
@@ -131,7 +120,7 @@ export const sparseParameterDescriptor: ParameterDescriptor = {
 };
 
 @proxy.describeClass(true)
-export abstract class NumericIdentifierCreatorProxy<TNumericIdentifierType extends NumericIdentifierType, TNumericIdentifierCreator extends NumericIdentifierCreator<TNumericIdentifierType>> extends IdentifierCreatorProxy<TNumericIdentifierType, NumericIdentifierValidation, TNumericIdentifierCreator> {
+export abstract class NumericIdentifierCreatorProxy<TNumericIdentifierCreator extends NumericIdentifierCreator> extends IdentifierCreatorProxy<TNumericIdentifierCreator> {
     @proxy.describeMethod({
         type: Types.String,
         multiplicity: Multiplicities.Matrix,
@@ -177,10 +166,10 @@ export abstract class NumericIdentifierCreatorProxy<TNumericIdentifierType exten
     }
 }
 
-abstract class NonGTINNumericIdentifierCreatorProxy<TNonGTINNumericIdentifierType extends NonGTINNumericIdentifierType, TNonGTINNumericIdentifierCreator extends NonGTINNumericIdentifierCreator> extends NumericIdentifierCreatorProxy<TNonGTINNumericIdentifierType, TNonGTINNumericIdentifierCreator> {
+abstract class NonGTINNumericIdentifierCreatorProxy<TNonGTINNumericIdentifierCreator extends NonGTINNumericIdentifierCreator> extends NumericIdentifierCreatorProxy<TNonGTINNumericIdentifierCreator> {
 }
 
-export abstract class NonSerializableNumericIdentifierCreatorProxy<TNonSerializableNumericIdentifierType extends NonSerializableNumericIdentifierType, TNonGTINNumericIdentifierCreator extends NonGTINNumericIdentifierCreator> extends NonGTINNumericIdentifierCreatorProxy<TNonSerializableNumericIdentifierType, TNonGTINNumericIdentifierCreator> {
+export abstract class NonSerializableNumericIdentifierCreatorProxy<TNonGTINNumericIdentifierCreator extends NonGTINNumericIdentifierCreator> extends NonGTINNumericIdentifierCreatorProxy<TNonGTINNumericIdentifierCreator> {
 }
 
 const singleValueParameterDescriptor: ExtendsParameterDescriptor = {
@@ -202,7 +191,7 @@ const serialComponentParameterDescriptor: ParameterDescriptor = {
 };
 
 @proxy.describeClass(true)
-export abstract class SerializableNumericIdentifierCreatorProxy extends NonGTINNumericIdentifierCreatorProxy<SerializableNumericIdentifierType, SerializableNumericIdentifierCreator> {
+export abstract class SerializableNumericIdentifierCreatorProxy<TSerializableNumericIdentifierCreator extends SerializableNumericIdentifierCreator> extends NonGTINNumericIdentifierCreatorProxy<TSerializableNumericIdentifierCreator> {
     @proxy.describeMethod({
         type: Types.String,
         multiplicity: Multiplicities.Matrix,
@@ -245,7 +234,7 @@ const referenceParameterDescriptor: ParameterDescriptor = {
 };
 
 @proxy.describeClass(true)
-export abstract class NonNumericIdentifierCreatorProxy extends IdentifierCreatorProxy<NonNumericIdentifierType, NonNumericIdentifierValidation, NonNumericIdentifierCreator> {
+export abstract class NonNumericIdentifierCreatorProxy<TNonNumericIdentifierCreator extends NonNumericIdentifierCreator> extends IdentifierCreatorProxy<TNonNumericIdentifierCreator> {
     @proxy.describeMethod({
         type: Types.String,
         multiplicity: Multiplicities.Matrix,
