@@ -307,20 +307,21 @@ export abstract class Generator {
                         this.createClassProxy(classDescriptor);
 
                         for (const methodDescriptor of classDescriptor.methodDescriptors) {
-                            const functionLocalizationsMap = new Map(methodDescriptor.isHidden !== true ?
-                                this.locales.map(locale =>
-                                    [locale, Generator.#getLocalization<FunctionLocalization>(locale, `Functions.${namespacePrefix}${methodDescriptor.functionName}`, (locale, localization) => ({
-                                        ...localization,
-                                        titleCaseName: localization.titleCaseName ?? localization.name.replace(/^[a-z]/u, c => c.toUpperCase()),
-                                        documentationURL: `${documentationBaseURL}/${locale === this.defaultLocale ? "" : `${locale}/`}${Generator.#DOCUMENTATION_PATH}${namespacePath}${localization.name}.html`,
-                                        parametersMap: new Map(methodDescriptor.parameterDescriptors.map(parameterDescriptor =>
-                                            // eslint-disable-next-line max-nested-callbacks -- Callback is empty.
-                                            [parameterDescriptor.name, Generator.#getLocalization(locale, `Parameters.${parameterDescriptor.name}`, (_locale, localization) => localization)]
-                                        ))
-                                    }))]
-                                ) :
-                                // Hidden methods are not localized.
-                                []
+                            const functionLocalizationsMap = new Map(
+                                methodDescriptor.isHidden !== true ?
+                                    this.locales.map(
+                                        locale => [locale, Generator.#getLocalization<FunctionLocalization>(locale, `Functions.${namespacePrefix}${methodDescriptor.functionName}`, (locale, localization) => ({
+                                            ...localization,
+                                            titleCaseName: localization.titleCaseName ?? localization.name.replace(/^[a-z]/u, c => c.toUpperCase()),
+                                            documentationURL: `${documentationBaseURL}/${locale === this.defaultLocale ? "" : `${locale}/`}${Generator.#DOCUMENTATION_PATH}${namespacePath}${localization.name}.html`,
+                                            parametersMap: new Map(methodDescriptor.parameterDescriptors.map(
+                                                // eslint-disable-next-line max-nested-callbacks -- Callback is empty.
+                                                parameterDescriptor => [parameterDescriptor.name, Generator.#getLocalization(locale, `Parameters.${parameterDescriptor.name}`, (_locale, localization) => localization)]
+                                            ))
+                                        }))]
+                                    ) :
+                                    // Hidden methods are not localized.
+                                    []
                             );
 
                             this.createMethodProxy(classDescriptor, methodDescriptor, functionLocalizationsMap);

@@ -43,10 +43,10 @@ export class VerifiedByGS1Proxy extends LibProxy {
         ]
     })
     async verifiedByGS1(identifierType: string, matrixIdentifiers: Matrix<string>, text: Nullishable<string>, details: Nullishable<string>): Promise<MatrixResult<unknown>> {
-        return this.appExtension.mapHyperlinkResults(this.setupMatrixResult(() =>
-            validateIdentifierType(identifierType),
-        matrixIdentifiers, (validatedIdentifierType, identifier) =>
-            verifiedByGS1(validatedIdentifierType, identifier, text ?? undefined, details ?? undefined)
+        return this.appExtension.mapHyperlinkResults(this.setupMatrixResult(
+            () => validateIdentifierType(identifierType),
+            matrixIdentifiers,
+            (validatedIdentifierType, identifier) => verifiedByGS1(validatedIdentifierType, identifier, text ?? undefined, details ?? undefined)
         ));
     }
 }

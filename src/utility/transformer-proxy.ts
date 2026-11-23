@@ -35,10 +35,10 @@ export class TransformerProxy extends LibProxy {
         parameterDescriptors: [domainParameterDescriptor, valueParameterDescriptor, tweakParameterDescriptor]
     })
     forward(domain: number | bigint, matrixValues: Matrix<number | bigint>, tweak: Nullishable<number | bigint>): MatrixResult<BigInteger> {
-        return this.setupMatrixResult(() =>
-            Transformer.get(domain, tweak ?? undefined),
-        matrixValues, (transformer, value) =>
-            this.mapBigInt(transformer.forward(value))
+        return this.setupMatrixResult(
+            () => Transformer.get(domain, tweak ?? undefined),
+            matrixValues,
+            (transformer, value) => this.mapBigInt(transformer.forward(value))
         );
     }
 
@@ -62,10 +62,10 @@ export class TransformerProxy extends LibProxy {
         parameterDescriptors: [domainParameterDescriptor, transformedValueParameterDescriptor, tweakParameterDescriptor]
     })
     reverse(domain: number | bigint, matrixTransformedValues: Matrix<number | bigint>, tweak: Nullishable<number | bigint>): MatrixResult<BigInteger> {
-        return this.setupMatrixResult(() =>
-            Transformer.get(domain, tweak ?? undefined),
-        matrixTransformedValues, (transformer, transformedValue) =>
-            this.mapBigInt(transformer.reverse(transformedValue))
+        return this.setupMatrixResult(
+            () => Transformer.get(domain, tweak ?? undefined),
+            matrixTransformedValues,
+            (transformer, transformedValue) => this.mapBigInt(transformer.reverse(transformedValue))
         );
     }
 }

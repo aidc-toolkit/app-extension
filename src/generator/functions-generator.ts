@@ -246,11 +246,11 @@ export abstract class FunctionsGenerator extends Generator {
                     !this.#inline ?
                         `export ${asyncQualifier}function ${functionName}` :
                         asyncQualifier
-                }(${parameterLocalizations.map((parameterLocalization, index) =>
-                    `${parameterLocalization.name}: Parameters<${methodType}>[${index}]`
+                }(${parameterLocalizations.map(
+                    (parameterLocalization, index) => `${parameterLocalization.name}: Parameters<${methodType}>[${index}]`
                 ).join(", ")}): ReturnType<${methodType}> ${!this.#inline ? "{" : "=>"}`,
-                `    ${!this.#inline ? "return " : ""}${(this.classTypeAlias.getter)}.${methodDescriptor.name}(${[...parameterLocalizations.map(parameterLocalization =>
-                    parameterCallback === undefined || parameterLocalization.parameterDescriptor === undefined ?
+                `    ${!this.#inline ? "return " : ""}${(this.classTypeAlias.getter)}.${methodDescriptor.name}(${[...parameterLocalizations.map(
+                    parameterLocalization => parameterCallback === undefined || parameterLocalization.parameterDescriptor === undefined ?
                         parameterLocalization.name :
                         parameterCallback(parameterLocalization.name, parameterLocalization.parameterDescriptor)
                 ), ...dummyParameters].join(", ")})${(!this.#inline ? ";" : "")}`,

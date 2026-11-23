@@ -91,8 +91,9 @@ export abstract class CharacterSetCreatorProxy extends CharacterSetValidatorProx
         const exclusionOrUndefined = exclusion ?? undefined;
         const tweakOrUndefined = tweak ?? undefined;
 
-        return this.matrixResult(matrixValues, value =>
-            this.#characterSetCreator.create(length, value, exclusionOrUndefined, tweakOrUndefined)
+        return this.matrixResult(
+            matrixValues,
+            value => this.#characterSetCreator.create(length, value, exclusionOrUndefined, tweakOrUndefined)
         );
     }
 
@@ -122,8 +123,9 @@ export abstract class CharacterSetCreatorProxy extends CharacterSetValidatorProx
         const exclusionOrUndefined = exclusion ?? undefined;
         const tweakOrUndefined = tweak ?? undefined;
 
-        return this.matrixResult(matrixSs, s =>
-            this.mapBigInt(this.#characterSetCreator.valueFor(s, exclusionOrUndefined, tweakOrUndefined))
+        return this.matrixResult(
+            matrixSs,
+            s => this.mapBigInt(this.#characterSetCreator.valueFor(s, exclusionOrUndefined, tweakOrUndefined))
         );
     }
 }
